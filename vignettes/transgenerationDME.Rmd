@@ -5,7 +5,7 @@ output:
     toc: true
 vignette: >
   %\VignetteIndexEntry{Permutation Positioning}
-  %\VignettePackage{transgenerationDME}
+  %\VignettePackage{methylInheritance}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,11 +16,11 @@ library(knitr)
 ```
 
 <br />
-**Package**: `r Rpackage("transgenerationDME")`<br />
-**Authors**: `r packageDescription("transgenerationDME")[["Author"]]`<br />
-**Version**: `r packageDescription("transgenerationDME")$Version`<br />
+**Package**: `r Rpackage("methylInheritance")`<br />
+**Authors**: `r packageDescription("methylInheritance")[["Author"]]`<br />
+**Version**: `r packageDescription("methylInheritance")$Version`<br />
 **Compiled date**: `r Sys.Date()`<br />
-**License**: `r packageDescription("transgenerationDME")[["License"]]`<br />
+**License**: `r packageDescription("methylInheritance")[["License"]]`<br />
 
 # Licensing 
 
