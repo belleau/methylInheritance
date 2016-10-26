@@ -1,0 +1,29 @@
+---
+title: "Permutation"
+output:
+  BiocStyle::html_document:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Permutation Positioning}
+  %\VignettePackage{transgenerationDME}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r style, echo = FALSE, results = 'asis'}
+BiocStyle::markdown()
+library(knitr)
+```
+
+<br />
+**Package**: `r Rpackage("transgenerationDME")`<br />
+**Authors**: `r packageDescription("transgenerationDME")[["Author"]]`<br />
+**Version**: `r packageDescription("transgenerationDME")$Version`<br />
+**Compiled date**: `r Sys.Date()`<br />
+**License**: `r packageDescription("transgenerationDME")[["License"]]`<br />
+
+# Licensing 
+
+The **transgenerationDME** package and the underlying **transgenerationDME** code 
+are distributed under the Artistic license 2.0. You are free to use and 
+redistribute this software. 
