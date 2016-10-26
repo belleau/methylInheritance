@@ -27,7 +27,8 @@
 #' @export
 runPermutation <- function(allDataByGeneration, infoByGeneration, nbCores = 1,
                         nbrPermutations = 1000, output_dir, vSeed = -1) {
-    nbFiles = sum(unlist(lapply(e, length)))
+
+    nbrFiles <- sum(unlist(lapply(allDataByGeneration, length)))
 
 
     if (substr(output_dir, nchar(output_dir), nchar(output_dir)) != "/") {

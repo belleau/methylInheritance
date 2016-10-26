@@ -19,7 +19,7 @@
 #' ##TODO
 #'
 #' @author Astrid Deschenes, Pascal Belleau
-#' @importFrom methylKit read filterByCoverage normalizeCoverage unite calculateDiffMeth get.methylDiff getData
+#' @importFrom methylKit read filterByCoverage normalizeCoverage unite calculateDiffMeth get.methylDiff getData tileMethylCounts
 #' @keywords internal
 runOnePermutation <- function(info,  output_dir,
                               doingSites = TRUE,
