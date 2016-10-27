@@ -108,8 +108,12 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
         dir.create(output_dir, showWarnings = TRUE)
     }
     for (type in c("TILES", "SITES")) {
+        dirName = paste0(output_dir, type)
+        if (!dir.exists(dirName)) {
+            dir.create(dirName, showWarnings = TRUE)
+        }
         for (j in 1:nbGenerations) {
-          dirName = paste0(output_dir, "/", type, "/Generation_", j)
+          dirName = paste0(output_dir, type, "/Generation_", j)
           if (!dir.exists(dirName)) {
               dir.create(dirName, showWarnings = TRUE)
           }
