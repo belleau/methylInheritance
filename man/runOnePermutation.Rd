@@ -16,7 +16,7 @@ runOnePermutation(info, output_dir, doingSites = TRUE, doingTiles = FALSE,
 
 \item{debug}{Default: \code{FALSE}.}
 
-\item{output_di}{TODOr}
+\item{output_di}{TODO}
 }
 \value{
 

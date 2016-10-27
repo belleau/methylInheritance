@@ -2,15 +2,33 @@
 #'
 #' @description TODO
 #'
-#' @param allDataByGeneration TODO
+#' @param allFilesByGeneration TODO
 #'
-#' @param infoByGeneration TODO
+#' @param conditionsByGeneration TODO
 #'
 #' @param nbCores Default = 1.
+#'
+#' @param minReads TODO
+#'
+#' @param minCGs TODO
+#'
+#' @param tileSize TODO
+#'
+#' @param stepSize TODO
+#'
+#' @param minMethDiff TODO
+#'
+#' @param mergeStrand TODO
+#'
+#' @param genomeVersion TODO
 #'
 #' @param nbrPermutations TODO
 #'
 #' @param output_dir TODO
+#'
+#' @param doingTiles TODO
+#'
+#' @param doingSites TODO
 #'
 #' @param vSeed TODO
 #'
@@ -25,14 +43,20 @@
 #' @importFrom parallel mclapply
 #' @importFrom utils flush.console write.table
 #' @export
-runPermutation <- function(allDataByGeneration, infoByGeneration, nbCores = 1,
-                        nbrPermutations = 1000, output_dir, vSeed = -1) {
+runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
+                           nbCores = 1,
+                        minReads, minCGs, tileSize, stepSize, minMethDiff,
+                        mergeStrand,
+                        genomeVersion,
+                        nbrPermutations = 1000, output_dir, doingTiles,
+                        doingSites, vSeed = -1) {
 
-    nbrFiles <- sum(unlist(lapply(allDataByGeneration, length)))
+    nbrFiles <- sum(unlist(lapply(allFilesByGeneration, length)))
 
 
+    ## Add last slash to path when absent
     if (substr(output_dir, nchar(output_dir), nchar(output_dir)) != "/") {
-        outpout_dir <- paste0(outpout_dir, "/")
+        output_dir <- paste0(output_dir, "/")
     }
 
     if (vSeed == -1) {
@@ -41,12 +65,12 @@ runPermutation <- function(allDataByGeneration, infoByGeneration, nbCores = 1,
     }
     set.seed(vSeed)
 
-    nbGenerations <- length(allDataByGeneration)
+    nbGenerations <- length(allFilesByGeneration)
 
-    nbSamples  <- sum(length(unlist(allDataByGeneration)))
-    allSamples <- unlist(allDataByGeneration)
+    nbSamples  <- sum(length(unlist(allFilesByGeneration)))
+    allSamples <- unlist(allFilesByGeneration)
 
-    nbSamplesByGeneration <- lapply(allDataByGeneration, length)
+    nbSamplesByGeneration <- lapply(allFilesByGeneration, length)
 
     finalList <- list()
 
@@ -61,9 +85,16 @@ runPermutation <- function(allDataByGeneration, infoByGeneration, nbCores = 1,
             nbFiles <-  nbSamplesByGeneration[j]
             end = start + nbrFiles - 1
             filesGeneration <- samples[start:end]
-            infoGeneration <- list(info=infoByGeneration[j],
+            infoGeneration <- list(conditions=conditionsByGeneration[j],
                                    file.list=filesGeneration,
                                    designName=paste0("Generation_", j),
+                                   minReads = minReads,
+                                   minCGs = minCGs,
+                                   tileSize = tileSize,
+                                   stepSize = stepSize,
+                                   minMethDiff = minMethDiff,
+                                   mergeStrand = mergeStrand,
+                                   genomeVersion = genomeVersion,
                                    count = i)
             permutationList <- c(permutationList, infoGeneration)
             start <- end + 1
@@ -72,13 +103,16 @@ runPermutation <- function(allDataByGeneration, infoByGeneration, nbCores = 1,
         finalList <- c(finalList, permutationList)
     }
 
+    # Create directories for output files
     if (!dir.exists(output_dir)) {
         dir.create(output_dir, showWarnings = TRUE)
     }
-    for (j in 1:nbGenerations) {
-        dirName = paste0(output_dir, "/", "Generation_", j)
-        if (!dir.exists(dirName)) {
-            dir.create(dirName, showWarnings = TRUE)
+    for (type in c("TILES", "SITES")) {
+        for (j in 1:nbGenerations) {
+          dirName = paste0(output_dir, "/", type, "/Generation_", j)
+          if (!dir.exists(dirName)) {
+              dir.create(dirName, showWarnings = TRUE)
+          }
         }
     }
 

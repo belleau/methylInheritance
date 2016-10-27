@@ -4,19 +4,38 @@
 \alias{runPermutation}
 \title{TODO}
 \usage{
-runPermutation(allDataByGeneration, infoByGeneration, nbCores = 1,
-  nbrPermutations = 1000, output_dir, vSeed = -1)
+runPermutation(allFilesByGeneration, conditionsByGeneration, nbCores = 1,
+  minReads, minCGs, tileSize, stepSize, minMethDiff, mergeStrand, genomeVersion,
+  nbrPermutations = 1000, output_dir, doingTiles, doingSites, vSeed = -1)
 }
 \arguments{
-\item{allDataByGeneration}{TODO}
+\item{allFilesByGeneration}{TODO}
 
-\item{infoByGeneration}{TODO}
+\item{conditionsByGeneration}{TODO}
 
 \item{nbCores}{Default = 1.}
+
+\item{minReads}{TODO}
+
+\item{minCGs}{TODO}
+
+\item{tileSize}{TODO}
+
+\item{stepSize}{TODO}
+
+\item{minMethDiff}{TODO}
+
+\item{mergeStrand}{TODO}
+
+\item{genomeVersion}{TODO}
 
 \item{nbrPermutations}{TODO}
 
 \item{output_dir}{TODO}
+
+\item{doingTiles}{TODO}
+
+\item{doingSites}{TODO}
 
 \item{vSeed}{TODO}
 }

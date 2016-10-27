@@ -4,7 +4,7 @@
 #'
 #' @param info TODO
 #'
-#' @param output_di TODOr
+#' @param output_di TODO
 #'
 #' @param doingSites Default: \code{TRUE}.
 #'
@@ -21,22 +21,22 @@
 #' @author Astrid Deschenes, Pascal Belleau
 #' @importFrom methylKit read filterByCoverage normalizeCoverage unite calculateDiffMeth get.methylDiff getData tileMethylCounts
 #' @keywords internal
-runOnePermutation <- function(info,  output_dir,
+runOnePermutation <- function(info, output_dir,
                               doingSites = TRUE,
                               doingTiles = FALSE, debug = FALSE) {
 
-    designName=info$designName
+    designName = info$designName
     count = info$count
     file.list = info$file.list
     sampleNames = info$sampleNames
-    genomeVersion = info$info$genomeVersion
-    conditions = info$info$conditions
-    mergeStrand = info$info$mergeStrand
-    tileSize = info$info$tileSize
-    stepSize = info$info$stepSize
-    minCGs = info$info$minCG
-    minReads = info$info$minReads
-    minMethDiff = info$info$minMethDiff
+    genomeVersion = info$genomeVersion
+    conditions = info$conditions
+    mergeStrand = info$mergeStrand
+    tileSize = info$tileSize
+    stepSize = info$stepSize
+    minCGs = info$minCGs
+    minReads = info$minReads
+    minMethDiff = info$minMethDiff
 
     ####################################
     ## prepare data
@@ -53,61 +53,89 @@ runOnePermutation <- function(info,  output_dir,
                                 treatment = conditions,
                                 context = "CpG")
 
-    filtered.myobj <- filterByCoverage(myobj,
+    ## SITES
+    if (doingSites) {
+        filtered.sites <- filterByCoverage(myobj,
                                        lo.count = minReads,
                                        lo.perc = NULL,
                                        hi.count = NULL,
                                        hi.perc = 99.9)
-    filtered.myobj <- normalizeCoverage(filtered.myobj, "median")
+        filtered.sites <- normalizeCoverage(filtered.sites, "median")
 
-    meth <- unite(filtered.myobj, destrand = mergeStrand)
+        meth.sites <- unite(filtered.sites, destrand = mergeStrand)
+
+        ####################################
+        ## Get diff methyl sites
+        ####################################
+        myDiff.sites <- calculateDiffMeth(meth.sites, num.cores=1)
+
+
+        myDiff.sites.hyper <- get.methylDiff(myDiff.sites, difference = minMethDiff, qvalue = 0.01, type = "hyper")
+        myDiff.sites.hypo  <- get.methylDiff(myDiff.sites, difference = minMethDiff, qvalue = 0.01, type = "hypo")
+    }
 
     ## TILES
-    tiles <- tileMethylCounts(myobj, win.size = tileSize, step.size = stepSize, cov.bases=minCGs)
-    filtered.tiles <- filterByCoverage(tiles, lo.count = minReads, lo.perc = NULL, hi.count = NULL, hi.perc = 99.9)
-    filtered.tiles <- normalizeCoverage(filtered.tiles, "median")
-    meth.tiles <- unite(filtered.tiles, destrand = mergeStrand)
+    if (doingTiles) {
+        tiles <- tileMethylCounts(myobj, win.size = tileSize, step.size = stepSize, cov.bases=minCGs)
+        filtered.tiles <- filterByCoverage(tiles, lo.count = minReads, lo.perc = NULL, hi.count = NULL, hi.perc = 99.9)
+        filtered.tiles <- normalizeCoverage(filtered.tiles, "median")
+        meth.tiles <- unite(filtered.tiles, destrand = mergeStrand)
+
+
+        ####################################
+        ## Get diff methyl tiles
+        ####################################
+        myDiff.tiles <- calculateDiffMeth(meth.tiles, num.cores=1)
+
+        myDiff.tiles.hyper <- get.methylDiff(myDiff.tiles, difference = minMethDiff, qvalue = 0.01, type = "hyper")
+        myDiff.tiles.hypo  <- get.methylDiff(myDiff.tiles, difference =  minMethDiff, qvalue = 0.01, type = "hypo")
+    }
 
     if (debug) {
         print(paste0(designName, " - ", count," - Differentially Methylation Analysis"))
         flush.console()
     }
 
-    ####################################
-    ## Get diff methyl sites and tiles
-    ####################################
-    myDiff <- calculateDiffMeth(meth, num.cores=2)
-    myDiff.tiles <- calculateDiffMeth(meth.tiles, num.cores=2)
-
-    myDiff20p.hyper <- get.methylDiff(myDiff, difference = minMethDiff, qvalue = 0.01, type = "hyper")
-    myDiff20p.tiles.hyper <- get.methylDiff(myDiff.tiles, difference = minMethDiff, qvalue = 0.01, type = "hyper")
-    myDiff20p.hypo <- get.methylDiff(myDiff, difference = minMethDiff, qvalue = 0.01, type = "hypo")
-    myDiff20p.tiles.hypo <- get.methylDiff(myDiff.tiles, difference =  minMethDiff, qvalue = 0.01, type = "hypo")
-
     #####################
     ## Save data
     #####################
-    if(nrow(myDiff20p.hypo) > 0) {
-        w=cbind(getData(myDiff20p.hypo)[,c(1,2,3)],paste(getData(myDiff20p.hypo)[,1],".",getData(myDiff20p.hypo)[,2],".",getData(myDiff20p.hypo)[,3],sep=""),getData(myDiff20p.hypo)[,c(7,4,5,6)])
-        colnames(w)[4]="dmr.id"
-        write.table(w, paste0(output_dir, "/", designName, "/", count, "_hypo.perbase.20.percent",sep=""), quote=F, row.names=F, col.names=F,sep="\t")
+    if(nrow(myDiff.sites.hypo) > 0) {
+        sitesHypo <- cbind(getData(myDiff.sites.hypo)[,c(1,2,3)],
+                paste0(getData(myDiff.sites.hypo)[,1], ".",
+                       getData(myDiff.sites.hypo)[,2], ".",
+                       getData(myDiff.sites.hypo)[,3]),
+                getData(myDiff.sites.hypo)[,c(7,4,5,6)])
+        colnames(sitesHypo)[4]="dmr.id"
+        write.table(sitesHypo, paste0(output_dir, "/SITES/", designName, "/", count, "_hypo.perbase.txt",sep=""), quote=F, row.names=F, col.names=F,sep="\t")
     }
-    if(nrow(myDiff20p.tiles.hypo)>0) {
-        w=NULL
-        w=cbind(getData(myDiff20p.tiles.hypo)[,c(1,2,3)],paste(getData(myDiff20p.tiles.hypo)[,1],".",getData(myDiff20p.tiles.hypo)[,2],".",getData(myDiff20p.tiles.hypo)[,3],sep=""),getData(myDiff20p.tiles.hypo)[,c(7,4,5,6)])
-        colnames(w)[4]="dmr.id"
-        write.table(w, paste0(output_dir, "/", designName, "/", count, "_hypo.pertile.20.percent",sep=""), quote=F, row.names=F, col.names=F,sep="\t")
+
+    if(nrow(myDiff.sites.hyper)>0) {
+        sitesHyper <- cbind(getData(myDiff.sites.hyper)[,c(1,2,3)],
+                            paste0(getData(myDiff.sites.hyper)[,1], ".",
+                                   getData(myDiff.sites.hyper)[,2], ".",
+                                   getData(myDiff.sites.hyper)[,3]),
+                            getData(myDiff.sites.hyper)[,c(7,4,5,6)])
+        colnames(sitesHyper)[4]="dmr.id"
+        write.table(sitesHyper, paste0(output_dir, "/SITES/", designName, "/", count, "_hyper.perbase.txt"), quote=F, row.names=F, col.names=F,sep="\t")
     }
-    if(nrow(myDiff20p.hyper)>0) {
+
+    if(nrow(myDiff.tiles.hypo)>0) {
         w=NULL
-        w=cbind(getData(myDiff20p.hyper)[,c(1,2,3)],paste(getData(myDiff20p.hyper)[,1],".",getData(myDiff20p.hyper)[,2],".",getData(myDiff20p.hyper)[,3],sep=""),getData(myDiff20p.hyper)[,c(7,4,5,6)])
+        w=cbind(getData(myDiff.tiles.hypo)[,c(1,2,3)],
+                paste0(getData(myDiff.tiles.hypo)[,1], ".",
+                       getData(myDiff.tiles.hypo)[,2], ".",
+                       getData(myDiff.tiles.hypo)[,3]),
+                getData(myDiff.tiles.hypo)[,c(7,4,5,6)])
         colnames(w)[4]="dmr.id"
-        write.table(w, paste0(output_dir, "/", designName, "/", count, "_hyper.perbase.20.percent",sep=""), quote=F, row.names=F, col.names=F,sep="\t")
+        write.table(w, paste0(output_dir, "/TILES/", designName, "/", count, "_hypo.pertile.txt",sep=""), quote=F, row.names=F, col.names=F,sep="\t")
     }
-    if(nrow(myDiff20p.tiles.hyper)>0) {
+
+    if(nrow(myDiff.tiles.hyper)>0) {
         w=NULL
-        w=cbind(getData(myDiff20p.tiles.hyper)[,c(1,2,3)],paste(getData(myDiff20p.tiles.hyper)[,1],".",getData(myDiff20p.tiles.hyper)[,2],".",getData(myDiff20p.tiles.hyper)[,3],sep=""),getData(myDiff20p.tiles.hyper)[,c(7,4,5,6)])
+        w=cbind(getData(myDiff.tiles.hyper)[,c(1,2,3)],paste0(getData(myDiff.tiles.hyper)[,1], ".",
+                                                             getData(myDiff.tiles.hyper)[,2],".",
+                                                             getData(myDiff.tiles.hyper)[,3]),getData(myDiff.tiles.hyper)[,c(7,4,5,6)])
         colnames(w)[4]="dmr.id"
-        write.table(w, paste0(output_dir, "/", designName, "/", count, "_hyper.pertile.20.percent",sep=""), quote=F, row.names=F, col.names=F,sep="\t")
+        write.table(w, paste0(output_dir, "/TILES/", designName, "/", count, "_hyper.pertile.txt"), quote=F, row.names=F, col.names=F,sep="\t")
     }
 }
