@@ -12,7 +12,7 @@
 #'
 #' @param debug Default: \code{FALSE}.
 #'
-#' @return
+#' @return TODO
 #'
 #' @examples
 #'
@@ -37,6 +37,19 @@ runOnePermutation <- function(info, output_dir,
     minCGs = info$minCGs
     minReads = info$minReads
     minMethDiff = info$minMethDiff
+
+    print("designName ", designName)
+    print("count ", count)
+    print("file.list ", file.list)
+    print("sampleNames ", sampleNames)
+    print("conditions ", conditions)
+    print("mergeStrand ", mergeStrand)
+    print("tileSize ", tileSize)
+    print("stepSize ", stepSize)
+    print("minCGs ", minCGs)
+    print("minReads ", minReads)
+    print("minMethDiff ", minMethDiff)
+
 
     ####################################
     ## prepare data
@@ -138,4 +151,6 @@ runOnePermutation <- function(info, output_dir,
         colnames(w)[4]="dmr.id"
         write.table(w, paste0(output_dir, "/TILES/", designName, "/", count, "_hyper.pertile.txt"), quote=F, row.names=F, col.names=F,sep="\t")
     }
+
+    return(0)
 }

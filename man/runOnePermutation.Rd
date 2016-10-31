@@ -19,7 +19,7 @@ runOnePermutation(info, output_dir, doingSites = TRUE, doingTiles = FALSE,
 \item{output_di}{TODO}
 }
 \value{
-
+TODO
 }
 \description{
 TODO

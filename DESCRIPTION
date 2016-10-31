@@ -23,6 +23,7 @@ Depends:
 Imports:
     methylKit,
     parallel,
+    BiocParallel,
     utils
 Suggests:
     BiocStyle,
