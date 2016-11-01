@@ -25,6 +25,7 @@ runOnePermutation <- function(info, output_dir,
                               doingSites = TRUE,
                               doingTiles = FALSE, debug = FALSE) {
 
+    print("HI")
     designName = info$designName
     count = info$count
     file.list = info$file.list
@@ -38,17 +39,17 @@ runOnePermutation <- function(info, output_dir,
     minReads = info$minReads
     minMethDiff = info$minMethDiff
 
-    print("designName ", designName)
-    print("count ", count)
-    print("file.list ", file.list)
-    print("sampleNames ", sampleNames)
-    print("conditions ", conditions)
-    print("mergeStrand ", mergeStrand)
-    print("tileSize ", tileSize)
-    print("stepSize ", stepSize)
-    print("minCGs ", minCGs)
-    print("minReads ", minReads)
-    print("minMethDiff ", minMethDiff)
+    print(paste0("designName ", designName))
+    print(paste0("count ", count))
+    print(paste0("file.list ", file.list))
+    print(paste0("sampleNames ", sampleNames))
+    print(paste0("conditions ", conditions))
+    print(paste0("mergeStrand ", mergeStrand))
+    print(paste0("tileSize ", tileSize))
+    print(paste0("stepSize ", stepSize))
+    print(paste0("minCGs ", minCGs))
+    print(paste0("minReads ", minReads))
+    print(paste0("minMethDiff ", minMethDiff))
 
 
     ####################################
@@ -153,4 +154,24 @@ runOnePermutation <- function(info, output_dir,
     }
 
     return(0)
+}
+
+
+#' @title Extract sample name from file name
+#'
+#' @description Extract sample name from file name
+#'
+#' @param fileName TODO
+#'
+#' @return TODO
+#'
+#' @examples
+#'
+#' ##TODO
+#'
+#' @author Astrid Deschenes, Pascal Belleau
+#' @keywords internal
+getSampleNameFromFileName <- function(fileName) {
+    results <- strsplit(fileName, split="/")[[1]]
+    return(results[length(results)])
 }

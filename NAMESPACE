@@ -2,7 +2,7 @@
 
 export(runPermutation)
 importFrom(BiocParallel,MulticoreParam)
-importFrom(BiocParallel,SerialParam)
+importFrom(BiocParallel,SnowParam)
 importFrom(BiocParallel,bplapply)
 importFrom(BiocParallel,bpok)
 importFrom(BiocParallel,bptry)

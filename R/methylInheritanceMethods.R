@@ -40,7 +40,7 @@
 #' ##TODO
 #'
 #' @author Astrid Deschenes, Pascal Belleau
-#' @importFrom BiocParallel bplapply MulticoreParam SerialParam bptry bpok
+#' @importFrom BiocParallel bplapply MulticoreParam SnowParam bptry bpok
 #' @importFrom utils flush.console write.table
 #' @export
 runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
@@ -52,7 +52,6 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
                         doingSites, vSeed = -1) {
 
     nbrFiles <- sum(unlist(lapply(allFilesByGeneration, length)))
-
 
     ## Add last slash to path when absent
     if (substr(output_dir, nchar(output_dir), nchar(output_dir)) != "/") {
@@ -85,9 +84,11 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
             nbFiles <-  nbSamplesByGeneration[j]
             end = start + nbrFiles - 1
             filesGeneration <- samples[start:end]
+            sampleNames <- sapply(filesGeneration, getSampleNameFromFileName)
             infoGeneration <- list(conditions=conditionsByGeneration[[j]],
                                    file.list=filesGeneration,
-                                   designName=paste0("Generation_", j),
+                                   designName = paste0("Generation_", j),
+                                   sampleNames = sampleNames,
                                    minReads = minReads,
                                    minCGs = minCGs,
                                    tileSize = tileSize,
@@ -119,27 +120,30 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
     }
 
     if (nbCores == 1) {
-        bp_param <- SerialParam()
+        bp_param <- SnowParam()
     } else {
         bp_param <- MulticoreParam(workers = nbCores)
     }
 
-    a <- finalList[[1]]
-    print(finalList[[1]])
-
     res <- bptry(bplapply(finalList,
                           FUN = runOnePermutation,
-                          MoreArgs = c(output_dir = output_dir),
+                          output_dir = output_dir,
                           BPPARAM = bp_param))
 
     if (!all(bpok(res))) {
         print("ALLO")
+        print(res)
         positions <- grepl("stop", attr(res[[1]], "traceback"))
         position <- which(positions)[1] # First error message
         msg <- strsplit(attr(res[[1]], "traceback")[position], "[()]")[[1]][2]
         msg <- substring(msg, 2, nchar(msg) - 1)
+
+        #msg <- lapply(res, function(x) {tail(attr(x, "traceback"))})
         stop(msg)
     }
 
     res
 }
+
+
+
