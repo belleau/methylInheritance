@@ -4,16 +4,18 @@
 \alias{runPermutation}
 \title{TODO}
 \usage{
-runPermutation(allFilesByGeneration, conditionsByGeneration, nbCores = 1,
-  minReads, minCGs, tileSize, stepSize, minMethDiff, mergeStrand, genomeVersion,
-  nbrPermutations = 1000, output_dir, doingTiles, doingSites, vSeed = -1)
+runPermutation(allFilesByGeneration, conditionsByGeneration, nbrCores = 1,
+  minReads = 10, minCGs, tileSize, stepSize, minMethDiff, destrand,
+  genomeVersion, nbrPermutations = 1000, output_dir, doingTiles, doingSites,
+  vSeed = -1)
 }
 \arguments{
 \item{allFilesByGeneration}{TODO}
 
 \item{conditionsByGeneration}{TODO}
 
-\item{nbCores}{Default = 1.}
+\item{nbrCores}{a positive integer, the number of cores to use when
+processing the analysis. Default: \code{1} and always \code{1} for Windows.}
 
 \item{minReads}{TODO}
 
@@ -25,17 +27,19 @@ runPermutation(allFilesByGeneration, conditionsByGeneration, nbCores = 1,
 
 \item{minMethDiff}{TODO}
 
-\item{mergeStrand}{TODO}
+\item{destrand}{TODO}
 
 \item{genomeVersion}{TODO}
 
 \item{nbrPermutations}{TODO}
 
-\item{output_dir}{TODO}
+\item{output_dir}{TODO
 
-\item{doingTiles}{TODO}
+ @param doingSites a logical, when \code{TRUE} will do the analysis on the
+CpG dinucleotide sites.}
 
-\item{doingSites}{TODO}
+\item{doingTiles}{a logical, when \code{TRUE} will do the analysis on the
+tiles.}
 
 \item{vSeed}{TODO}
 }

@@ -4,19 +4,43 @@
 \alias{runOnePermutation}
 \title{TODO}
 \usage{
-runOnePermutation(info, output_dir, doingSites = TRUE, doingTiles = FALSE,
-  debug = FALSE)
+runOnePermutation(info, output_dir, genomeVersion, minReads, minCGs, tileSize,
+  stepSize, minMethDiff, destrand = FALSE, doingSites = TRUE,
+  doingTiles = FALSE, debug = FALSE)
 }
 \arguments{
 \item{info}{TODO}
 
-\item{doingSites}{Default: \code{TRUE}.}
+\item{output_dir}{a string, the name of the directory that will contain
+the results of the permutation. If the directory does not exist, it will
+be created.}
 
-\item{doingTiles}{Default: \code{FALSE}.}
+\item{genomeVersion}{a string, the genome assembly such as hg18, mm9, etc.
+It can be any string.}
+
+\item{minReads}{TODO}
+
+\item{minCGs}{a positive integer, the minimum number of bases to
+be covered in a given tiling window}
+
+\item{tileSize}{a positive integer, the size of the tiling window}
+
+\item{stepSize}{a positive integer, the step size of tiling windows}
+
+\item{minMethDiff}{a positive integer, the step size of tiling windows}
+
+\item{destrand}{a logical, when \code{TRUE} will merge reads on both
+strands of a CpG dinucleotide to provide better coverage. Only advised
+when looking at CpG methylation.
+Default: \code{FALSE}.}
+
+\item{doingSites}{a logical, when \code{TRUE} will do the analysis on the
+CpG dinucleotide sites. Default: \code{TRUE}.}
+
+\item{doingTiles}{a logical, when \code{TRUE} will do the analysis on the
+tiles. Default: \code{FALSE}.}
 
 \item{debug}{Default: \code{FALSE}.}
-
-\item{output_di}{TODO}
 }
 \value{
 TODO

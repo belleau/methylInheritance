@@ -6,7 +6,8 @@
 #'
 #' @param conditionsByGeneration TODO
 #'
-#' @param nbCores Default = 1.
+#' @param nbrCores a positive integer, the number of cores to use when
+#' processing the analysis. Default: \code{1} and always \code{1} for Windows.
 #'
 #' @param minReads TODO
 #'
@@ -18,7 +19,7 @@
 #'
 #' @param minMethDiff TODO
 #'
-#' @param mergeStrand TODO
+#' @param destrand TODO
 #'
 #' @param genomeVersion TODO
 #'
@@ -26,9 +27,11 @@
 #'
 #' @param output_dir TODO
 #'
-#' @param doingTiles TODO
+#'  @param doingSites a logical, when \code{TRUE} will do the analysis on the
+#' CpG dinucleotide sites.
 #'
-#' @param doingSites TODO
+#' @param doingTiles a logical, when \code{TRUE} will do the analysis on the
+#' tiles.
 #'
 #' @param vSeed TODO
 #'
@@ -44,12 +47,19 @@
 #' @importFrom utils flush.console write.table
 #' @export
 runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
-                           nbCores = 1,
-                        minReads, minCGs, tileSize, stepSize, minMethDiff,
-                        mergeStrand,
-                        genomeVersion,
-                        nbrPermutations = 1000, output_dir, doingTiles,
-                        doingSites, vSeed = -1) {
+                            nbrCores = 1,
+                            minReads = 10,
+                            minCGs, tileSize, stepSize, minMethDiff,
+                            destrand,
+                            genomeVersion,
+                            nbrPermutations = 1000, output_dir, doingTiles,
+                            doingSites, vSeed = -1) {
+
+    validateRunPermutation(allFilesByGeneration, conditionsByGeneration,
+                           nbrCores, minReads,minCGs, tileSize, stepSize,
+                           minMethDiff, destrand, genomeVersion,
+                           nbrPermutations, output_dir, doingTiles,
+                           doingSites, vSeed)
 
     nbrFiles <- sum(unlist(lapply(allFilesByGeneration, length)))
 
@@ -69,7 +79,7 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
     nbSamples  <- sum(length(unlist(allFilesByGeneration)))
     allSamples <- unlist(allFilesByGeneration)
 
-    nbSamplesByGeneration <- lapply(allFilesByGeneration, length)
+    nbSamplesByGeneration <- sapply(allFilesByGeneration, length)
 
     finalList <- list()
 
@@ -81,21 +91,15 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
         permutationList <- list()
         start = 1
         for (j in 1:nbGenerations) {
-            nbFiles <-  nbSamplesByGeneration[j]
-            end = start + nbrFiles - 1
+            nbrFilesGeneration <-  nbSamplesByGeneration[j]
+            end = start + nbrFilesGeneration - 1
             filesGeneration <- samples[start:end]
+            print(is.list(filesGeneration))
             sampleNames <- sapply(filesGeneration, getSampleNameFromFileName)
             infoGeneration <- list(conditions=conditionsByGeneration[[j]],
-                                   file.list=filesGeneration,
+                                   file.list=as.list(filesGeneration),
                                    designName = paste0("Generation_", j),
                                    sampleNames = sampleNames,
-                                   minReads = minReads,
-                                   minCGs = minCGs,
-                                   tileSize = tileSize,
-                                   stepSize = stepSize,
-                                   minMethDiff = minMethDiff,
-                                   mergeStrand = mergeStrand,
-                                   genomeVersion = genomeVersion,
                                    count = i)
             finalList <- append(finalList, list(infoGeneration))
             start <- end + 1
@@ -119,30 +123,53 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
         }
     }
 
-    if (nbCores == 1) {
+    if (nbrCores == 1) {
         bp_param <- SnowParam()
     } else {
-        bp_param <- MulticoreParam(workers = nbCores)
+        bp_param <- MulticoreParam(workers = nbrCores)
     }
 
-    res <- bptry(bplapply(finalList,
-                          FUN = runOnePermutation,
-                          output_dir = output_dir,
-                          BPPARAM = bp_param))
+    result <- runOnePermutation(finalList[[1]], output_dir = output_dir,
+                      genomeVersion = genomeVersion, minReads = minReads,
+                      minCGs, tileSize,
+                      stepSize, minMethDiff,
+                      destrand)
+    result <- bptry(bplapply(finalList,
+                           FUN = runOnePermutation,
+                           output_dir = output_dir,
+                           genomeVersion = genomeVersion,
+                           minReads = minReads,
+                           minCGs =minCGs,
+                           tileSize = tileSize,
+                           stepSize = stepSize,
+                           minMethDiff = minMethDiff,
+                           destrand = destrand,
+                           BPPARAM = bp_param))
 
-    if (!all(bpok(res))) {
-        print("ALLO")
-        print(res)
-        positions <- grepl("stop", attr(res[[1]], "traceback"))
-        position <- which(positions)[1] # First error message
-        msg <- strsplit(attr(res[[1]], "traceback")[position], "[()]")[[1]][2]
-        msg <- substring(msg, 2, nchar(msg) - 1)
 
-        #msg <- lapply(res, function(x) {tail(attr(x, "traceback"))})
-        stop(msg)
-    }
-
-    res
+    # if (!all(bpok(result))) {
+    #     a <- which(!bpok(result))
+    #     print(a)
+    #     print(result)
+    #     print("e ICI")
+    #     print(tail(attr(result[[a[1]]], "traceback")))
+    #     print("e 2")
+    #     print(tail(attr(result[[a[2]]], "traceback")))
+    #     print("e 3")
+    #     print(tail(attr(result[[a[3]]], "traceback")))
+    #     print("e 4")
+    #     print(tail(attr(result[[a[4]]], "traceback")))
+    #     print("ALLO")
+    #     positions <- grepl("stop", attr(result[[1]], "traceback"))
+    #     position <- which(positions)[1] # First error message
+    #     msg <- strsplit(attr(result[[1]], "traceback")[position], "[()]")[[1]][2]
+    #     msg <- substring(msg, 2, nchar(msg) - 1)
+    #
+    #     #msg <- lapply(res, function(x) {tail(attr(x, "traceback"))})
+    #     print(msg)
+    # }
+    # print("TOTO")
+    result[which(bpok(result))]
 }
 
 
