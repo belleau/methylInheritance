@@ -413,45 +413,45 @@ validateRunPermutation <- function(allFilesByGeneration,
                                     minCovBasesForTiles, tileSize,
                                     stepSize, vSeed) {
 
-    ## Validate that the allFilesByGeneration is a list
-    if (!is.list(allFilesByGeneration)) {
-        stop("allFilesByGeneration must be a list")
-    }
-
-    ## Validate that the allFilesByGeneration contains at least 2 lists
-    if (length(allFilesByGeneration) < 2 ||
-        !all(sapply(allFilesByGeneration, is.list))) {
-        stop(paste0("allFilesByGeneration must be a list containing at ",
-                    "least 2 sub-lists"))
-    }
-
-    ## Validate that all entries in allFilesByGeneration are existing files
-    for (entry in unlist(allFilesByGeneration)) {
-        if (!file.exists(entry)) {
-            stop(paste0("The file \"", entry, "\" does not exist."))
-        }
-    }
-
-    ## Validate that the conditionsByGeneration is a list
-    if (!is.list(conditionsByGeneration)) {
-        stop("conditionsByGeneration must be a list")
-    }
-
-    ## Validate that the conditionsByGeneration contains at least 2 vectors
-    if (length(conditionsByGeneration) < 2 ||
-        !all(sapply(conditionsByGeneration, is.vector))) {
-        stop(paste0("conditionsByGeneration must be a list containing at ",
-                    "least 2 sub-vectors"))
-    }
-
-    ## Validate that the conditionsByGeneration and AllFilesByGeneration are
-    ## the same length
-    fileLengths <- sapply(allFilesByGeneration, length)
-    conditionLengths <- sapply(conditionsByGeneration, length)
-    if (length(fileLengths) != length(conditionsByGeneration)) {
-        stop(paste0("The content of the parameters \"allFilesByGeneration\" ",
-                    "and \"conditionsByGeneration\" must be the same length"))
-    }
+    # ## Validate that the allFilesByGeneration is a list
+    # if (!is.list(allFilesByGeneration)) {
+    #     stop("allFilesByGeneration must be a list")
+    # }
+    #
+    # ## Validate that the allFilesByGeneration contains at least 2 lists
+    # if (length(allFilesByGeneration) < 2 ||
+    #     !all(sapply(allFilesByGeneration, is.list))) {
+    #     stop(paste0("allFilesByGeneration must be a list containing at ",
+    #                 "least 2 sub-lists"))
+    # }
+    #
+    # ## Validate that all entries in allFilesByGeneration are existing files
+    # for (entry in unlist(allFilesByGeneration)) {
+    #     if (!file.exists(entry)) {
+    #         stop(paste0("The file \"", entry, "\" does not exist."))
+    #     }
+    # }
+    #
+    # ## Validate that the conditionsByGeneration is a list
+    # if (!is.list(conditionsByGeneration)) {
+    #     stop("conditionsByGeneration must be a list")
+    # }
+    #
+    # ## Validate that the conditionsByGeneration contains at least 2 vectors
+    # if (length(conditionsByGeneration) < 2 ||
+    #     !all(sapply(conditionsByGeneration, is.vector))) {
+    #     stop(paste0("conditionsByGeneration must be a list containing at ",
+    #                 "least 2 sub-vectors"))
+    # }
+    #
+    # ## Validate that the conditionsByGeneration and AllFilesByGeneration are
+    # ## the same length
+    # fileLengths <- sapply(allFilesByGeneration, length)
+    # conditionLengths <- sapply(conditionsByGeneration, length)
+    # if (length(fileLengths) != length(conditionsByGeneration)) {
+    #     stop(paste0("The content of the parameters \"allFilesByGeneration\" ",
+    #                 "and \"conditionsByGeneration\" must be the same length"))
+    # }
 
     ## Validate that the output_dir is an not empty string
     if (!is.character(output_dir)) {
@@ -537,7 +537,7 @@ validateRunPermutation <- function(allFilesByGeneration,
         ## Validate that minCovBasesForTiles is an positive integer
         if (!(isSingleInteger(minCovBasesForTiles) ||
               isSingleNumber(minCovBasesForTiles)) ||
-            as.integer(minCovBasesForTiles) < 1) {
+            as.integer(minCovBasesForTiles) < 0) {
             stop("minCovBasesForTiles must be a positive integer or numeric")
         }
 
