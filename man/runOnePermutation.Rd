@@ -2,12 +2,13 @@
 % Please edit documentation in R/methylInheritanceInternalMethods.R
 \name{runOnePermutation}
 \alias{runOnePermutation}
-\title{TODO}
+\title{Run one analysis using \code{methylKit} package}
 \usage{
-runOnePermutation(info, output_dir, genomeVersion, minReads, minMethDiff = 10,
-  qvalue = 0.01, maxPercReads = 99.9, destrand = FALSE,
-  nbrCoresDiffMeth = 1, minCovBasesForTiles = 0, tileSize = 1000,
-  stepSize = 1000, doingSites = TRUE, doingTiles = FALSE, debug = FALSE)
+runOnePermutation(info, output_dir, genomeVersion, nbrCoresDiffMeth = 1,
+  doingSites = TRUE, doingTiles = FALSE, minReads = 10,
+  minMethDiff = 10, qvalue = 0.01, maxPercReads = 99.9,
+  destrand = FALSE, minCovBasesForTiles = 0, tileSize = 1000,
+  stepSize = 1000)
 }
 \arguments{
 \item{info}{TODO}
@@ -18,11 +19,24 @@ be created.}
 
 \item{genomeVersion}{a string, the genome assembly such as hg18, mm9, etc.
 It can be any string. The parameter
-correspond to the \code{assembly} parameter in the package \code{methylKit}.}
+correspond to the \code{assembly} parameter in the \code{methylKit} package.}
+
+\item{nbrCoresDiffMeth}{a positive integer, the number of cores to use for
+parallel differential methylation calculations.Parameter used for both
+sites and tiles analysis. The parameter
+corresponds to the \code{num.cores} parameter in the
+package \code{methylKit}.
+Default: \code{1} and always \code{1} for Windows.}
+
+\item{doingSites}{a logical, when \code{TRUE} will do the analysis on the
+CpG dinucleotide sites. Default: \code{TRUE}.}
+
+\item{doingTiles}{a logical, when \code{TRUE} will do the analysis on the
+tiles. Default: \code{FALSE}.}
 
 \item{minReads}{a positive \code{integer} Bases and regions having lower
 coverage than this count are discarded. The parameter
-correspond to the \code{lo.count} parameter in the package \code{methylKit}.}
+correspond to the \code{lo.count} parameter in the  \code{methylKit} package.}
 
 \item{minMethDiff}{a positive integer betwwen [0,100], the absolute value
 of methylation
@@ -39,7 +53,7 @@ counts that is going to be used as upper cutoff. Bases ore regions
 having higher
 coverage than this percentile are discarded. Parameter used for both CpG
 sites and tiles analysis. The parameter
-correspond to the \code{hi.perc} parameter in the package \code{methylKit}.
+correspond to the \code{hi.perc} parameter in the  \code{methylKit} package.
 Default: \code{99.9}.}
 
 \item{destrand}{a logical, when \code{TRUE} will merge reads on both
@@ -47,13 +61,6 @@ strands of a CpG dinucleotide to provide better coverage. Only advised
 when looking at CpG methylation. Parameter used for both
 sites and tiles analysis.
 Default: \code{FALSE}.}
-
-\item{nbrCoresDiffMeth}{a positive integer, the number of cores to use for
-parallel differential methylation calculations.Parameter used for both
-sites and tiles analysis. The parameter
-corresponds to the \code{num.cores} parameter in the
-package \code{methylKit}.
-Default: \code{1} and always \code{1} for Windows.}
 
 \item{minCovBasesForTiles}{a non-negative integer, the minimum number of
 bases to be covered in a given tiling window. The parameter
@@ -64,19 +71,13 @@ Only used when \code{doingTiles} =
 
 \item{tileSize}{a positive integer, the size of the tiling window. The
 parameter corresponds to the \code{win.size} parameter in
-the package \code{methylKit}. Only
+the  \code{methylKit} package. Only
 used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.}
 
 \item{stepSize}{a positive integer, the step size of tiling windows. The
 parameter corresponds to the \code{stepSize} parameter in
-the package \code{methylKit}. Only
+the  \code{methylKit} package. Only
 used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.}
-
-\item{doingSites}{a logical, when \code{TRUE} will do the analysis on the
-CpG dinucleotide sites. Default: \code{TRUE}.}
-
-\item{doingTiles}{a logical, when \code{TRUE} will do the analysis on the
-tiles. Default: \code{FALSE}.}
 
 \item{debug}{Default: \code{FALSE}.}
 }
@@ -84,7 +85,9 @@ tiles. Default: \code{FALSE}.}
 TODO
 }
 \description{
-TODO
+Run one CpG site or region analysis using the \code{methylKit}
+package. The output of the analysis is saved in a file in the specified
+directory.
 }
 \examples{
 

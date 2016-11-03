@@ -1,6 +1,8 @@
-#' @title TODO
+#' @title Run one analysis using \code{methylKit} package
 #'
-#' @description TODO
+#' @description Run one CpG site or region analysis using the \code{methylKit}
+#' package. The output of the analysis is saved in a file in the specified
+#' directory.
 #'
 #' @param info TODO
 #'
@@ -10,11 +12,11 @@
 #'
 #' @param genomeVersion a string, the genome assembly such as hg18, mm9, etc.
 #' It can be any string. The parameter
-#' correspond to the \code{assembly} parameter in the package \code{methylKit}.
+#' correspond to the \code{assembly} parameter in the \code{methylKit} package.
 #'
 #' @param minReads a positive \code{integer} Bases and regions having lower
 #' coverage than this count are discarded. The parameter
-#' correspond to the \code{lo.count} parameter in the package \code{methylKit}.
+#' correspond to the \code{lo.count} parameter in the  \code{methylKit} package.
 #'
 #' @param qvalue a positive \code{double} inferior ot \code{1}, the cutoff
 #' for qvalue of differential methylation statistic. Default: \code{0.01}.
@@ -24,7 +26,7 @@
 #' having higher
 #' coverage than this percentile are discarded. Parameter used for both CpG
 #' sites and tiles analysis. The parameter
-#' correspond to the \code{hi.perc} parameter in the package \code{methylKit}.
+#' correspond to the \code{hi.perc} parameter in the  \code{methylKit} package.
 #' Default: \code{99.9}.
 #'
 #' @param minMethDiff a positive integer betwwen [0,100], the absolute value
@@ -56,12 +58,12 @@
 #'
 #' @param tileSize a positive integer, the size of the tiling window. The
 #' parameter corresponds to the \code{win.size} parameter in
-#' the package \code{methylKit}. Only
+#' the  \code{methylKit} package. Only
 #' used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.
 #'
 #' @param stepSize a positive integer, the step size of tiling windows. The
 #' parameter corresponds to the \code{stepSize} parameter in
-#' the package \code{methylKit}. Only
+#' the  \code{methylKit} package. Only
 #' used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.
 #'
 #' @param doingSites a logical, when \code{TRUE} will do the analysis on the
@@ -83,18 +85,17 @@
 #' @keywords internal
 runOnePermutation <- function(info, output_dir,
                                 genomeVersion,
-                                minReads,
+                                nbrCoresDiffMeth = 1,
+                                doingSites = TRUE,
+                                doingTiles = FALSE,
+                                minReads = 10,
                                 minMethDiff = 10,
                                 qvalue = 0.01,
                                 maxPercReads = 99.9,
                                 destrand = FALSE,
-                                nbrCoresDiffMeth = 1,
                                 minCovBasesForTiles = 0,
                                 tileSize = 1000,
-                                stepSize = 1000,
-                                doingSites = TRUE,
-                                doingTiles = FALSE,
-                                debug = FALSE) {
+                                stepSize = 1000) {
 
     print(info)
 
@@ -126,12 +127,6 @@ runOnePermutation <- function(info, output_dir,
     ####################################
     ## prepare data
     ####################################
-
-    if (debug) {
-        print(paste0(designName, " - ", count))
-        flush.console()
-    }
-
     print(paste0(designName, " - ", count, "before myobj"))
 
     myobj <- methylKit::read(location = file.list,
@@ -159,11 +154,21 @@ runOnePermutation <- function(info, output_dir,
         ####################################
 
         print(paste0(designName, " - ", count, " before get diff methyl sites "))
-        myDiff.sites <- calculateDiffMeth(meth.sites, num.cores = 1)
+
+        myDiff.sites <- calculateDiffMeth(meth.sites,
+                                            num.cores = nbrCoresDiffMeth)
 
 
-        myDiff.sites.hyper <- get.methylDiff(myDiff.sites, difference = minMethDiff, qvalue = qvalue, type = "hyper")
-        myDiff.sites.hypo  <- get.methylDiff(myDiff.sites, difference = minMethDiff, qvalue = qvalue, type = "hypo")
+        myDiff.sites.hyper <- get.methylDiff(myDiff.sites,
+                                                difference = minMethDiff,
+                                                qvalue = qvalue,
+                                                type = "hyper")
+
+        myDiff.sites.hypo  <- get.methylDiff(myDiff.sites,
+                                                difference = minMethDiff,
+                                                qvalue = qvalue,
+                                                type = "hypo")
+
         print(paste0(designName, " - ", count, " after get diff methyl sites "))
     }
 
@@ -188,15 +193,18 @@ runOnePermutation <- function(info, output_dir,
         ####################################
         ## Get diff methyl tiles
         ####################################
-        myDiff.tiles <- calculateDiffMeth(meth.tiles, num.cores = 1)
+        myDiff.tiles <- calculateDiffMeth(meth.tiles,
+                                            num.cores = nbrCoresDiffMeth)
 
-        myDiff.tiles.hyper <- get.methylDiff(myDiff.tiles, difference = minMethDiff, qvalue = qvalue, type = "hyper")
-        myDiff.tiles.hypo  <- get.methylDiff(myDiff.tiles, difference =  minMethDiff, qvalue = qvalue, type = "hypo")
-    }
+        myDiff.tiles.hyper <- get.methylDiff(myDiff.tiles,
+                                                difference = minMethDiff,
+                                                qvalue = qvalue,
+                                                type = "hyper")
 
-    if (debug) {
-        print(paste0(designName, " - ", count," - Differentially Methylation Analysis"))
-        flush.console()
+        myDiff.tiles.hypo  <- get.methylDiff(myDiff.tiles,
+                                                difference = minMethDiff,
+                                                qvalue = qvalue,
+                                                type = "hypo")
     }
 
     #####################
@@ -250,17 +258,19 @@ runOnePermutation <- function(info, output_dir,
 
 #' @title Extract sample name from file name
 #'
-#' @description Extract sample name from file name
+#' @description Extract a sample name from the file name. The samle name
+#' corresponds to  the file name but without path information.
 #'
-#' @param fileName TODO
+#' @param fileName a string, the file name used to extract the sample name.
 #'
-#' @return TODO
+#' @return A sanple name extracted from the specified file name.
 #'
 #' @examples
 #'
-#' ##TODO
+#' ## Extract sample name from file name
+#' methylInheritance:::getSampleNameFromFileName("./test/experiment001/file_J1.txt")
 #'
-#' @author Astrid Deschenes, Pascal Belleau
+#' @author Astrid Deschenes
 #' @keywords internal
 getSampleNameFromFileName <- function(fileName) {
     results <- strsplit(fileName, split="/")[[1]]
@@ -281,7 +291,7 @@ getSampleNameFromFileName <- function(fileName) {
 #' \code{list} containing 3 \code{list} must be passed. At least 2 generations
 #' must be present to do a permutation analysis.
 #' The parameter
-#' corresponds to the \code{location} parameter in the package \code{methylKit}.
+#' corresponds to the \code{location} parameter in the  \code{methylKit} package.
 #'
 #' @param conditionsByGeneration a \code{list} of \code{vector} containing
 #' \code{0} and \code{1}. The information indicating which files are
@@ -292,7 +302,7 @@ getSampleNameFromFileName <- function(fileName) {
 #' generations
 #' must be present to do a permutation analysis.
 #' The parameter
-#' corresponds to the \code{treatment} parameter in the package \code{methylKit}.
+#' corresponds to the \code{treatment} parameter in the  \code{methylKit} package.
 #'
 #' @param output_dir a string, the name of the directory that will contain
 #' the results of the permutation. If the directory does not exist, it will
@@ -300,7 +310,7 @@ getSampleNameFromFileName <- function(fileName) {
 #'
 #' @param genomeVersion a string, the genome assembly such as hg18, mm9, etc.
 #' It can be any string. The parameter
-#' correspond to the \code{assembly} parameter in the package \code{methylKit}.
+#' correspond to the \code{assembly} parameter in the  \code{methylKit} package.
 #'
 #' @param nbrPermutations, a positive \code{integer}, the total number of
 #' permutations that is going to be done.
@@ -311,7 +321,7 @@ getSampleNameFromFileName <- function(fileName) {
 #' @param nbrCoresDiffMeth a positive \code{integer}, the number of cores
 #' to use for parallel differential methylation calculations.Parameter
 #' used for both sites and tiles analysis. The parameter
-#' corresponds to the \code{num.cores} parameter in the package \code{methylKit}.
+#' corresponds to the \code{num.cores} parameter in the  \code{methylKit} package.
 #'
 #' @param doingSites a \code{logical}, when \code{TRUE} will do the analysis
 #' on the CpG dinucleotide sites.
@@ -321,12 +331,12 @@ getSampleNameFromFileName <- function(fileName) {
 #'
 #' @param minReads a positive \code{integer} Bases and regions having lower
 #' coverage than this count are discarded. The parameter
-#' correspond to the \code{lo.count} parameter in the package \code{methylKit}.
+#' correspond to the \code{lo.count} parameter in the  \code{methylKit} package.
 #'
 #' @param minMethDiff a positive \code{double} betwwen [0,100], the absolute
 #' value of methylation percentage change between cases and controls. The
 #' parameter correspond to the \code{difference} parameter in
-#' the package \code{methylKit}.
+#' the  \code{methylKit} package.
 #'
 #' @param qvalue a positive \code{double} betwwen [0,1], the cutoff
 #' for qvalue of differential methylation statistic.
@@ -336,7 +346,7 @@ getSampleNameFromFileName <- function(fileName) {
 #' having higher
 #' coverage than this percentile are discarded. Parameter used for both CpG
 #' sites and tiles analysis. The parameter
-#' correspond to the \code{hi.perc} parameter in the package \code{methylKit}.
+#' correspond to the \code{hi.perc} parameter in the  \code{methylKit} package.
 #'
 #' @param destrand a \code{logical}, when \code{TRUE} will merge reads on both
 #' strands of a CpG dinucleotide to provide better coverage. Only advised
@@ -351,12 +361,12 @@ getSampleNameFromFileName <- function(fileName) {
 #'
 #' @param tileSize a positive \code{integer}, the size of the tiling window.
 #' The parameter corresponds to the \code{win.size} parameter in
-#' the package \code{methylKit}. Only
+#' the  \code{methylKit} package. Only
 #' used when \code{doingTiles} = \code{TRUE}.
 #'
 #' @param stepSize a positive \code{integer}, the step size of tiling windows.
 #' The parameter corresponds to the \code{stepSize} parameter in
-#' the package \code{methylKit}. Only
+#' the  \code{methylKit} package. Only
 #' used when \code{doingTiles} = \code{TRUE}.
 #'
 #' @param vSeed a \code{integer}, a seed used when reproducible results are
@@ -369,7 +379,7 @@ getSampleNameFromFileName <- function(fileName) {
 #' @examples
 #'
 #' ## The function returns 0 when all paramaters are valid
-#' #methylInheriteance:::validateRunPermutation(
+#' #methylInheritance:::validateRunPermutation(
 #' #allFilesByGeneration = list(list("file01.txt", "file02.txt"),
 #' #list("file03.txt", "file04.txt")),
 #' #conditionsByGeneration = list(c(0,1), c(0,1)), output_dir = "test",
@@ -380,7 +390,7 @@ getSampleNameFromFileName <- function(fileName) {
 #' #stepSize = 500, vSeed = 12)
 #'
 #' ## The function raises an error when at least one paramater is not valid
-#' \dontrun{methylInheriteance:::validateRunPermutation(
+#' \dontrun{methylInheritance:::validateRunPermutation(
 #' allFilesByGeneration = list(list("file01.txt", "file02.txt"),
 #' list("file03.txt", "file04.txt")),
 #' conditionsByGeneration = list(c(0,1)), output_dir = "test",
@@ -429,7 +439,7 @@ validateRunPermutation <- function(allFilesByGeneration,
 
     ## Validate that the conditionsByGeneration contains at least 2 vectors
     if (length(conditionsByGeneration) < 2 ||
-        !all(lapply(conditionsByGeneration, is.vector))) {
+        !all(sapply(conditionsByGeneration, is.vector))) {
         stop(paste0("conditionsByGeneration must be a list containing at ",
                     "least 2 sub-vectors"))
     }
@@ -438,7 +448,7 @@ validateRunPermutation <- function(allFilesByGeneration,
     ## the same length
     fileLengths <- sapply(allFilesByGeneration, length)
     conditionLengths <- sapply(conditionsByGeneration, length)
-    if (!all(fileLengths == conditionsByGeneration)) {
+    if (length(fileLengths) != length(conditionsByGeneration)) {
         stop(paste0("The content of the parameters \"allFilesByGeneration\" ",
                     "and \"conditionsByGeneration\" must be the same length"))
     }

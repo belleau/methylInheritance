@@ -203,24 +203,28 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
         bp_param <- MulticoreParam(workers = nbrCores)
     }
 
-    result <- runOnePermutation(finalList[[1]], output_dir = output_dir,
-                      genomeVersion = genomeVersion, minReads = minReads,
-                      minCovBasesForTiles, tileSize,
-                      stepSize, minMethDiff,
-                      destrand)
+    # result <- runOnePermutation(finalList[[1]], output_dir = output_dir,
+    #                   genomeVersion = genomeVersion, minReads = minReads,
+    #                   minCovBasesForTiles, tileSize,
+    #                   stepSize, minMethDiff,
+    #                   destrand)
 
     result <- bptry(bplapply(finalList,
                            FUN = runOnePermutation,
                            output_dir = output_dir,
                            genomeVersion = genomeVersion,
+                           nbrCoresDiffMeth = nbrCoresDiffMeth,
+                           doingSites = doingSites,
+                           doingTiles = doingTiles,
                            minReads = minReads,
-                           minCovBasesForTiles =minCovBasesForTiles,
+                           minMethDiff = minMethDiff,
+                           qvalue = qvalue,
+                           maxPercReads = maxPercReads,
+                           destrand = destrand,
+                           minCovBasesForTiles = minCovBasesForTiles,
                            tileSize = tileSize,
                            stepSize = stepSize,
-                           minMethDiff = minMethDiff,
-                           destrand = destrand,
                            BPPARAM = bp_param))
-
 
     # if (!all(bpok(result))) {
     #     a <- which(!bpok(result))

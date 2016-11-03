@@ -7,21 +7,23 @@
 getSampleNameFromFileName(fileName)
 }
 \arguments{
-\item{fileName}{TODO}
+\item{fileName}{a string, the file name used to extract the sample name.}
 }
 \value{
-TODO
+A sanple name extracted from the specified file name.
 }
 \description{
-Extract sample name from file name
+Extract a sample name from the file name. The samle name
+corresponds to  the file name but without path information.
 }
 \examples{
 
-##TODO
+## Extract sample name from file name
+methylInheritance:::getSampleNameFromFileName("./test/experiment001/file_J1.txt")
 
 }
 \author{
-Astrid Deschenes, Pascal Belleau
+Astrid Deschenes
 }
 \keyword{internal}
 
