@@ -4,9 +4,10 @@
 \alias{runOnePermutation}
 \title{TODO}
 \usage{
-runOnePermutation(info, output_dir, genomeVersion, minReads, minCGs, tileSize,
-  stepSize, minMethDiff, destrand = FALSE, doingSites = TRUE,
-  doingTiles = FALSE, debug = FALSE)
+runOnePermutation(info, output_dir, genomeVersion, minReads, minMethDiff = 10,
+  qvalue = 0.01, maxPercReads = 99.9, destrand = FALSE,
+  nbrCoresDiffMeth = 1, minCovBasesForTiles = 0, tileSize = 1000,
+  stepSize = 1000, doingSites = TRUE, doingTiles = FALSE, debug = FALSE)
 }
 \arguments{
 \item{info}{TODO}
@@ -16,23 +17,60 @@ the results of the permutation. If the directory does not exist, it will
 be created.}
 
 \item{genomeVersion}{a string, the genome assembly such as hg18, mm9, etc.
-It can be any string.}
+It can be any string. The parameter
+correspond to the \code{assembly} parameter in the package \code{methylKit}.}
 
-\item{minReads}{TODO}
+\item{minReads}{a positive \code{integer} Bases and regions having lower
+coverage than this count are discarded. The parameter
+correspond to the \code{lo.count} parameter in the package \code{methylKit}.}
 
-\item{minCGs}{a positive integer, the minimum number of bases to
-be covered in a given tiling window}
+\item{minMethDiff}{a positive integer betwwen [0,100], the absolute value
+of methylation
+percentage change between cases and controls. The parameter
+correspond to the \code{difference} parameter in the
+package \code{methylKit}.
+Default: \code{10}.}
 
-\item{tileSize}{a positive integer, the size of the tiling window}
+\item{qvalue}{a positive \code{double} inferior ot \code{1}, the cutoff
+for qvalue of differential methylation statistic. Default: \code{0.01}.}
 
-\item{stepSize}{a positive integer, the step size of tiling windows}
-
-\item{minMethDiff}{a positive integer, the step size of tiling windows}
+\item{maxPercReads}{a double between [0-100], the percentile of read
+counts that is going to be used as upper cutoff. Bases ore regions
+having higher
+coverage than this percentile are discarded. Parameter used for both CpG
+sites and tiles analysis. The parameter
+correspond to the \code{hi.perc} parameter in the package \code{methylKit}.
+Default: \code{99.9}.}
 
 \item{destrand}{a logical, when \code{TRUE} will merge reads on both
 strands of a CpG dinucleotide to provide better coverage. Only advised
-when looking at CpG methylation.
+when looking at CpG methylation. Parameter used for both
+sites and tiles analysis.
 Default: \code{FALSE}.}
+
+\item{nbrCoresDiffMeth}{a positive integer, the number of cores to use for
+parallel differential methylation calculations.Parameter used for both
+sites and tiles analysis. The parameter
+corresponds to the \code{num.cores} parameter in the
+package \code{methylKit}.
+Default: \code{1} and always \code{1} for Windows.}
+
+\item{minCovBasesForTiles}{a non-negative integer, the minimum number of
+bases to be covered in a given tiling window. The parameter
+corresponds to the \code{cov.bases} parameter in the
+package \code{methylKit}.
+Only used when \code{doingTiles} =
+\code{TRUE}. Default: \code{0}.}
+
+\item{tileSize}{a positive integer, the size of the tiling window. The
+parameter corresponds to the \code{win.size} parameter in
+the package \code{methylKit}. Only
+used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.}
+
+\item{stepSize}{a positive integer, the step size of tiling windows. The
+parameter corresponds to the \code{stepSize} parameter in
+the package \code{methylKit}. Only
+used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.}
 
 \item{doingSites}{a logical, when \code{TRUE} will do the analysis on the
 CpG dinucleotide sites. Default: \code{TRUE}.}

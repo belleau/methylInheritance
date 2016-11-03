@@ -9,23 +9,60 @@
 #' be created.
 #'
 #' @param genomeVersion a string, the genome assembly such as hg18, mm9, etc.
-#' It can be any string.
+#' It can be any string. The parameter
+#' correspond to the \code{assembly} parameter in the package \code{methylKit}.
 #'
-#' @param minReads TODO
+#' @param minReads a positive \code{integer} Bases and regions having lower
+#' coverage than this count are discarded. The parameter
+#' correspond to the \code{lo.count} parameter in the package \code{methylKit}.
 #'
-#' @param minCGs a positive integer, the minimum number of bases to
-#' be covered in a given tiling window
+#' @param qvalue a positive \code{double} inferior ot \code{1}, the cutoff
+#' for qvalue of differential methylation statistic. Default: \code{0.01}.
 #'
-#' @param tileSize a positive integer, the size of the tiling window
+#' @param maxPercReads a double between [0-100], the percentile of read
+#' counts that is going to be used as upper cutoff. Bases ore regions
+#' having higher
+#' coverage than this percentile are discarded. Parameter used for both CpG
+#' sites and tiles analysis. The parameter
+#' correspond to the \code{hi.perc} parameter in the package \code{methylKit}.
+#' Default: \code{99.9}.
 #'
-#' @param stepSize a positive integer, the step size of tiling windows
-#'
-#' @param minMethDiff a positive integer, the step size of tiling windows
+#' @param minMethDiff a positive integer betwwen [0,100], the absolute value
+#' of methylation
+#' percentage change between cases and controls. The parameter
+#' correspond to the \code{difference} parameter in the
+#' package \code{methylKit}.
+#' Default: \code{10}.
 #'
 #' @param destrand a logical, when \code{TRUE} will merge reads on both
 #' strands of a CpG dinucleotide to provide better coverage. Only advised
-#' when looking at CpG methylation.
+#' when looking at CpG methylation. Parameter used for both
+#' sites and tiles analysis.
 #' Default: \code{FALSE}.
+#'
+#' @param nbrCoresDiffMeth a positive integer, the number of cores to use for
+#' parallel differential methylation calculations.Parameter used for both
+#' sites and tiles analysis. The parameter
+#' corresponds to the \code{num.cores} parameter in the
+#' package \code{methylKit}.
+#' Default: \code{1} and always \code{1} for Windows.
+#'
+#' @param minCovBasesForTiles a non-negative integer, the minimum number of
+#' bases to be covered in a given tiling window. The parameter
+#' corresponds to the \code{cov.bases} parameter in the
+#' package \code{methylKit}.
+#' Only used when \code{doingTiles} =
+#' \code{TRUE}. Default: \code{0}.
+#'
+#' @param tileSize a positive integer, the size of the tiling window. The
+#' parameter corresponds to the \code{win.size} parameter in
+#' the package \code{methylKit}. Only
+#' used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.
+#'
+#' @param stepSize a positive integer, the step size of tiling windows. The
+#' parameter corresponds to the \code{stepSize} parameter in
+#' the package \code{methylKit}. Only
+#' used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.
 #'
 #' @param doingSites a logical, when \code{TRUE} will do the analysis on the
 #' CpG dinucleotide sites. Default: \code{TRUE}.
@@ -44,11 +81,20 @@
 #' @author Astrid Deschenes, Pascal Belleau
 #' @importFrom methylKit read filterByCoverage normalizeCoverage unite calculateDiffMeth get.methylDiff getData tileMethylCounts
 #' @keywords internal
-runOnePermutation <- function(info, output_dir, genomeVersion, minReads,
-                              minCGs, tileSize, stepSize, minMethDiff,
-                              destrand = FALSE,
-                              doingSites = TRUE,
-                              doingTiles = FALSE, debug = FALSE) {
+runOnePermutation <- function(info, output_dir,
+                                genomeVersion,
+                                minReads,
+                                minMethDiff = 10,
+                                qvalue = 0.01,
+                                maxPercReads = 99.9,
+                                destrand = FALSE,
+                                nbrCoresDiffMeth = 1,
+                                minCovBasesForTiles = 0,
+                                tileSize = 1000,
+                                stepSize = 1000,
+                                doingSites = TRUE,
+                                doingTiles = FALSE,
+                                debug = FALSE) {
 
     print(info)
 
@@ -69,9 +115,11 @@ runOnePermutation <- function(info, output_dir, genomeVersion, minReads,
     print(conditions)
     print("genomeVersion ")
     print(genomeVersion)
+    print(paste0("qvalue ", qvalue))
+    print(paste0("maxPercReads ", maxPercReads))
     print(paste0("tileSize ", tileSize))
     print(paste0("stepSize ", stepSize))
-    print(paste0("minCGs ", minCGs))
+    print(paste0("minCovBasesForTiles ", minCovBasesForTiles))
     print(paste0("minReads ", minReads))
     print(paste0("minMethDiff ", minMethDiff))
 
@@ -84,19 +132,24 @@ runOnePermutation <- function(info, output_dir, genomeVersion, minReads,
         flush.console()
     }
 
+    print(paste0(designName, " - ", count, "before myobj"))
+
     myobj <- methylKit::read(location = file.list,
                                 sample.id = as.list(sampleNames),
                                 assembly = genomeVersion,
                                 context = "CpG",
                                 treatment = conditions)
 
+    print(paste0(designName, " - ", count, " after myobj"))
     ## SITES
     if (doingSites) {
+        print(paste0(designName, " - ", count, " before filter "))
         filtered.sites <- filterByCoverage(myobj,
-                                       lo.count = minReads,
-                                       lo.perc = NULL,
-                                       hi.count = NULL,
-                                       hi.perc = 99.9)
+                                            lo.count = minReads,
+                                            lo.perc = NULL,
+                                            hi.count = NULL,
+                                            hi.perc = maxPercReads)
+
         filtered.sites <- normalizeCoverage(filtered.sites, "median")
 
         meth.sites <- unite(filtered.sites, destrand = destrand)
@@ -104,28 +157,41 @@ runOnePermutation <- function(info, output_dir, genomeVersion, minReads,
         ####################################
         ## Get diff methyl sites
         ####################################
-        myDiff.sites <- calculateDiffMeth(meth.sites, num.cores=1)
+
+        print(paste0(designName, " - ", count, " before get diff methyl sites "))
+        myDiff.sites <- calculateDiffMeth(meth.sites, num.cores = 1)
 
 
-        myDiff.sites.hyper <- get.methylDiff(myDiff.sites, difference = minMethDiff, qvalue = 0.01, type = "hyper")
-        myDiff.sites.hypo  <- get.methylDiff(myDiff.sites, difference = minMethDiff, qvalue = 0.01, type = "hypo")
+        myDiff.sites.hyper <- get.methylDiff(myDiff.sites, difference = minMethDiff, qvalue = qvalue, type = "hyper")
+        myDiff.sites.hypo  <- get.methylDiff(myDiff.sites, difference = minMethDiff, qvalue = qvalue, type = "hypo")
+        print(paste0(designName, " - ", count, " after get diff methyl sites "))
     }
 
     ## TILES
     if (doingTiles) {
-        tiles <- tileMethylCounts(myobj, win.size = tileSize, stepSize = stepSize, cov.bases=minCGs)
-        filtered.tiles <- filterByCoverage(tiles, lo.count = minReads, lo.perc = NULL, hi.count = NULL, hi.perc = 99.9)
+        tiles <- tileMethylCounts(myobj,
+                                    win.size = tileSize,
+                                    stepSize = stepSize,
+                                    cov.bases = minCovBasesForTiles)
+
+        filtered.tiles <- filterByCoverage(tiles,
+                                            lo.count = minReads,
+                                            lo.perc = NULL,
+                                            hi.count = NULL,
+                                            hi.perc = maxPercReads)
+
         filtered.tiles <- normalizeCoverage(filtered.tiles, "median")
+
         meth.tiles <- unite(filtered.tiles, destrand = destrand)
 
 
         ####################################
         ## Get diff methyl tiles
         ####################################
-        myDiff.tiles <- calculateDiffMeth(meth.tiles, num.cores=1)
+        myDiff.tiles <- calculateDiffMeth(meth.tiles, num.cores = 1)
 
-        myDiff.tiles.hyper <- get.methylDiff(myDiff.tiles, difference = minMethDiff, qvalue = 0.01, type = "hyper")
-        myDiff.tiles.hypo  <- get.methylDiff(myDiff.tiles, difference =  minMethDiff, qvalue = 0.01, type = "hypo")
+        myDiff.tiles.hyper <- get.methylDiff(myDiff.tiles, difference = minMethDiff, qvalue = qvalue, type = "hyper")
+        myDiff.tiles.hypo  <- get.methylDiff(myDiff.tiles, difference =  minMethDiff, qvalue = qvalue, type = "hypo")
     }
 
     if (debug) {
@@ -156,6 +222,7 @@ runOnePermutation <- function(info, output_dir, genomeVersion, minReads,
         write.table(sitesHyper, paste0(output_dir, "/SITES/", designName, "/", count, "_hyper.perbase.txt"), quote=F, row.names=F, col.names=F,sep="\t")
     }
 
+    if (doingTiles) {
     if(nrow(myDiff.tiles.hypo)>0) {
         w=NULL
         w=cbind(getData(myDiff.tiles.hypo)[,c(1,2,3)],
@@ -175,7 +242,8 @@ runOnePermutation <- function(info, output_dir, genomeVersion, minReads,
         colnames(w)[4]="dmr.id"
         write.table(w, paste0(output_dir, "/TILES/", designName, "/", count, "_hyper.pertile.txt"), quote=F, row.names=F, col.names=F,sep="\t")
     }
-
+    }
+    warnings()
     return(0)
 }
 
@@ -199,65 +267,185 @@ getSampleNameFromFileName <- function(fileName) {
     return(results[length(results)])
 }
 
-#' @title Extract sample name from file name
+
+#' @title Parameters validation for the \code{\link{runPermutation}} function
 #'
-#' @description Extract sample name from file name
+#' @description Validation of all parameters needed by the public
+#' #' \code{\link{runPermutation}} function.
 #'
-#' @param info TODO
+#' @param allFilesByGeneration a \code{list} of \code{list}, a \code{list}
+#' composed of \code{list}
+#' of files with methylation information for
+#' bases or regions in the genome. One \code{list} must contain all files
+#' related to the same generation. So, if 3 generations are analyzed, a
+#' \code{list} containing 3 \code{list} must be passed. At least 2 generations
+#' must be present to do a permutation analysis.
+#' The parameter
+#' corresponds to the \code{location} parameter in the package \code{methylKit}.
 #'
-#' @param output_dir TODO
+#' @param conditionsByGeneration a \code{list} of \code{vector} containing
+#' \code{0} and \code{1}. The information indicating which files are
+#' associated to controls (\code{0}) and which files are cases (\code{1}).
+#' One \code{vector} must contain all informations
+#' related to the same generation. So, if 3 generations are analyzed, a
+#' \code{list} containing 3 \code{vector} must be passed. At least 2
+#' generations
+#' must be present to do a permutation analysis.
+#' The parameter
+#' corresponds to the \code{treatment} parameter in the package \code{methylKit}.
 #'
-#' @param genomeVersion TODO
+#' @param output_dir a string, the name of the directory that will contain
+#' the results of the permutation. If the directory does not exist, it will
+#' be created.
 #'
-#' @param minReads TODO
+#' @param genomeVersion a string, the genome assembly such as hg18, mm9, etc.
+#' It can be any string. The parameter
+#' correspond to the \code{assembly} parameter in the package \code{methylKit}.
 #'
-#' @param doingSites TODO
+#' @param nbrPermutations, a positive \code{integer}, the total number of
+#' permutations that is going to be done.
 #'
-#' @param doingTiles TODO
+#' @param nbrCores a positive \code{integer}, the number of cores to use when
+#' processing the analysis.
 #'
-#' @param debug TODO
+#' @param nbrCoresDiffMeth a positive \code{integer}, the number of cores
+#' to use for parallel differential methylation calculations.Parameter
+#' used for both sites and tiles analysis. The parameter
+#' corresponds to the \code{num.cores} parameter in the package \code{methylKit}.
+#'
+#' @param doingSites a \code{logical}, when \code{TRUE} will do the analysis
+#' on the CpG dinucleotide sites.
+#'
+#' @param doingTiles a \code{logical}, when \code{TRUE} will do the analysis
+#' on the tiles.
+#'
+#' @param minReads a positive \code{integer} Bases and regions having lower
+#' coverage than this count are discarded. The parameter
+#' correspond to the \code{lo.count} parameter in the package \code{methylKit}.
+#'
+#' @param minMethDiff a positive \code{double} betwwen [0,100], the absolute
+#' value of methylation percentage change between cases and controls. The
+#' parameter correspond to the \code{difference} parameter in
+#' the package \code{methylKit}.
+#'
+#' @param qvalue a positive \code{double} betwwen [0,1], the cutoff
+#' for qvalue of differential methylation statistic.
+#'
+#' @param maxPercReads a \code{double} between [0,100], the percentile of read
+#' counts that is going to be used as upper cutoff. Bases ore regions
+#' having higher
+#' coverage than this percentile are discarded. Parameter used for both CpG
+#' sites and tiles analysis. The parameter
+#' correspond to the \code{hi.perc} parameter in the package \code{methylKit}.
+#'
+#' @param destrand a \code{logical}, when \code{TRUE} will merge reads on both
+#' strands of a CpG dinucleotide to provide better coverage. Only advised
+#' when looking at CpG methylation. Parameter used for both CpG
+#' sites and tiles analysis.
+#'
+#' @param minCovBasesForTiles a non-negative \code{integer}, the minimum
+#' number of bases to be covered in a given tiling window. The parameter
+#' corresponds to the \code{cov.bases} parameter in the package
+#' \code{methylKit}. Only used when \code{doingTiles} =
+#' \code{TRUE}. Default: \code{0}.
+#'
+#' @param tileSize a positive \code{integer}, the size of the tiling window.
+#' The parameter corresponds to the \code{win.size} parameter in
+#' the package \code{methylKit}. Only
+#' used when \code{doingTiles} = \code{TRUE}.
+#'
+#' @param stepSize a positive \code{integer}, the step size of tiling windows.
+#' The parameter corresponds to the \code{stepSize} parameter in
+#' the package \code{methylKit}. Only
+#' used when \code{doingTiles} = \code{TRUE}.
+#'
+#' @param vSeed a \code{integer}, a seed used when reproducible results are
+#' needed. When a value inferior or equal to zero is given, a random integer
+#' is used.
 #'
 #' @return \code{0} indicating that all parameters validations have been
 #' successful.
 #'
 #' @examples
 #'
-#' ##TODO
+#' ## The function returns 0 when all paramaters are valid
+#' #methylInheriteance:::validateRunPermutation(
+#' #allFilesByGeneration = list(list("file01.txt", "file02.txt"),
+#' #list("file03.txt", "file04.txt")),
+#' #conditionsByGeneration = list(c(0,1), c(0,1)), output_dir = "test",
+#' #genomeVersion = "hg19", nbrPermutations = 10000, nbrCores = 1,
+#' #nbrCoresDiffMeth = 1, doingSites = TRUE, doingTiles = TRUE,
+#' #minReads = 10, minMethDiff = 25, qvalue = 0.01, maxPercReads = 99.9,
+#' #destrand = TRUE, minCovBasesForTiles = 10, tileSize = 1000,
+#' #stepSize = 500, vSeed = 12)
 #'
-#' @author Astrid Deschenes, Pascal Belleau
+#' ## The function raises an error when at least one paramater is not valid
+#' \dontrun{methylInheriteance:::validateRunPermutation(
+#' allFilesByGeneration = list(list("file01.txt", "file02.txt"),
+#' list("file03.txt", "file04.txt")),
+#' conditionsByGeneration = list(c(0,1)), output_dir = "test",
+#' genomeVersion = "hg19", nbrPermutations = 10000, nbrCores = 1,
+#' nbrCoresDiffMeth = 1, doingSites = TRUE, doingTiles = TRUE,
+#' minReads = 10, minMethDiff = 25, qvalue = 0.01, maxPercReads = 99.9,
+#' destrand = TRUE, minCovBasesForTiles = 10, tileSize = 1000,
+#' stepSize = 500, vSeed = 12)}
+#'
+#' @author Astrid Deschenes
+#' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
-validateRunOnePermutation <- function(info, output_dir, genomeVersion,
-                                        minReads, minCGs, tileSize,
-                                        stepSize, minMethDiff,
-                                        destrand,
-                                        doingSites, doingTiles, debug) {
+validateRunPermutation <- function(allFilesByGeneration,
+                                    conditionsByGeneration,
+                                    output_dir, genomeVersion,
+                                    nbrPermutations, nbrCores,
+                                    nbrCoresDiffMeth, doingSites, doingTiles,
+                                    minReads, minMethDiff, qvalue,
+                                    maxPercReads, destrand,
+                                    minCovBasesForTiles, tileSize,
+                                    stepSize, vSeed) {
 
-    if (!is.list(info)) {
-        stop("info must be a list")
+    ## Validate that the allFilesByGeneration is a list
+    if (!is.list(allFilesByGeneration)) {
+        stop("allFilesByGeneration must be a list")
     }
 
-    if (is.null(info$count)) {
-        stop("info must be a list with an entry called count")
+    ## Validate that the allFilesByGeneration contains at least 2 lists
+    if (length(allFilesByGeneration) < 2 ||
+        !all(sapply(allFilesByGeneration, is.list))) {
+        stop(paste0("allFilesByGeneration must be a list containing at ",
+                    "least 2 sub-lists"))
     }
 
-    if (is.null(info$sampleNames)) {
-        stop("info must be a list with an entry called sampleNames")
+    ## Validate that all entries in allFilesByGeneration are existing files
+    for (entry in unlist(allFilesByGeneration)) {
+        if (!file.exists(entry)) {
+            stop(paste0("The file \"", entry, "\" does not exist."))
+        }
     }
 
-    if (is.null(info$stepSize)) {
-        stop("info must be a list with an entry called stepSize")
+    ## Validate that the conditionsByGeneration is a list
+    if (!is.list(conditionsByGeneration)) {
+        stop("conditionsByGeneration must be a list")
     }
 
-    if (is.null(info$tileSize)) {
-        stop("info must be a list with an entry called tileSize")
+    ## Validate that the conditionsByGeneration contains at least 2 vectors
+    if (length(conditionsByGeneration) < 2 ||
+        !all(lapply(conditionsByGeneration, is.vector))) {
+        stop(paste0("conditionsByGeneration must be a list containing at ",
+                    "least 2 sub-vectors"))
     }
 
-    if (is.null(info$file.list)) {
-        stop("info must be a list with an entry called file.list")
+    ## Validate that the conditionsByGeneration and AllFilesByGeneration are
+    ## the same length
+    fileLengths <- sapply(allFilesByGeneration, length)
+    conditionLengths <- sapply(conditionsByGeneration, length)
+    if (!all(fileLengths == conditionsByGeneration)) {
+        stop(paste0("The content of the parameters \"allFilesByGeneration\" ",
+                    "and \"conditionsByGeneration\" must be the same length"))
     }
 
-    if (is.null(info$conditions)) {
-        stop("info must be a list with an entry called conditions")
+    ## Validate that the output_dir is an not empty string
+    if (!is.character(output_dir)) {
+        stop("output_dir must be a character string")
     }
 
     ## Validate that the genomeVersion is an not empty string
@@ -265,91 +453,12 @@ validateRunOnePermutation <- function(info, output_dir, genomeVersion,
         stop("genomeVersion must be a character string")
     }
 
-    ## Validate that the output_dir directory exist
-    charTest <- substr(output_dir, nchar(output_dir), nchar(output_dir))
-    if (charTest == "/") {
-        output_dir <- substr(output_dir, 1 ,nchar(output_dir)-1)
+    ## Validate that nbrPermutations is an positive integer
+    if (!(isSingleInteger(nbrPermutations) ||
+          isSingleNumber(nbrPermutations)) ||
+        as.integer(nbrPermutations) < 1) {
+        stop("nbrPermutations must be a positive integer or numeric")
     }
-
-    if (!file.exists(output_dir)) {
-        stop("The directory \'", output_dir, "\' does not exist.")
-    }
-
-    if (!(isSingleInteger(minReads) || isSingleNumber(minReads)) ||
-        as.integer(minReads) < 1) {
-        stop("minReads must be a positive integer or numeric")
-    }
-
-    ## Validate that doingSites is a logical
-    if (!is.logical(doingSites)) {
-        stop("doingSites must be a logical.")
-    }
-
-    ## Validate that doingTiles is a logical
-    if (!is.logical(doingTiles)) {
-        stop("doingTiles must be a logical.")
-    }
-
-    ## Validate that debug is a logical
-    if (!is.logical(debug)) {
-        stop("debug must be a logical.")
-    }
-
-    return(0)
-}
-
-#' @title Extract sample name from file name
-#'
-#' @description Extract sample name from file name
-#'
-#' @param allFilesByGeneration TODO
-#'
-#' @param conditionsByGeneration TODO
-#'
-#' @param nbrCores a positive integer, the number of cores to use when
-#' processing the analysis. Always \code{1} for Windows.
-#'
-#' @param minCGs a positive integer, the minimum number of bases to
-#' be covered in a given tiling window.
-#'
-#' @param tileSize a positive integer, the size of the tiling window.
-#'
-#' @param stepSize a positive integer, the step size of tiling windows.
-#'
-#' @param minMethDiff a positive integer, the step size of tiling windows.
-#'
-#' @param destrand a logical, when \code{TRUE} will merge reads on both
-#' strands of a CpG dinucleotide to provide better coverage. Only advised
-#' when looking at CpG methylation.
-#'
-#' @param doingSites a logical, when \code{TRUE} will do the analysis on the
-#' CpG dinucleotide sites.
-#'
-#' @param doingTiles a logical, when \code{TRUE} will do the analysis on the
-#' tiles.
-#'
-#' @param vSeed a positive integer, either \code{-1} or a positive integer.
-#'
-#'
-#' @return \code{0} indicating that all parameters validations have been
-#' successful.
-#'
-#' @examples
-#'
-#' ##TODO
-#'
-#' @author Astrid Deschenes
-#' @importFrom S4Vectors isSingleInteger isSingleNumber
-#' @keywords internal
-validateRunPermutation <- function(allFilesByGeneration,
-                                    conditionsByGeneration,
-                                    nbrCores, minReads, minCGs, tileSize,
-                                    stepSize, minMethDiff,
-                                    destrand, genomeVersion,
-                                    nbrPermutations, output_dir,
-                                    doingTiles,
-                                    doingSites, vSeed) {
-
 
     ## Validate that nbrCores is an positive integer
     if (!(isSingleInteger(nbrCores) || isSingleNumber(nbrCores)) ||
@@ -362,32 +471,17 @@ validateRunPermutation <- function(allFilesByGeneration,
         stop("nbrCores must be 1 on a Windows system.")
     }
 
-    ## Validate that minReads is an positive integer
-    if (!(isSingleInteger(minReads) || isSingleNumber(minReads)) ||
-        as.integer(minReads) < 1) {
-        stop("minReads must be a positive integer or numeric")
+    ## Validate that nbrCoresDiffMeth is an positive integer
+    if (!(isSingleInteger(nbrCoresDiffMeth) ||
+                isSingleNumber(nbrCoresDiffMeth)) ||
+                as.integer(nbrCoresDiffMeth) < 1) {
+        stop("nbrCoresDiffMeth must be a positive integer or numeric")
     }
 
-    ## Validate that destrand is a logical
-    if (!is.logical(destrand)) {
-        stop("destrand must be a logical.")
-    }
-
-    ## Validate that the genomeVersion is an not empty string
-    if (!is.character(genomeVersion)) {
-        stop("genomeVersion must be a character string")
-    }
-
-    ## Validate that nbrPermutations is an positive integer
-    if (!(isSingleInteger(nbrPermutations) ||
-            isSingleNumber(nbrPermutations)) ||
-            as.integer(nbrPermutations) < 1) {
-        stop("nbrPermutations must be a positive integer or numeric")
-    }
-
-    ## Validate that the output_dir is an not empty string
-    if (!is.character(output_dir)) {
-        stop("output_dir must be a character string")
+    ## Validate that nbrCoresDiffMeth is set to 1 on Windows system
+    if (Sys.info()["sysname"] == "Windows" &&
+            as.integer(nbrCoresDiffMeth) != 1) {
+        stop("nbrCoresDiffMeth must be 1 on a Windows system.")
     }
 
     ## Validate that doingSites is a logical
@@ -400,6 +494,56 @@ validateRunPermutation <- function(allFilesByGeneration,
         stop("doingTiles must be a logical.")
     }
 
+    ## Validate that minReads is an positive integer
+    if (!(isSingleInteger(minReads) || isSingleNumber(minReads)) ||
+            as.integer(minReads) < 1) {
+        stop("minReads must be a positive integer or numeric")
+    }
+
+    ## Validate that minMethDiff is an positive double between [0,100]
+    if (!(isSingleNumber(minMethDiff)) ||
+            minMethDiff < 0.00 || minMethDiff > 100.00) {
+        stop("minMethDiff must be a positive double between [0,100]")
+    }
+
+    ## Validate that qvalue is an positive double between [0,1]
+    if (!(isSingleNumber(qvalue)) ||
+        qvalue < 0.00 || qvalue > 1.00) {
+        stop("qvalue must be a positive double between [0,1]")
+    }
+
+    ## Validate that maxPercReads is an positive double between [0,100]
+    if (!(isSingleNumber(maxPercReads)) ||
+        maxPercReads < 0.00 || maxPercReads > 100.00) {
+        stop("maxPercReads must be a positive double between [0,100]")
+    }
+
+    ## Validate that destrand is a logical
+    if (!is.logical(destrand)) {
+        stop("destrand must be a logical.")
+    }
+
+    if (doingTiles) {
+        ## Validate that minCovBasesForTiles is an positive integer
+        if (!(isSingleInteger(minCovBasesForTiles) ||
+              isSingleNumber(minCovBasesForTiles)) ||
+            as.integer(minCovBasesForTiles) < 1) {
+            stop("minCovBasesForTiles must be a positive integer or numeric")
+        }
+
+        ## Validate that tileSize is an positive integer
+        if (!(isSingleInteger(tileSize) || isSingleNumber(tileSize)) ||
+            as.integer(tileSize) < 1) {
+            stop("tileSize must be a positive integer or numeric")
+        }
+
+        ## Validate that stepSize is an positive integer
+        if (!(isSingleInteger(stepSize) || isSingleNumber(stepSize)) ||
+            as.integer(stepSize) < 1) {
+            stop("stepSize must be a positive integer or numeric")
+        }
+
+    }
     ## Validate that nbrPermutations is an positive integer
     if (!(isSingleInteger(vSeed) ||
           isSingleNumber(vSeed)) && as.integer(vSeed) != -1) {

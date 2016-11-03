@@ -2,51 +2,135 @@
 % Please edit documentation in R/methylInheritanceInternalMethods.R
 \name{validateRunPermutation}
 \alias{validateRunPermutation}
-\title{Extract sample name from file name}
+\title{Parameters validation for the \code{\link{runPermutation}} function}
 \usage{
-validateRunPermutation(allFilesByGeneration, conditionsByGeneration, nbrCores,
-  minReads, minCGs, tileSize, stepSize, minMethDiff, destrand, genomeVersion,
-  nbrPermutations, output_dir, doingTiles, doingSites, vSeed)
+validateRunPermutation(allFilesByGeneration, conditionsByGeneration, output_dir,
+  genomeVersion, nbrPermutations, nbrCores, nbrCoresDiffMeth, doingSites,
+  doingTiles, minReads, minMethDiff, qvalue, maxPercReads, destrand,
+  minCovBasesForTiles, tileSize, stepSize, vSeed)
 }
 \arguments{
-\item{allFilesByGeneration}{TODO}
+\item{allFilesByGeneration}{a \code{list} of \code{list}, a \code{list}
+composed of \code{list}
+of files with methylation information for
+bases or regions in the genome. One \code{list} must contain all files
+related to the same generation. So, if 3 generations are analyzed, a
+\code{list} containing 3 \code{list} must be passed. At least 2 generations
+must be present to do a permutation analysis.
+The parameter
+corresponds to the \code{location} parameter in the package \code{methylKit}.}
 
-\item{conditionsByGeneration}{TODO}
+\item{conditionsByGeneration}{a \code{list} of \code{vector} containing
+\code{0} and \code{1}. The information indicating which files are
+associated to controls (\code{0}) and which files are cases (\code{1}).
+One \code{vector} must contain all informations
+related to the same generation. So, if 3 generations are analyzed, a
+\code{list} containing 3 \code{vector} must be passed. At least 2
+generations
+must be present to do a permutation analysis.
+The parameter
+corresponds to the \code{treatment} parameter in the package \code{methylKit}.}
 
-\item{nbrCores}{a positive integer, the number of cores to use when
-processing the analysis. Always \code{1} for Windows.}
+\item{output_dir}{a string, the name of the directory that will contain
+the results of the permutation. If the directory does not exist, it will
+be created.}
 
-\item{minCGs}{a positive integer, the minimum number of bases to
-be covered in a given tiling window.}
+\item{genomeVersion}{a string, the genome assembly such as hg18, mm9, etc.
+It can be any string. The parameter
+correspond to the \code{assembly} parameter in the package \code{methylKit}.}
 
-\item{tileSize}{a positive integer, the size of the tiling window.}
+\item{nbrPermutations, }{a positive \code{integer}, the total number of
+permutations that is going to be done.}
 
-\item{stepSize}{a positive integer, the step size of tiling windows.}
+\item{nbrCores}{a positive \code{integer}, the number of cores to use when
+processing the analysis.}
 
-\item{minMethDiff}{a positive integer, the step size of tiling windows.}
+\item{nbrCoresDiffMeth}{a positive \code{integer}, the number of cores
+to use for parallel differential methylation calculations.Parameter
+used for both sites and tiles analysis. The parameter
+corresponds to the \code{num.cores} parameter in the package \code{methylKit}.}
 
-\item{destrand}{a logical, when \code{TRUE} will merge reads on both
+\item{doingSites}{a \code{logical}, when \code{TRUE} will do the analysis
+on the CpG dinucleotide sites.}
+
+\item{doingTiles}{a \code{logical}, when \code{TRUE} will do the analysis
+on the tiles.}
+
+\item{minReads}{a positive \code{integer} Bases and regions having lower
+coverage than this count are discarded. The parameter
+correspond to the \code{lo.count} parameter in the package \code{methylKit}.}
+
+\item{minMethDiff}{a positive \code{double} betwwen [0,100], the absolute
+value of methylation percentage change between cases and controls. The
+parameter correspond to the \code{difference} parameter in
+the package \code{methylKit}.}
+
+\item{qvalue}{a positive \code{double} betwwen [0,1], the cutoff
+for qvalue of differential methylation statistic.}
+
+\item{maxPercReads}{a \code{double} between [0,100], the percentile of read
+counts that is going to be used as upper cutoff. Bases ore regions
+having higher
+coverage than this percentile are discarded. Parameter used for both CpG
+sites and tiles analysis. The parameter
+correspond to the \code{hi.perc} parameter in the package \code{methylKit}.}
+
+\item{destrand}{a \code{logical}, when \code{TRUE} will merge reads on both
 strands of a CpG dinucleotide to provide better coverage. Only advised
-when looking at CpG methylation.}
+when looking at CpG methylation. Parameter used for both CpG
+sites and tiles analysis.}
 
-\item{doingTiles}{a logical, when \code{TRUE} will do the analysis on the
-tiles.}
+\item{minCovBasesForTiles}{a non-negative \code{integer}, the minimum
+number of bases to be covered in a given tiling window. The parameter
+corresponds to the \code{cov.bases} parameter in the package
+\code{methylKit}. Only used when \code{doingTiles} =
+\code{TRUE}. Default: \code{0}.}
 
-\item{doingSites}{a logical, when \code{TRUE} will do the analysis on the
-CpG dinucleotide sites.}
+\item{tileSize}{a positive \code{integer}, the size of the tiling window.
+The parameter corresponds to the \code{win.size} parameter in
+the package \code{methylKit}. Only
+used when \code{doingTiles} = \code{TRUE}.}
 
-\item{vSeed}{a positive integer, either \code{-1} or a positive integer.}
+\item{stepSize}{a positive \code{integer}, the step size of tiling windows.
+The parameter corresponds to the \code{stepSize} parameter in
+the package \code{methylKit}. Only
+used when \code{doingTiles} = \code{TRUE}.}
+
+\item{vSeed}{a \code{integer}, a seed used when reproducible results are
+needed. When a value inferior or equal to zero is given, a random integer
+is used.}
 }
 \value{
 \code{0} indicating that all parameters validations have been
 successful.
 }
 \description{
-Extract sample name from file name
+Validation of all parameters needed by the public
+#' \code{\link{runPermutation}} function.
 }
 \examples{
 
-##TODO
+## The function returns 0 when all paramaters are valid
+#methylInheriteance:::validateRunPermutation(
+#allFilesByGeneration = list(list("file01.txt", "file02.txt"),
+#list("file03.txt", "file04.txt")),
+#conditionsByGeneration = list(c(0,1), c(0,1)), output_dir = "test",
+#genomeVersion = "hg19", nbrPermutations = 10000, nbrCores = 1,
+#nbrCoresDiffMeth = 1, doingSites = TRUE, doingTiles = TRUE,
+#minReads = 10, minMethDiff = 25, qvalue = 0.01, maxPercReads = 99.9,
+#destrand = TRUE, minCovBasesForTiles = 10, tileSize = 1000,
+#stepSize = 500, vSeed = 12)
+
+## The function raises an error when at least one paramater is not valid
+\dontrun{methylInheriteance:::validateRunPermutation(
+allFilesByGeneration = list(list("file01.txt", "file02.txt"),
+list("file03.txt", "file04.txt")),
+conditionsByGeneration = list(c(0,1)), output_dir = "test",
+genomeVersion = "hg19", nbrPermutations = 10000, nbrCores = 1,
+nbrCoresDiffMeth = 1, doingSites = TRUE, doingTiles = TRUE,
+minReads = 10, minMethDiff = 25, qvalue = 0.01, maxPercReads = 99.9,
+destrand = TRUE, minCovBasesForTiles = 10, tileSize = 1000,
+stepSize = 500, vSeed = 12)}
 
 }
 \author{
