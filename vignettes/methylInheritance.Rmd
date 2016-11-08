@@ -1,5 +1,6 @@
 ---
 title: "Permutation"
+author: Astrid Deschenes, Pascal Belleau and Arnaud Droit 
 output:
   BiocStyle::html_document:
     toc: true
@@ -24,6 +25,98 @@ library(knitr)
 
 # Licensing 
 
-The **transgenerationDME** package and the underlying **transgenerationDME** code 
+The **methylInheritance** package and the underlying **methylInheritance** code 
 are distributed under the Artistic license 2.0. You are free to use and 
 redistribute this software. 
+
+
+# Loading methylInheritance package
+
+As with any R package, the `r Rpackage("methylInheritance")` package should 
+first be loaded with the following command:
+
+```{r loadingPackage, warning=FALSE, message=FALSE}
+library(methylInheritance)
+```
+
+
+```{r loadingFiles, warning=FALSE, message=FALSE}
+F1_control_01 <- system.file("extdata",
+    "F1_control_01_Cpg.txt", package = "methylInheritance")
+F1_control_02 <- system.file("extdata",
+    "F1_control_02_Cpg.txt", package = "methylInheritance")
+F1_control_03 <- system.file("extdata",
+    "F1_control_03_Cpg.txt", package = "methylInheritance")
+F1_case_01 <- system.file("extdata",
+    "F1_case_01_Cpg.txt", package = "methylInheritance")
+F1_case_02 <- system.file("extdata",
+    "F1_case_02_Cpg.txt", package = "methylInheritance")
+F1_case_03 <- system.file("extdata",
+    "F1_case_03_Cpg.txt", package = "methylInheritance")
+F2_control_01 <- system.file("extdata",
+    "F2_control_01_Cpg.txt", package = "methylInheritance")
+F2_control_02 <- system.file("extdata",
+    "F2_control_02_Cpg.txt", package = "methylInheritance")
+F2_control_03 <- system.file("extdata",
+    "F2_control_03_Cpg.txt", package = "methylInheritance")
+F2_case_01 <- system.file("extdata",
+    "F2_case_01_Cpg.txt", package = "methylInheritance")
+F2_case_02 <- system.file("extdata",
+    "F2_case_02_Cpg.txt", package = "methylInheritance")
+F2_case_03 <- system.file("extdata",
+    "F2_case_03_Cpg.txt", package = "methylInheritance")
+F3_control_01 <- system.file("extdata",
+    "F3_control_01_Cpg.txt", package = "methylInheritance")
+F3_control_02 <- system.file("extdata",
+    "F3_control_02_Cpg.txt", package = "methylInheritance")
+F3_control_03 <- system.file("extdata",
+    "F3_control_03_Cpg.txt", package = "methylInheritance")
+F3_case_01 <- system.file("extdata",
+    "F3_case_01_Cpg.txt", package = "methylInheritance")
+F3_case_02 <- system.file("extdata",
+    "F3_case_02_Cpg.txt", package = "methylInheritance")
+F3_case_03 <- system.file("extdata",
+    "F3_case_03_Cpg.txt", package = "methylInheritance")
+
+F3_case_02
+```
+
+```{r}
+
+conditions <- c(0,0,0,1,1,1)
+
+dataNames <- c("F1A","F1B","F1C","F1D","F1E","F1F",
+               "F2A","F2B","F2C","F2D","F2E","F2F",
+               "F3A","F3B","F3C","F3D","F3E","F3F")
+
+allFilesByGeneration <- list(F1=list(F1_control_01, F1_control_02, F1_control_03, F1_case_01, F1_case_02, F1_case_03), 
+                             F2=list(F2_control_01, F2_control_02, F2_control_03, F2_case_01, F2_case_02, F2_case_03), 
+                             F3=list(F3_control_01, F3_control_02, F3_control_03, F3_case_01, F3_case_02, F3_case_03))
+conditionsByGeneration <- list(F1=conditions, F2=conditions, F3=conditions)
+output_dir <- "test"
+genomeVersion <- "rnor5"
+nbrPermutations <- 2
+nbrCores <- 1
+nbrCoresDiffMeth <- 1
+doingSites <- TRUE
+doingTiles <- FALSE
+
+runPermutation(allFilesByGeneration, conditionsByGeneration,
+                                output_dir = output_dir,
+                                genomeVersion = genomeVersion,
+                                nbrPermutations = nbrPermutations,
+                                nbrCores = nbrCores,
+                                nbrCoresDiffMeth = nbrCoresDiffMeth,
+                                doingSites = doingSites,
+                                doingTiles = doingTiles,
+                                minReads = 10,
+                                minMethDiff = 20,
+                                qvalue = 0.01,
+                                maxPercReads = 99.9,
+                                destrand = FALSE,
+                                tileSize = 1000,
+                                stepSize = 1000,
+                                vSeed = -1)
+
+```
+

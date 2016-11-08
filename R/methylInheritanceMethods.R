@@ -168,7 +168,6 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
             nbrFilesGeneration <-  nbSamplesByGeneration[j]
             end = start + nbrFilesGeneration - 1
             filesGeneration <- samples[start:end]
-            print(is.list(filesGeneration))
             sampleNames <- sapply(filesGeneration, getSampleNameFromFileName)
             infoGeneration <- list(conditions=conditionsByGeneration[[j]],
                                    file.list=as.list(filesGeneration),
@@ -203,28 +202,38 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
         bp_param <- MulticoreParam(workers = nbrCores)
     }
 
-    # result <- runOnePermutation(finalList[[1]], output_dir = output_dir,
-    #                   genomeVersion = genomeVersion, minReads = minReads,
-    #                   minCovBasesForTiles, tileSize,
-    #                   stepSize, minMethDiff,
-    #                   destrand)
+    result <- runOnePermutation(finalList[[1]],
+                                output_dir = output_dir,
+                                genomeVersion = genomeVersion,
+                                nbrCoresDiffMeth = nbrCoresDiffMeth,
+                                doingSites = doingSites,
+                                doingTiles = doingTiles,
+                                minReads = minReads,
+                                minMethDiff = minMethDiff,
+                                qvalue = qvalue,
+                                maxPercReads = maxPercReads,
+                                destrand = destrand,
+                                minCovBasesForTiles = minCovBasesForTiles,
+                                tileSize = tileSize,
+                                stepSize = stepSize)
 
-    result <- bptry(bplapply(finalList,
-                           FUN = runOnePermutation,
-                           output_dir = output_dir,
-                           genomeVersion = genomeVersion,
-                           nbrCoresDiffMeth = nbrCoresDiffMeth,
-                           doingSites = doingSites,
-                           doingTiles = doingTiles,
-                           minReads = minReads,
-                           minMethDiff = minMethDiff,
-                           qvalue = qvalue,
-                           maxPercReads = maxPercReads,
-                           destrand = destrand,
-                           minCovBasesForTiles = minCovBasesForTiles,
-                           tileSize = tileSize,
-                           stepSize = stepSize,
-                           BPPARAM = bp_param))
+    # result <- bptry(bpmapply(FUN = runOnePermutation,
+    #                        finalList,
+    #                        MoreArgs = c(
+    #                        output_dir = output_dir,
+    #                        genomeVersion = genomeVersion,
+    #                        nbrCoresDiffMeth = nbrCoresDiffMeth,
+    #                        doingSites = doingSites,
+    #                        doingTiles = doingTiles,
+    #                        minReads = minReads,
+    #                        minMethDiff = minMethDiff,
+    #                        qvalue = qvalue,
+    #                        maxPercReads = maxPercReads,
+    #                        destrand = destrand,
+    #                        minCovBasesForTiles = minCovBasesForTiles,
+    #                        tileSize = tileSize,
+    #                        stepSize = stepSize),
+    #                        BPPARAM = bp_param))
 
     # if (!all(bpok(result))) {
     #     a <- which(!bpok(result))
@@ -248,7 +257,7 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
     #     print(msg)
     # }
     # print("TOTO")
-    result[which(bpok(result))]
+    result[which(!bpok(result))]
 }
 
 

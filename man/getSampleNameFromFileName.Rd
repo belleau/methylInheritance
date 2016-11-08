@@ -10,10 +10,10 @@ getSampleNameFromFileName(fileName)
 \item{fileName}{a string, the file name used to extract the sample name.}
 }
 \value{
-A sanple name extracted from the specified file name.
+A sample name extracted from the specified file name.
 }
 \description{
-Extract a sample name from the file name. The samle name
+Extract a sample name from the file name. The sample name
 corresponds to  the file name but without path information.
 }
 \examples{

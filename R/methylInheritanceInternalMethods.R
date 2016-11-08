@@ -81,7 +81,7 @@
 #' ##TODO
 #'
 #' @author Astrid Deschenes, Pascal Belleau
-#' @importFrom methylKit read filterByCoverage normalizeCoverage unite calculateDiffMeth get.methylDiff getData tileMethylCounts
+#' @importFrom methylKit read filterByCoverage normalizeCoverage unite calculateDiffMeth get.methylDiff getData tileMethylCounts methRead
 #' @keywords internal
 runOnePermutation <- function(info, output_dir,
                                 genomeVersion,
@@ -129,11 +129,17 @@ runOnePermutation <- function(info, output_dir,
     ####################################
     print(paste0(designName, " - ", count, "before myobj"))
 
-    myobj <- methylKit::read(location = file.list,
+    myobj <- read(location = file.list,
                                 sample.id = as.list(sampleNames),
                                 assembly = genomeVersion,
                                 context = "CpG",
                                 treatment = conditions)
+
+    # myobj <- methRead(location = file.list,
+    #                          sample.id = as.list(sampleNames),
+    #                          assembly = genomeVersion,
+    #                          context = "CpG",
+    #                          treatment = conditions)
 
     print(paste0(designName, " - ", count, " after myobj"))
     ## SITES
@@ -148,6 +154,10 @@ runOnePermutation <- function(info, output_dir,
         filtered.sites <- normalizeCoverage(filtered.sites, "median")
 
         meth.sites <- unite(filtered.sites, destrand = destrand)
+
+        if (meth.sites@.Data[[1]] == 0) {
+            stop("meth.sites IS EMPTY")
+        }
 
         ####################################
         ## Get diff methyl sites
@@ -176,7 +186,7 @@ runOnePermutation <- function(info, output_dir,
     if (doingTiles) {
         tiles <- tileMethylCounts(myobj,
                                     win.size = tileSize,
-                                    stepSize = stepSize,
+                                    step.size = stepSize,
                                     cov.bases = minCovBasesForTiles)
 
         filtered.tiles <- filterByCoverage(tiles,
@@ -210,60 +220,138 @@ runOnePermutation <- function(info, output_dir,
     #####################
     ## Save data
     #####################
-    if(nrow(myDiff.sites.hypo) > 0) {
-        sitesHypo <- cbind(getData(myDiff.sites.hypo)[,c(1,2,3)],
-                paste0(getData(myDiff.sites.hypo)[,1], ".",
-                       getData(myDiff.sites.hypo)[,2], ".",
-                       getData(myDiff.sites.hypo)[,3]),
-                getData(myDiff.sites.hypo)[,c(7,4,5,6)])
-        colnames(sitesHypo)[4]="dmr.id"
-        write.table(sitesHypo, paste0(output_dir, "/SITES/", designName, "/", count, "_hypo.perbase.txt",sep=""), quote=F, row.names=F, col.names=F,sep="\t")
-    }
+    # if(nrow(myDiff.sites.hypo) > 0) {
+    #     sitesHypo <- cbind(getData(myDiff.sites.hypo)[,c(1,2,3)],
+    #             paste0(getData(myDiff.sites.hypo)[,1], ".",
+    #                    getData(myDiff.sites.hypo)[,2], ".",
+    #                    getData(myDiff.sites.hypo)[,3]),
+    #             getData(myDiff.sites.hypo)[,c(7,4,5,6)])
+    #     colnames(sitesHypo)[4]="dmr.id"
+    #     write.table(sitesHypo, paste0(output_dir, "/SITES/", designName, "/", count, "_hypo.perbase.txt",sep=""), quote=F, row.names=F, col.names=F,sep="\t")
+    # }
+    #
+    # if(nrow(myDiff.sites.hyper)>0) {
+    #     sitesHyper <- cbind(getData(myDiff.sites.hyper)[,c(1,2,3)],
+    #                         paste0(getData(myDiff.sites.hyper)[,1], ".",
+    #                                getData(myDiff.sites.hyper)[,2], ".",
+    #                                getData(myDiff.sites.hyper)[,3]),
+    #                         getData(myDiff.sites.hyper)[,c(7,4,5,6)])
+    #     colnames(sitesHyper)[4]="dmr.id"
+    #     write.table(sitesHyper, paste0(output_dir, "/SITES/", designName, "/", count, "_hyper.perbase.txt"), quote=F, row.names=F, col.names=F,sep="\t")
+    # }
 
-    if(nrow(myDiff.sites.hyper)>0) {
-        sitesHyper <- cbind(getData(myDiff.sites.hyper)[,c(1,2,3)],
-                            paste0(getData(myDiff.sites.hyper)[,1], ".",
-                                   getData(myDiff.sites.hyper)[,2], ".",
-                                   getData(myDiff.sites.hyper)[,3]),
-                            getData(myDiff.sites.hyper)[,c(7,4,5,6)])
-        colnames(sitesHyper)[4]="dmr.id"
-        write.table(sitesHyper, paste0(output_dir, "/SITES/", designName, "/", count, "_hyper.perbase.txt"), quote=F, row.names=F, col.names=F,sep="\t")
+    if (doingSites) {
+        printDiffMethylFile(data = myDiff.sites.hypo, count = count,
+                                designName = designName, isHyper = FALSE,
+                                isSites = TRUE)
+
+        printDiffMethylFile(data = myDiff.sites.hyper, count = count,
+                                designName = designName, isHyper = TRUE,
+                                isSites = TRUE)
     }
 
     if (doingTiles) {
-    if(nrow(myDiff.tiles.hypo)>0) {
-        w=NULL
-        w=cbind(getData(myDiff.tiles.hypo)[,c(1,2,3)],
-                paste0(getData(myDiff.tiles.hypo)[,1], ".",
-                       getData(myDiff.tiles.hypo)[,2], ".",
-                       getData(myDiff.tiles.hypo)[,3]),
-                getData(myDiff.tiles.hypo)[,c(7,4,5,6)])
-        colnames(w)[4]="dmr.id"
-        write.table(w, paste0(output_dir, "/TILES/", designName, "/", count, "_hypo.pertile.txt",sep=""), quote=F, row.names=F, col.names=F,sep="\t")
+        printDiffMethylFile(data = myDiff.tiles.hypo, count = count,
+                                designName = designName, isHyper = FALSE,
+                                isSites = FALSE)
+
+        printDiffMethylFile(data = myDiff.tiles.hyper, count = count,
+                                designName = designName, isHyper = TRUE,
+                                isSites = FALSE)
     }
 
-    if(nrow(myDiff.tiles.hyper)>0) {
-        w=NULL
-        w=cbind(getData(myDiff.tiles.hyper)[,c(1,2,3)],paste0(getData(myDiff.tiles.hyper)[,1], ".",
-                                                             getData(myDiff.tiles.hyper)[,2],".",
-                                                             getData(myDiff.tiles.hyper)[,3]),getData(myDiff.tiles.hyper)[,c(7,4,5,6)])
-        colnames(w)[4]="dmr.id"
-        write.table(w, paste0(output_dir, "/TILES/", designName, "/", count, "_hyper.pertile.txt"), quote=F, row.names=F, col.names=F,sep="\t")
-    }
-    }
+    #
+    # if(nrow(myDiff.tiles.hypo)>0) {
+    #     w=NULL
+    #     w=cbind(getData(myDiff.tiles.hypo)[,c(1,2,3)],
+    #             paste0(getData(myDiff.tiles.hypo)[,1], ".",
+    #                    getData(myDiff.tiles.hypo)[,2], ".",
+    #                    getData(myDiff.tiles.hypo)[,3]),
+    #             getData(myDiff.tiles.hypo)[,c(7,4,5,6)])
+    #     colnames(w)[4]="dmr.id"
+    #     write.table(w, paste0(output_dir, "/TILES/", designName, "/", count, "_hypo.pertile.txt",sep=""), quote=F, row.names=F, col.names=F,sep="\t")
+    # }
+    #
+    # if(nrow(myDiff.tiles.hyper)>0) {
+    #     w=NULL
+    #     w=cbind(getData(myDiff.tiles.hyper)[,c(1,2,3)],paste0(getData(myDiff.tiles.hyper)[,1], ".",
+    #                                                          getData(myDiff.tiles.hyper)[,2],".",
+    #                                                          getData(myDiff.tiles.hyper)[,3]),getData(myDiff.tiles.hyper)[,c(7,4,5,6)])
+    #     colnames(w)[4]="dmr.id"
+    #     write.table(w, paste0(output_dir, "/TILES/", designName, "/", count, "_hyper.pertile.txt"), quote=F, row.names=F, col.names=F,sep="\t")
+    # }
+
     warnings()
     return(0)
 }
 
+#' @title TODO
+#'
+#' @description TODO
+#' @param data TODO
+#'
+#' @param count TODO
+#'
+#' @param designName TODO
+#'
+#' @param isHyper TODO
+#'
+#' @param isSites TODO
+#'
+#' @return TODO
+#'
+#' @examples
+#'
+#' ## TODO
+#'
+#'
+#' @author Astrid Deschenes
+#' @importFrom methylKit getData
+#' @keywords internal
+printDiffMethylFile <- function(data, count, designName, isHyper, isSites) {
+
+    dirName <- "/SITES/"
+    nameExtension <- ".perbase.txt"
+    if (!isSites) {
+        dirName <- "/TILES/"
+        nameExtension <- ".pertile.txt"
+    }
+
+    if (isHyper) {
+        nameExtension <- paste0("_hyper", nameExtension)
+    } else {
+
+        nameExtension <- paste0("_hypo", nameExtension)
+    }
+
+    if(nrow(data) > 0) {
+        dataAll <- getData(data)
+        dataForFile <- cbind(dataAll[,c(1,2,3)],
+                        paste(dataAll[,1], dataAll[,2], dataAll[,3], sep = "."),
+                        dataAll[,c(7,4,5,6)])
+        colnames(dataForFile)[4]="DMR.ID"
+        write.table(dataForFile,
+                    paste0(output_dir, dirName, designName, "/", count,
+                            nameExtension), quote=F, row.names=F,
+                            col.names=F, sep="\t")
+    } else {
+        write.table(NULL,
+                    paste0(output_dir, dirName, designName, "/", count,
+                           nameExtension), quote=F, row.names=F,
+                    col.names=F, sep="\t")
+    }
+
+    return(0)
+}
 
 #' @title Extract sample name from file name
 #'
-#' @description Extract a sample name from the file name. The samle name
+#' @description Extract a sample name from the file name. The sample name
 #' corresponds to  the file name but without path information.
 #'
 #' @param fileName a string, the file name used to extract the sample name.
 #'
-#' @return A sanple name extracted from the specified file name.
+#' @return A sample name extracted from the specified file name.
 #'
 #' @examples
 #'
@@ -413,25 +501,25 @@ validateRunPermutation <- function(allFilesByGeneration,
                                     minCovBasesForTiles, tileSize,
                                     stepSize, vSeed) {
 
-    # ## Validate that the allFilesByGeneration is a list
-    # if (!is.list(allFilesByGeneration)) {
-    #     stop("allFilesByGeneration must be a list")
-    # }
-    #
-    # ## Validate that the allFilesByGeneration contains at least 2 lists
-    # if (length(allFilesByGeneration) < 2 ||
-    #     !all(sapply(allFilesByGeneration, is.list))) {
-    #     stop(paste0("allFilesByGeneration must be a list containing at ",
-    #                 "least 2 sub-lists"))
-    # }
-    #
-    # ## Validate that all entries in allFilesByGeneration are existing files
-    # for (entry in unlist(allFilesByGeneration)) {
-    #     if (!file.exists(entry)) {
-    #         stop(paste0("The file \"", entry, "\" does not exist."))
-    #     }
-    # }
-    #
+    ## Validate that the allFilesByGeneration is a list
+    if (!is.list(allFilesByGeneration)) {
+        stop("allFilesByGeneration must be a list")
+    }
+
+    ## Validate that the allFilesByGeneration contains at least 2 lists
+    if (length(allFilesByGeneration) < 2 ||
+        !all(sapply(allFilesByGeneration, is.list))) {
+        stop(paste0("allFilesByGeneration must be a list containing at ",
+                    "least 2 sub-lists"))
+    }
+
+    ## Validate that all entries in allFilesByGeneration are existing files
+    for (entry in unlist(allFilesByGeneration)) {
+        if (!file.exists(entry)) {
+            stop(paste0("The file \"", entry, "\" does not exist."))
+        }
+    }
+
     # ## Validate that the conditionsByGeneration is a list
     # if (!is.list(conditionsByGeneration)) {
     #     stop("conditionsByGeneration must be a list")
