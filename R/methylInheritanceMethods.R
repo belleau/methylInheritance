@@ -105,7 +105,7 @@
 #' ##TODO
 #'
 #' @author Astrid Deschenes, Pascal Belleau
-#' @importFrom BiocParallel bplapply MulticoreParam SnowParam bptry bpok
+#' @importFrom BiocParallel bplapply MulticoreParam SnowParam bptry bpok bpmapply
 #' @importFrom utils flush.console write.table
 #' @export
 runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
@@ -202,38 +202,23 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
         bp_param <- MulticoreParam(workers = nbrCores)
     }
 
-    result <- runOnePermutation(finalList[[1]],
-                                output_dir = output_dir,
-                                genomeVersion = genomeVersion,
-                                nbrCoresDiffMeth = nbrCoresDiffMeth,
-                                doingSites = doingSites,
-                                doingTiles = doingTiles,
-                                minReads = minReads,
-                                minMethDiff = minMethDiff,
-                                qvalue = qvalue,
-                                maxPercReads = maxPercReads,
-                                destrand = destrand,
-                                minCovBasesForTiles = minCovBasesForTiles,
-                                tileSize = tileSize,
-                                stepSize = stepSize)
-
-    # result <- bptry(bpmapply(FUN = runOnePermutation,
-    #                        finalList,
-    #                        MoreArgs = c(
-    #                        output_dir = output_dir,
-    #                        genomeVersion = genomeVersion,
-    #                        nbrCoresDiffMeth = nbrCoresDiffMeth,
-    #                        doingSites = doingSites,
-    #                        doingTiles = doingTiles,
-    #                        minReads = minReads,
-    #                        minMethDiff = minMethDiff,
-    #                        qvalue = qvalue,
-    #                        maxPercReads = maxPercReads,
-    #                        destrand = destrand,
-    #                        minCovBasesForTiles = minCovBasesForTiles,
-    #                        tileSize = tileSize,
-    #                        stepSize = stepSize),
-    #                        BPPARAM = bp_param))
+    result <- bpmapply(FUN = runOnePermutation,
+                           finalList,
+                           MoreArgs = list(
+                           output_dir = output_dir,
+                           genomeVersion = genomeVersion,
+                           nbrCoresDiffMeth = nbrCoresDiffMeth,
+                           doingSites = doingSites,
+                           doingTiles = doingTiles,
+                           minReads = minReads,
+                           minMethDiff = minMethDiff,
+                           qvalue = qvalue,
+                           maxPercReads = maxPercReads,
+                           destrand = destrand,
+                           minCovBasesForTiles = minCovBasesForTiles,
+                           tileSize = tileSize,
+                           stepSize = stepSize),
+                           BPPARAM = bp_param)
 
     # if (!all(bpok(result))) {
     #     a <- which(!bpok(result))
@@ -260,5 +245,84 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
     result[which(!bpok(result))]
 }
 
+runRealAnalysis <- function(allFilesByGeneration, conditionsByGeneration,
+                           output_dir,
+                           genomeVersion,
+                           nbrCores = 1,
+                           nbrCoresDiffMeth = 1,
+                           doingSites = TRUE,
+                           doingTiles = FALSE,
+                           minReads = 10,
+                           minMethDiff = 10,
+                           qvalue = 0.01,
+                           maxPercReads = 99.9,
+                           destrand = FALSE,
+                           minCovBasesForTiles = 0,
+                           tileSize = 1000,
+                           stepSize = 1000,
+                           vSeed = -1) {
 
+    ## Parameters validation
+    validateRunRealAnalysis(allFilesByGeneration, conditionsByGeneration,
+                           output_dir, genomeVersion,
+                           nbrCores, nbrCoresDiffMeth, doingSites, doingTiles,
+                           minReads, minMethDiff, qvalue, maxPercReads,
+                           destrand, minCovBasesForTiles, tileSize,
+                           stepSize, vSeed)
 
+    ## Add last slash to path when absent
+    if (substr(output_dir, nchar(output_dir), nchar(output_dir)) != "/") {
+        output_dir <- paste0(output_dir, "/")
+    }
+
+    ## Set vSeed value when negative seed is given
+    if (vSeed <= -1) {
+        tSeed <- as.numeric(Sys.time())
+        vSeed <- 1e8 * (tSeed - floor(tSeed))
+    }
+    set.seed(vSeed)
+
+    nbrFiles <- sum(unlist(lapply(allFilesByGeneration, length)))
+
+    nbGenerations <- length(allFilesByGeneration)
+
+    nbSamples  <- sum(length(unlist(allFilesByGeneration)))
+    allSamples <- unlist(allFilesByGeneration)
+
+    nbSamplesByGeneration <- sapply(allFilesByGeneration, length)
+
+    finalList <- list()
+
+    start = 1
+    for (j in 1:nbGenerations) {
+        nbrFilesGeneration <-  nbSamplesByGeneration[j]
+        end = start + nbrFilesGeneration - 1
+        filesGeneration <- allFilesByGeneration[[j]]
+        sampleNames <- sapply(filesGeneration, getSampleNameFromFileName)
+        infoGeneration <- list(conditions=conditionsByGeneration[[j]],
+                               file.list=as.list(filesGeneration),
+                               designName = paste0("Generation_", j),
+                               sampleNames = sampleNames,
+                               count = 0)
+        finalList <- append(finalList, list(infoGeneration))
+        start <- end + 1
+    }
+
+    result <- bpmapply(FUN = runOnePermutation,
+                       finalList,
+                       MoreArgs = list(
+                           output_dir = output_dir,
+                           genomeVersion = genomeVersion,
+                           nbrCoresDiffMeth = nbrCoresDiffMeth,
+                           doingSites = doingSites,
+                           doingTiles = doingTiles,
+                           minReads = minReads,
+                           minMethDiff = minMethDiff,
+                           qvalue = qvalue,
+                           maxPercReads = maxPercReads,
+                           destrand = destrand,
+                           minCovBasesForTiles = minCovBasesForTiles,
+                           tileSize = tileSize,
+                           stepSize = stepSize),
+                       BPPARAM = bp_param)
+}

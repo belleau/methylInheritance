@@ -4,10 +4,12 @@
 \alias{printDiffMethylFile}
 \title{TODO}
 \usage{
-printDiffMethylFile(data, count, designName, isHyper, isSites)
+printDiffMethylFile(data, output_dir, count, designName, isHyper, isSites)
 }
 \arguments{
 \item{data}{TODO}
+
+\item{output_dir}{TODO}
 
 \item{count}{TODO}
 
