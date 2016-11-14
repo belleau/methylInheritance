@@ -89,20 +89,25 @@ dataNames <- c("F1A","F1B","F1C","F1D","F1E","F1F",
                "F2A","F2B","F2C","F2D","F2E","F2F",
                "F3A","F3B","F3C","F3D","F3E","F3F")
 
-allFilesByGeneration <- list(F1=list(F1_control_01, F1_control_02, F1_control_03, F1_case_01, F1_case_02, F1_case_03), 
-                             F2=list(F2_control_01, F2_control_02, F2_control_03, F2_case_01, F2_case_02, F2_case_03), 
-                             F3=list(F3_control_01, F3_control_02, F3_control_03, F3_case_01, F3_case_02, F3_case_03))
+allFilesByGeneration <- list(F1=list(F1_control_01, F1_control_02, 
+                                        F1_control_03, F1_case_01, 
+                                        F1_case_02, F1_case_03), 
+                             F2=list(F2_control_01, F2_control_02, 
+                                        F2_control_03, F2_case_01, 
+                                        F2_case_02, F2_case_03), 
+                             F3=list(F3_control_01, F3_control_02, 
+                                        F3_control_03, F3_case_01, 
+                                        F3_case_02, F3_case_03))
 conditionsByGeneration <- list(F1=conditions, F2=conditions, F3=conditions)
-output_dir <- "test"
 genomeVersion <- "rnor5"
-nbrPermutations <- 2
 nbrCores <- 1
 nbrCoresDiffMeth <- 1
 doingSites <- TRUE
 doingTiles <- FALSE
 
-runPermutation(allFilesByGeneration, conditionsByGeneration,
-                                output_dir = output_dir,
+## Run analysis with real data (without permutation)
+runRealAnalysis(allFilesByGeneration, conditionsByGeneration,
+                                output_dir = "real_results",
                                 genomeVersion = genomeVersion,
                                 nbrPermutations = nbrPermutations,
                                 nbrCores = nbrCores,
@@ -116,7 +121,29 @@ runPermutation(allFilesByGeneration, conditionsByGeneration,
                                 destrand = FALSE,
                                 tileSize = 1000,
                                 stepSize = 1000,
-                                vSeed = -1)
+                                vSeed = 233333)
+
+## Run analysis with real data (without permutation)
+## Only 6 permutations are done but a much high number should be done
+## for a real analysis
+runPermutation(allFilesByGeneration, conditionsByGeneration,
+                                output_dir = "test_results",
+                                genomeVersion = genomeVersion,
+                                nbrPermutations = 6,
+                                nbrCores = nbrCores,
+                                nbrCoresDiffMeth = nbrCoresDiffMeth,
+                                doingSites = doingSites,
+                                doingTiles = doingTiles,
+                                minReads = 10,
+                                minMethDiff = 20,
+                                qvalue = 0.01,
+                                maxPercReads = 99.9,
+                                destrand = FALSE,
+                                tileSize = 1000,
+                                stepSize = 1000,
+                                vSeed = 4444432)
+
+
 
 ```
 

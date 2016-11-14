@@ -203,22 +203,22 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
     }
 
     result <- bpmapply(FUN = runOnePermutation,
-                           finalList,
-                           MoreArgs = list(
-                           output_dir = output_dir,
-                           genomeVersion = genomeVersion,
-                           nbrCoresDiffMeth = nbrCoresDiffMeth,
-                           doingSites = doingSites,
-                           doingTiles = doingTiles,
-                           minReads = minReads,
-                           minMethDiff = minMethDiff,
-                           qvalue = qvalue,
-                           maxPercReads = maxPercReads,
-                           destrand = destrand,
-                           minCovBasesForTiles = minCovBasesForTiles,
-                           tileSize = tileSize,
-                           stepSize = stepSize),
-                           BPPARAM = bp_param)
+                            finalList,
+                            MoreArgs = list(
+                            output_dir = output_dir,
+                            genomeVersion = genomeVersion,
+                            nbrCoresDiffMeth = nbrCoresDiffMeth,
+                            doingSites = doingSites,
+                            doingTiles = doingTiles,
+                            minReads = minReads,
+                            minMethDiff = minMethDiff,
+                            qvalue = qvalue,
+                            maxPercReads = maxPercReads,
+                            destrand = destrand,
+                            minCovBasesForTiles = minCovBasesForTiles,
+                            tileSize = tileSize,
+                            stepSize = stepSize),
+                            BPPARAM = bp_param)
 
     # if (!all(bpok(result))) {
     #     a <- which(!bpok(result))
@@ -245,6 +245,114 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
     result[which(!bpok(result))]
 }
 
+
+#' @title TODO
+#'
+#' @description TODO
+#'
+#' @param allFilesByGeneration a \code{list} of \code{list}, a \code{list}
+#' composed of \code{list}
+#' of files with methylation information for
+#' bases or regions in the genome. One \code{list} must contain all files
+#' related to the same generation. So, if 3 generations are analyzed, a
+#' \code{list} containing 3 \code{list} must be passed. At least 2 generations
+#' must be present to do a permutation analysis.
+#' The parameter
+#' corresponds to the \code{location} parameter in the package \code{methylKit}.
+#'
+#' @param conditionsByGeneration a \code{list} of \code{vector} containing
+#' \code{0} and \code{1}. The information indicating which files are
+#' associated to controls (\code{0}) and which files are cases (\code{1}).
+#' One \code{vector} must contain all informations
+#' related to the same generation. So, if 3 generations are analyzed, a
+#' \code{list} containing 3 \code{vector} must be passed. At least 2
+#' generations
+#' must be present to do a permutation analysis.
+#' The parameter
+#' corresponds to the \code{treatment} parameter in the package
+#' \code{methylKit}.
+#'
+#' @param output_dir a string, the name of the directory that will contain
+#' the results of the permutation. If the directory does not exist, it will
+#' be created.
+#'
+#' @param genomeVersion a string, the genome assembly such as hg18, mm9, etc.
+#' It can be any string. The parameter
+#' correspond to the \code{assembly} parameter in the package \code{methylKit}.
+#'
+#' @param nbrCores a positive \code{integer}, the number of cores to use when
+#' processing the analysis. Default: \code{1} and always \code{1} for Windows.
+#'
+#' @param nbrCoresDiffMeth a positive \code{integer}, the number of cores
+#' to use for parallel differential methylation calculations.Parameter
+#' used for both sites and tiles analysis. The parameter
+#' corresponds to the \code{num.cores} parameter in the package
+#' \code{methylKit}.
+#' Default: \code{1} and always \code{1} for Windows.
+#'
+#' @param doingSites a \code{logical}, when \code{TRUE} will do the analysis
+#' on the CpG dinucleotide sites. Default: \code{TRUE}.
+#'
+#' @param doingTiles a \code{logical}, when \code{TRUE} will do the analysis
+#' on the tiles. Default: \code{FALSE}.
+#'
+#' @param minReads a positive \code{integer} Bases and regions having lower
+#' coverage than this count are discarded. The parameter
+#' correspond to the \code{lo.count} parameter in the package \code{methylKit}.
+#'
+#' @param minMethDiff a positive \code{double} betwwen [0,100], the absolute
+#' value of methylation percentage change between cases and controls. The
+#' parameter correspond to the \code{difference} parameter in
+#' the package \code{methylKit}. Default: \code{10}.
+#'
+#' @param qvalue a positive \code{double} betwwen [0,1], the cutoff
+#' for qvalue of differential methylation statistic. Default: \code{0.01}.
+#'
+#' @param maxPercReads a \code{double} between [0,100], the percentile of read
+#' counts that is going to be used as upper cutoff. Bases ore regions
+#' having higher
+#' coverage than this percentile are discarded. Parameter used for both CpG
+#' sites and tiles analysis. The parameter
+#' correspond to the \code{hi.perc} parameter in the package \code{methylKit}.
+#' Default: \code{99.9}.
+#'
+#' @param destrand a \code{logical}, when \code{TRUE} will merge reads on both
+#' strands of a CpG dinucleotide to provide better coverage. Only advised
+#' when looking at CpG methylation. Parameter used for both CpG
+#' sites and tiles analysis.
+#' Default: \code{FALSE}.
+#'
+#' @param minCovBasesForTiles a non-negative \code{integer}, the minimum
+#' number of bases to be covered in a given tiling window. The parameter
+#' corresponds to the \code{cov.bases} parameter in the package
+#' \code{methylKit}.
+#' Only used when \code{doingTiles} =
+#' \code{TRUE}. Default: \code{0}.
+#'
+#' @param tileSize a positive \code{integer}, the size of the tiling window.
+#' The parameter corresponds to the \code{win.size} parameter in
+#' the package \code{methylKit}. Only
+#' used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.
+#'
+#' @param stepSize a positive \code{integer}, the step size of tiling windows.
+#' The parameter corresponds to the \code{stepSize} parameter in
+#' the package \code{methylKit}. Only
+#' used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.
+#'
+#' @param vSeed a \code{integer}, a seed used when reproducible results are
+#' needed. When a value inferior or equal to zero is given, a random integer
+#' is used. Default: \code{-1}.
+#'
+#' @return TODO
+#'
+#' @examples
+#'
+#' ##TODO
+#'
+#' @author Astrid Deschenes, Pascal Belleau
+#' @importFrom BiocParallel bplapply MulticoreParam SnowParam bptry bpok bpmapply
+#' @importFrom utils flush.console write.table
+#' @export
 runRealAnalysis <- function(allFilesByGeneration, conditionsByGeneration,
                            output_dir,
                            genomeVersion,
@@ -311,18 +419,118 @@ runRealAnalysis <- function(allFilesByGeneration, conditionsByGeneration,
     result <- bpmapply(FUN = runOnePermutation,
                        finalList,
                        MoreArgs = list(
-                           output_dir = output_dir,
-                           genomeVersion = genomeVersion,
-                           nbrCoresDiffMeth = nbrCoresDiffMeth,
-                           doingSites = doingSites,
-                           doingTiles = doingTiles,
-                           minReads = minReads,
-                           minMethDiff = minMethDiff,
-                           qvalue = qvalue,
-                           maxPercReads = maxPercReads,
-                           destrand = destrand,
-                           minCovBasesForTiles = minCovBasesForTiles,
-                           tileSize = tileSize,
-                           stepSize = stepSize),
-                       BPPARAM = bp_param)
+                            output_dir = output_dir,
+                            genomeVersion = genomeVersion,
+                            nbrCoresDiffMeth = nbrCoresDiffMeth,
+                            doingSites = doingSites,
+                            doingTiles = doingTiles,
+                            minReads = minReads,
+                            minMethDiff = minMethDiff,
+                            qvalue = qvalue,
+                            maxPercReads = maxPercReads,
+                            destrand = destrand,
+                            minCovBasesForTiles = minCovBasesForTiles,
+                            tileSize = tileSize,
+                            stepSize = stepSize),
+                            BPPARAM = bp_param)
+
+    return(result)
+}
+
+#' @title TODO
+#'
+#' @description TODO
+#'
+#' @param realAnalysis_output_dir a string, the name of the directory that
+#' will contain the results of the permutation. If the directory does not
+#' exist, it will be created.
+#'
+#' @param permutations_output_dir a string, the name of the directory that
+#' will contain the results of the permutation. If the directory does not
+#' exist, it will be created.
+#'
+#' @return TODO
+#'
+#' @examples
+#'
+#' ##TODO
+#'
+#' @author Astrid Deschenes, Pascal Belleau
+#' @export
+doAnalysis <- function(realAnalysis_output_dir, permutations_output_dir,
+                       doingSites = TRUE) {
+
+    ## Add last slash to path when absent
+    if (substr(realAnalysis_output_dir, nchar(realAnalysis_output_dir),
+                nchar(realAnalysis_output_dir)) != "/") {
+        realAnalysis_output_dir <- paste0(realAnalysis_output_dir, "/")
+    }
+
+    ## Add last slash to path when absent
+    if (substr(permutations_output_dir, nchar(permutations_output_dir),
+                nchar(permutations_output_dir)) != "/") {
+        permutations_output_dir <- paste0(permutations_output_dir, "/")
+    }
+
+
+
+    nbr_sites_per_generation <- NA
+    ## Only keep tests which have all files are present
+    if (doingSites) {
+        generationsDir <- list.files(path = paste0(permutations_output_dir, "SITES/"),
+                                    pattern = "Generation_*",
+                                    all.files = FALSE,
+                                    full.names = FALSE, recursive = F,
+                                    ignore.case = FALSE, include.dirs = T,
+                                    no.. = FALSE)
+
+        nbrGenerations <- length(generationsDir)
+
+        nbrExpectedFiles <- nbrGenerations * 2
+
+        sitesFiles <- list.files(path = paste0(permutations_output_dir,
+                                                "SITES"),
+                            pattern = "*.perbase.txt", all.files = FALSE,
+                            full.names = FALSE, recursive = T,
+                            ignore.case = FALSE, include.dirs = FALSE,
+                            no.. = FALSE)
+
+        id <- sapply(strsplit(sitesFiles, "_hyp"), function(x) return(as.integer(strsplit(x[1], "/")[[1]][2])))
+
+        id_table <- table(id)
+
+        id_tabel_subset <- id_table[id_table == nbrExpectedFiles]
+
+        id_final <- as.numeric(names(id_tabel_subset))
+
+        id_final_length <- length(id_final)
+
+        nbr_sites_per_generation <- list()
+        for (i in 1:nbrGenerations) {
+            generation_name <- paste0("Generation_", i)
+            nbr_sites_per_generation[[generation_name]] <- list(hypo =
+                                array(dim=id_final_length), hyper =
+                                        array(dim=id_final_length))
+        }
+
+        for (type in c("hypo", "hyper")) {
+            for (i in 1:nbrGenerations) {
+                generation_name <- paste0("Generation_", i)
+                position = 1
+                for (j in id_final){
+                    fileName <- paste0(permutations_output_dir, "SITES/", generation_name, "/", j, "_", type, ".perbase.txt")
+
+                    if (file.info(fileName)$size > 0) {
+                        sites <- read.table(fileName, stringsAsFactors = F)$V4
+                        nbr_sites_per_generation[[generation_name]][[type]][position] <- length(sites)
+                    } else {
+                        nbr_sites_per_generation[[generation_name]][[type]][position] <- 0
+                    }
+                    position <- position + 1
+                }
+            }
+        }
+    }
+
+    return(nbr_sites_per_generation)
 }

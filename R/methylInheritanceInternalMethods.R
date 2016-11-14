@@ -276,7 +276,8 @@ runOnePermutation <- function(info, output_dir,
 #' @author Astrid Deschenes
 #' @importFrom methylKit getData
 #' @keywords internal
-printDiffMethylFile <- function(data, output_dir, count, designName, isHyper, isSites) {
+printDiffMethylFile <- function(data, output_dir, count, designName, isHyper,
+                                    isSites) {
 
     dirName <- "/SITES/"
     nameExtension <- ".perbase.txt"
@@ -324,7 +325,7 @@ printDiffMethylFile <- function(data, output_dir, count, designName, isHyper, is
 #' @examples
 #'
 #' ## Extract sample name from file name
-#' methylInheritance:::getSampleNameFromFileName("./test/experiment001/file_J1.txt")
+#' methylInheritance:::getSampleNameFromFileName("./test/data001/file_J1.txt")
 #'
 #' @author Astrid Deschenes
 #' @keywords internal
@@ -355,10 +356,9 @@ getSampleNameFromFileName <- function(fileName) {
 #' One \code{vector} must contain all informations
 #' related to the same generation. So, if 3 generations are analyzed, a
 #' \code{list} containing 3 \code{vector} must be passed. At least 2
-#' generations
-#' must be present to do a permutation analysis.
-#' The parameter
-#' corresponds to the \code{treatment} parameter in the  \code{methylKit} package.
+#' generations must be present to do a permutation analysis.
+#' The parameter corresponds to the \code{treatment} parameter in
+#' the \code{methylKit} package.
 #'
 #' @param output_dir a string, the name of the directory that will contain
 #' the results of the permutation. If the directory does not exist, it will
@@ -377,7 +377,8 @@ getSampleNameFromFileName <- function(fileName) {
 #' @param nbrCoresDiffMeth a positive \code{integer}, the number of cores
 #' to use for parallel differential methylation calculations.Parameter
 #' used for both sites and tiles analysis. The parameter
-#' corresponds to the \code{num.cores} parameter in the  \code{methylKit} package.
+#' corresponds to the \code{num.cores} parameter in
+#' the \code{methylKit} package.
 #'
 #' @param doingSites a \code{logical}, when \code{TRUE} will do the analysis
 #' on the CpG dinucleotide sites.

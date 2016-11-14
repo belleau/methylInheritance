@@ -19,7 +19,7 @@ corresponds to  the file name but without path information.
 \examples{
 
 ## Extract sample name from file name
-methylInheritance:::getSampleNameFromFileName("./test/experiment001/file_J1.txt")
+methylInheritance:::getSampleNameFromFileName("./test/data001/file_J1.txt")
 
 }
 \author{
