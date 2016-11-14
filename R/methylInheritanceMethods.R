@@ -477,6 +477,8 @@ doAnalysis <- function(realAnalysis_output_dir, permutations_output_dir,
     nbr_sites_per_generation <- NA
     ## Only keep tests which have all files are present
     if (doingSites) {
+        nbr_sites_per_generation[["SITES"]] <- list()
+
         generationsDir <- list.files(path = paste0(permutations_output_dir, "SITES/"),
                                     pattern = "Generation_*",
                                     all.files = FALSE,
@@ -508,7 +510,7 @@ doAnalysis <- function(realAnalysis_output_dir, permutations_output_dir,
         nbr_sites_per_generation <- list()
         for (i in 1:nbrGenerations) {
             generation_name <- paste0("Generation_", i)
-            nbr_sites_per_generation[[generation_name]] <- list(hypo =
+            nbr_sites_per_generation[["SITES"]][[generation_name]] <- list(hypo =
                                 array(dim=id_final_length), hyper =
                                         array(dim=id_final_length))
         }
@@ -522,9 +524,9 @@ doAnalysis <- function(realAnalysis_output_dir, permutations_output_dir,
 
                     if (file.info(fileName)$size > 0) {
                         sites <- read.table(fileName, stringsAsFactors = F)$V4
-                        nbr_sites_per_generation[[generation_name]][[type]][position] <- length(sites)
+                        nbr_sites_per_generation[["SITES"]][[generation_name]][[type]][position] <- length(sites)
                     } else {
-                        nbr_sites_per_generation[[generation_name]][[type]][position] <- 0
+                        nbr_sites_per_generation[["SITES"]][[generation_name]][[type]][position] <- 0
                     }
                     position <- position + 1
                 }
