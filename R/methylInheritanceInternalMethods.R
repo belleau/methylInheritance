@@ -898,3 +898,152 @@ validateRunRealAnalysis <- function(allFilesByGeneration,
 
     return(0)
 }
+
+#' @title TODO
+#'
+#' @description TODO
+#'
+#' @param directory a string of \code{character}, TODO
+#'
+#' @param elementType a sting of \code{character}, TODO
+#'
+#' @return TODO
+#'
+#' @examples
+#'
+#' ## TODO
+#'
+#' @author Astrid Deschenes
+#' @importFrom utils read.table
+#' @keywords internal
+extractDataFromFile <- function(directory, elementType = c("SITES", "TILES")) {
+
+    elementPattern <- ".perbase.txt"
+    if (elementType == "TILES") {
+        elementPattern <- "*.pertile.txt"
+    }
+
+    elements_per_generation <- list()
+    elements_per_generation[[elementType]] <- list()
+
+    generationsDir <- list.files(path = paste0(directory,
+                                                elementType, "/"),
+                                    pattern = "Generation_*",
+                                    all.files = FALSE,
+                                    full.names = FALSE, recursive = F,
+                                    ignore.case = FALSE, include.dirs = T,
+                                    no.. = FALSE)
+
+    nbrGenerations <- length(generationsDir)
+
+    nbrExpectedFiles <- nbrGenerations * 2
+
+    sitesFiles <- list.files(path = paste0(directory, elementType),
+                                pattern = paste0("*", elementPattern),
+                                all.files = FALSE,
+                                full.names = FALSE, recursive = T,
+                                ignore.case = FALSE, include.dirs = FALSE,
+                                no.. = FALSE)
+
+    id <- sapply(strsplit(sitesFiles, "_hyp"),
+                function(x) return(as.integer(strsplit(x[1], "/")[[1]][2])))
+
+    id_table <- table(id)
+
+    id_tabel_subset <- id_table[id_table == nbrExpectedFiles]
+
+    id_final <- as.numeric(names(id_tabel_subset))
+
+    id_final_length <- length(id_final)
+
+    for (type in c("hypo", "hyper")) {
+        genArray <- 1:nbrGenerations
+        groupsTwo <- lapply(genArray[-length(genArray)],
+                                function(g) return(c(g, g + 1)))
+        for (groupTwo in groupsTwo) {
+            generation_name <- paste0("Generation_", groupTwo[1], "_and_",
+                                            groupTwo[2])
+            elements_per_generation[[elementType]][[generation_name]] <- list()
+            for (j in id_final){
+                fileName01 <- paste0(directory, elementType, "/Generation_",
+                                   groupTwo[1], "/", j, "_", type,
+                                   elementPattern)
+                fileName02 <- paste0(directory, elementType, "/Generation_",
+                                     groupTwo[2], "/", j, "_", type,
+                                     elementPattern)
+
+                if (file.info(fileName01)$size > 0 &&
+                        file.info(fileName02)$size > 0) {
+                    sites01 <- read.table(fileName01, stringsAsFactors = F)$V4
+                    sites02 <- read.table(fileName02, stringsAsFactors = F)$V4
+                    results <- intersect(sites01, sites02)
+                    elements_per_generation[[elementType]][[generation_name]][[type]][j] <- length(results)
+                } else {
+                    elements_per_generation[[elementType]][[generation_name]][[type]][j] <- 0
+                }
+            }
+        }
+    }
+
+    return(elements_per_generation)
+}
+
+
+#' @title TODO
+#'
+#' @description TODO
+#'
+#' @param output_dir a string of \code{character}, TODO
+#'
+#' @param nbGenerations a positive \code{integer}, TODO
+#'
+#' @param doingSites a \code{logical}, TODO
+#'
+#' @param doingTiles a \code{logical}, TODO
+#'
+#' @return \code{0} when all directories are created without problem.
+#'
+#' @examples
+#'
+#' ## TODO
+#'
+#' @author Astrid Deschenes
+#' @keywords internal
+createOutputDir <- function(output_dir, nbGenerations,
+                                doingSites=TRUE, doingTiles=FALSE) {
+
+    # Create directories for output files
+    if (!dir.exists(output_dir)) {
+        dir.create(output_dir, showWarnings = TRUE)
+    }
+
+    if (doingSites) {
+        type <-  "SITES"
+        dirName = paste0(output_dir, type)
+        if (!dir.exists(dirName)) {
+            dir.create(dirName, showWarnings = TRUE)
+        }
+        for (j in 1:nbGenerations) {
+            dirName = paste0(output_dir, type, "/Generation_", j)
+            if (!dir.exists(dirName)) {
+                dir.create(dirName, showWarnings = TRUE)
+            }
+        }
+    }
+
+    if (doingTiles) {
+        type <-  "TILES"
+        dirName = paste0(output_dir, type)
+        if (!dir.exists(dirName)) {
+            dir.create(dirName, showWarnings = TRUE)
+        }
+        for (j in 1:nbGenerations) {
+            dirName = paste0(output_dir, type, "/Generation_", j)
+            if (!dir.exists(dirName)) {
+                dir.create(dirName, showWarnings = TRUE)
+            }
+        }
+    }
+
+    return(0)
+}

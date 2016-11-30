@@ -180,21 +180,7 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
     }
 
     # Create directories for output files
-    if (!dir.exists(output_dir)) {
-        dir.create(output_dir, showWarnings = TRUE)
-    }
-    for (type in c("TILES", "SITES")) {
-        dirName = paste0(output_dir, type)
-        if (!dir.exists(dirName)) {
-            dir.create(dirName, showWarnings = TRUE)
-        }
-        for (j in 1:nbGenerations) {
-          dirName = paste0(output_dir, type, "/Generation_", j)
-          if (!dir.exists(dirName)) {
-              dir.create(dirName, showWarnings = TRUE)
-          }
-        }
-    }
+    createOutputDir(output_dir, nbGenerations, doingSites, doingTiles)
 
     if (nbrCores == 1) {
         bp_param <- SnowParam()
@@ -390,6 +376,7 @@ runRealAnalysis <- function(allFilesByGeneration, conditionsByGeneration,
     }
     set.seed(vSeed)
 
+
     nbrFiles <- sum(unlist(lapply(allFilesByGeneration, length)))
 
     nbGenerations <- length(allFilesByGeneration)
@@ -398,6 +385,9 @@ runRealAnalysis <- function(allFilesByGeneration, conditionsByGeneration,
     allSamples <- unlist(allFilesByGeneration)
 
     nbSamplesByGeneration <- sapply(allFilesByGeneration, length)
+
+    # Create directories for output files
+    createOutputDir(output_dir, nbGenerations, doingSites, doingTiles)
 
     finalList <- list()
 
@@ -408,12 +398,19 @@ runRealAnalysis <- function(allFilesByGeneration, conditionsByGeneration,
         filesGeneration <- allFilesByGeneration[[j]]
         sampleNames <- sapply(filesGeneration, getSampleNameFromFileName)
         infoGeneration <- list(conditions=conditionsByGeneration[[j]],
-                               file.list=as.list(filesGeneration),
+                               file.list=filesGeneration,
                                designName = paste0("Generation_", j),
                                sampleNames = sampleNames,
                                count = 0)
         finalList <- append(finalList, list(infoGeneration))
         start <- end + 1
+    }
+
+
+    if (nbrCores == 1) {
+        bp_param <- SnowParam()
+    } else {
+        bp_param <- MulticoreParam(workers = nbrCores)
     }
 
     result <- bpmapply(FUN = runOnePermutation,
@@ -449,6 +446,10 @@ runRealAnalysis <- function(allFilesByGeneration, conditionsByGeneration,
 #' will contain the results of the permutation. If the directory does not
 #' exist, it will be created.
 #'
+#' @param doingSites a \code{logical}, TODO
+#'
+#' @param doingTiles a \code{logical}, TODO
+#'
 #' @return TODO
 #'
 #' @examples
@@ -457,8 +458,8 @@ runRealAnalysis <- function(allFilesByGeneration, conditionsByGeneration,
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
-doAnalysis <- function(realAnalysis_output_dir, permutations_output_dir,
-                       doingSites = TRUE) {
+extractData <- function(realAnalysis_output_dir, permutations_output_dir,
+                       doingSites = TRUE, doingTiles=FALSE) {
 
     ## Add last slash to path when absent
     if (substr(realAnalysis_output_dir, nchar(realAnalysis_output_dir),
@@ -471,67 +472,18 @@ doAnalysis <- function(realAnalysis_output_dir, permutations_output_dir,
                 nchar(permutations_output_dir)) != "/") {
         permutations_output_dir <- paste0(permutations_output_dir, "/")
     }
+    nbr_sites_per_generation <- list()
 
-
-
-    nbr_sites_per_generation <- NA
     ## Only keep tests which have all files are present
     if (doingSites) {
-        nbr_sites_per_generation[["SITES"]] <- list()
+        result <- extractDataFromFile(permutations_output_dir, "SITES")
+        nbr_sites_per_generation[["SITES"]] <- result[["SITES"]]
+    }
 
-        generationsDir <- list.files(path = paste0(permutations_output_dir, "SITES/"),
-                                    pattern = "Generation_*",
-                                    all.files = FALSE,
-                                    full.names = FALSE, recursive = F,
-                                    ignore.case = FALSE, include.dirs = T,
-                                    no.. = FALSE)
-
-        nbrGenerations <- length(generationsDir)
-
-        nbrExpectedFiles <- nbrGenerations * 2
-
-        sitesFiles <- list.files(path = paste0(permutations_output_dir,
-                                                "SITES"),
-                            pattern = "*.perbase.txt", all.files = FALSE,
-                            full.names = FALSE, recursive = T,
-                            ignore.case = FALSE, include.dirs = FALSE,
-                            no.. = FALSE)
-
-        id <- sapply(strsplit(sitesFiles, "_hyp"), function(x) return(as.integer(strsplit(x[1], "/")[[1]][2])))
-
-        id_table <- table(id)
-
-        id_tabel_subset <- id_table[id_table == nbrExpectedFiles]
-
-        id_final <- as.numeric(names(id_tabel_subset))
-
-        id_final_length <- length(id_final)
-
-        nbr_sites_per_generation <- list()
-        for (i in 1:nbrGenerations) {
-            generation_name <- paste0("Generation_", i)
-            nbr_sites_per_generation[["SITES"]][[generation_name]] <- list(hypo =
-                                array(dim=id_final_length), hyper =
-                                        array(dim=id_final_length))
-        }
-
-        for (type in c("hypo", "hyper")) {
-            for (i in 1:nbrGenerations) {
-                generation_name <- paste0("Generation_", i)
-                position = 1
-                for (j in id_final){
-                    fileName <- paste0(permutations_output_dir, "SITES/", generation_name, "/", j, "_", type, ".perbase.txt")
-
-                    if (file.info(fileName)$size > 0) {
-                        sites <- read.table(fileName, stringsAsFactors = F)$V4
-                        nbr_sites_per_generation[["SITES"]][[generation_name]][[type]][position] <- length(sites)
-                    } else {
-                        nbr_sites_per_generation[["SITES"]][[generation_name]][[type]][position] <- 0
-                    }
-                    position <- position + 1
-                }
-            }
-        }
+    ## TILES
+    if (doingTiles) {
+        result <- extractDataFromFile(permutations_output_dir, "TILES")
+        nbr_sites_per_generation[["TILES"]] <- result[["TILES"]]
     }
 
     return(nbr_sites_per_generation)

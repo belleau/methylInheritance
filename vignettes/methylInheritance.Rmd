@@ -109,7 +109,6 @@ doingTiles <- FALSE
 runRealAnalysis(allFilesByGeneration, conditionsByGeneration,
                                 output_dir = "real_results",
                                 genomeVersion = genomeVersion,
-                                nbrPermutations = nbrPermutations,
                                 nbrCores = nbrCores,
                                 nbrCoresDiffMeth = nbrCoresDiffMeth,
                                 doingSites = doingSites,
@@ -129,7 +128,7 @@ runRealAnalysis(allFilesByGeneration, conditionsByGeneration,
 runPermutation(allFilesByGeneration, conditionsByGeneration,
                                 output_dir = "test_results",
                                 genomeVersion = genomeVersion,
-                                nbrPermutations = 6,
+                                nbrPermutations = 10,
                                 nbrCores = nbrCores,
                                 nbrCoresDiffMeth = nbrCoresDiffMeth,
                                 doingSites = doingSites,
@@ -144,6 +143,8 @@ runPermutation(allFilesByGeneration, conditionsByGeneration,
                                 vSeed = 4444432)
 
 
-
+data <- extractData(realAnalysis_output_dir = "real_results", 
+                permutations_output_dir = "test_results", 
+                doingSites = doingSites, doingTiles = doingTiles)
 ```
 
