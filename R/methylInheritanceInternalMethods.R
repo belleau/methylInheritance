@@ -97,38 +97,15 @@ runOnePermutation <- function(info, output_dir,
                                 tileSize = 1000,
                                 stepSize = 1000) {
 
-    print(info)
-
-    print("HI")
-    designName = info$designName
-    count = info$count
-    file.list = info$file.list
-    sampleNames = info$sampleNames
-    conditions = info$conditions
-
-    print(paste0("designName ", designName))
-    print(paste0("count ", count))
-    print("file.list ")
-    print(file.list)
-    print(paste0("sampleNames "))
-    print(sampleNames)
-    print(paste0("conditions "))
-    print(conditions)
-    print("genomeVersion ")
-    print(genomeVersion)
-    print(paste0("qvalue ", qvalue))
-    print(paste0("maxPercReads ", maxPercReads))
-    print(paste0("tileSize ", tileSize))
-    print(paste0("stepSize ", stepSize))
-    print(paste0("minCovBasesForTiles ", minCovBasesForTiles))
-    print(paste0("minReads ", minReads))
-    print(paste0("minMethDiff ", minMethDiff))
-    print(paste0("outputdir ", output_dir))
+    designName  <- info$designName
+    count       <- info$count
+    file.list   <- info$file.list
+    sampleNames <- info$sampleNames
+    conditions  <- info$conditions
 
     ####################################
     ## prepare data
     ####################################
-    print(paste0(designName, " - ", count, "before myobj"))
 
     myobj <- read(location = file.list,
                                 sample.id = as.list(sampleNames),
@@ -142,10 +119,8 @@ runOnePermutation <- function(info, output_dir,
     #                          context = "CpG",
     #                          treatment = conditions)
 
-    print(paste0(designName, " - ", count, " after myobj"))
     ## SITES
     if (doingSites) {
-        print(paste0(designName, " - ", count, " before filter "))
         filtered.sites <- filterByCoverage(myobj,
                                             lo.count = minReads,
                                             lo.perc = NULL,
@@ -164,11 +139,8 @@ runOnePermutation <- function(info, output_dir,
         ## Get diff methyl sites
         ####################################
 
-        print(paste0(designName, " - ", count, " before get diff methyl sites "))
-
         myDiff.sites <- calculateDiffMeth(meth.sites,
                                             num.cores = nbrCoresDiffMeth)
-
 
         myDiff.sites.hyper <- get.methylDiff(myDiff.sites,
                                                 difference = minMethDiff,
@@ -179,8 +151,6 @@ runOnePermutation <- function(info, output_dir,
                                                 difference = minMethDiff,
                                                 qvalue = qvalue,
                                                 type = "hypo")
-
-        print(paste0(designName, " - ", count, " after get diff methyl sites "))
     }
 
     ## TILES
@@ -199,7 +169,6 @@ runOnePermutation <- function(info, output_dir,
         filtered.tiles <- normalizeCoverage(filtered.tiles, "median")
 
         meth.tiles <- unite(filtered.tiles, destrand = destrand)
-
 
         ####################################
         ## Get diff methyl tiles
@@ -918,44 +887,51 @@ validateRunRealAnalysis <- function(allFilesByGeneration,
 #' @keywords internal
 extractDataFromFile <- function(directory, elementType = c("SITES", "TILES")) {
 
+    ## Set the file extension
     elementPattern <- ".perbase.txt"
     if (elementType == "TILES") {
         elementPattern <- "*.pertile.txt"
     }
 
+    ## Initialize variables
     elements_per_generation <- list()
     elements_per_generation[[elementType]] <- list()
 
-    generationsDir <- list.files(path = paste0(directory,
-                                                elementType, "/"),
+    ## List directories related to methyl diff files
+    generationsDir <- list.files(path = paste0(directory, elementType, "/"),
                                     pattern = "Generation_*",
                                     all.files = FALSE,
-                                    full.names = FALSE, recursive = F,
-                                    ignore.case = FALSE, include.dirs = T,
+                                    full.names = FALSE, recursive = FALSE,
+                                    ignore.case = FALSE, include.dirs = TRUE,
                                     no.. = FALSE)
 
+    ## Setting the number of generations according to the number of directories
+    ## detected
     nbrGenerations <- length(generationsDir)
 
+    ## Two types of files (hyper and hypo) per generation
     nbrExpectedFiles <- nbrGenerations * 2
 
+    ## List all files related to methyl diff for all generations
     sitesFiles <- list.files(path = paste0(directory, elementType),
                                 pattern = paste0("*", elementPattern),
                                 all.files = FALSE,
-                                full.names = FALSE, recursive = T,
+                                full.names = FALSE, recursive = TRUE,
                                 ignore.case = FALSE, include.dirs = FALSE,
                                 no.. = FALSE)
 
+    ## Find all permutations (each permutation has a unique number associated)
+    ## that have generated the good number of methyl diff files
+    ## for all generations
     id <- sapply(strsplit(sitesFiles, "_hyp"),
                 function(x) return(as.integer(strsplit(x[1], "/")[[1]][2])))
-
     id_table <- table(id)
-
     id_tabel_subset <- id_table[id_table == nbrExpectedFiles]
-
     id_final <- as.numeric(names(id_tabel_subset))
 
     id_final_length <- length(id_final)
 
+    ## Extract the number of conserved sites between each paire of 2 generations
     for (type in c("hypo", "hyper")) {
         genArray <- 1:nbrGenerations
         groupsTwo <- lapply(genArray[-length(genArray)],
@@ -995,7 +971,7 @@ extractDataFromFile <- function(directory, elementType = c("SITES", "TILES")) {
 #'
 #' @param output_dir a string of \code{character}, TODO
 #'
-#' @param nbGenerations a positive \code{integer}, TODO
+#' @param nbrGenerations a positive \code{integer}, TODO
 #'
 #' @param doingSites a \code{logical}, TODO
 #'
@@ -1009,7 +985,7 @@ extractDataFromFile <- function(directory, elementType = c("SITES", "TILES")) {
 #'
 #' @author Astrid Deschenes
 #' @keywords internal
-createOutputDir <- function(output_dir, nbGenerations,
+createOutputDir <- function(output_dir, nbrGenerations,
                                 doingSites=TRUE, doingTiles=FALSE) {
 
     # Create directories for output files
@@ -1023,7 +999,7 @@ createOutputDir <- function(output_dir, nbGenerations,
         if (!dir.exists(dirName)) {
             dir.create(dirName, showWarnings = TRUE)
         }
-        for (j in 1:nbGenerations) {
+        for (j in 1:nbrGenerations) {
             dirName = paste0(output_dir, type, "/Generation_", j)
             if (!dir.exists(dirName)) {
                 dir.create(dirName, showWarnings = TRUE)
@@ -1037,7 +1013,7 @@ createOutputDir <- function(output_dir, nbGenerations,
         if (!dir.exists(dirName)) {
             dir.create(dirName, showWarnings = TRUE)
         }
-        for (j in 1:nbGenerations) {
+        for (j in 1:nbrGenerations) {
             dirName = paste0(output_dir, type, "/Generation_", j)
             if (!dir.exists(dirName)) {
                 dir.create(dirName, showWarnings = TRUE)
@@ -1046,4 +1022,197 @@ createOutputDir <- function(output_dir, nbGenerations,
     }
 
     return(0)
+}
+
+#' @title Run one analysis using \code{methylKit} package
+#'
+#' @description Run one CpG site or region analysis using the \code{methylKit}
+#' package. The output of the analysis is saved in a file in the specified
+#' directory.
+#'
+#' @param info TODO
+#'
+#' @param output_dir a string, the name of the directory that will contain
+#' the results of the permutation. If the directory does not exist, it will
+#' be created.
+#'
+#' @param genomeVersion a string, the genome assembly such as hg18, mm9, etc.
+#' It can be any string. The parameter
+#' correspond to the \code{assembly} parameter in the \code{methylKit} package.
+#'
+#' @param minReads a positive \code{integer} Bases and regions having lower
+#' coverage than this count are discarded. The parameter
+#' correspond to the \code{lo.count} parameter in the  \code{methylKit} package.
+#'
+#' @param qvalue a positive \code{double} inferior ot \code{1}, the cutoff
+#' for qvalue of differential methylation statistic. Default: \code{0.01}.
+#'
+#' @param maxPercReads a double between [0-100], the percentile of read
+#' counts that is going to be used as upper cutoff. Bases ore regions
+#' having higher
+#' coverage than this percentile are discarded. Parameter used for both CpG
+#' sites and tiles analysis. The parameter
+#' correspond to the \code{hi.perc} parameter in the  \code{methylKit} package.
+#' Default: \code{99.9}.
+#'
+#' @param minMethDiff a positive integer betwwen [0,100], the absolute value
+#' of methylation
+#' percentage change between cases and controls. The parameter
+#' correspond to the \code{difference} parameter in the
+#' package \code{methylKit}.
+#' Default: \code{10}.
+#'
+#' @param destrand a logical, when \code{TRUE} will merge reads on both
+#' strands of a CpG dinucleotide to provide better coverage. Only advised
+#' when looking at CpG methylation. Parameter used for both
+#' sites and tiles analysis.
+#' Default: \code{FALSE}.
+#'
+#' @param nbrCoresDiffMeth a positive integer, the number of cores to use for
+#' parallel differential methylation calculations.Parameter used for both
+#' sites and tiles analysis. The parameter
+#' corresponds to the \code{num.cores} parameter in the
+#' package \code{methylKit}.
+#' Default: \code{1} and always \code{1} for Windows.
+#'
+#' @param minCovBasesForTiles a non-negative integer, the minimum number of
+#' bases to be covered in a given tiling window. The parameter
+#' corresponds to the \code{cov.bases} parameter in the
+#' package \code{methylKit}.
+#' Only used when \code{doingTiles} =
+#' \code{TRUE}. Default: \code{0}.
+#'
+#' @param tileSize a positive integer, the size of the tiling window. The
+#' parameter corresponds to the \code{win.size} parameter in
+#' the  \code{methylKit} package. Only
+#' used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.
+#'
+#' @param stepSize a positive integer, the step size of tiling windows. The
+#' parameter corresponds to the \code{stepSize} parameter in
+#' the  \code{methylKit} package. Only
+#' used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.
+#'
+#' @param doingSites a logical, when \code{TRUE} will do the analysis on the
+#' CpG dinucleotide sites. Default: \code{TRUE}.
+#'
+#' @param doingTiles a logical, when \code{TRUE} will do the analysis on the
+#' tiles. Default: \code{FALSE}.
+#'
+#' @param debug Default: \code{FALSE}.
+#'
+#' @return TODO
+#'
+#' @examples
+#'
+#' ##TODO
+#'
+#' @author Astrid Deschenes, Pascal Belleau
+#' @importFrom methylKit filterByCoverage normalizeCoverage unite calculateDiffMeth getMethylDiff getData tileMethylCounts methRead
+#' @keywords internal
+runTOTO <- function(info, output_dir,
+                              genomeVersion,
+                              nbrCoresDiffMeth = 1,
+                              doingSites = TRUE,
+                              doingTiles = FALSE,
+                              minReads = 10,
+                              minMethDiff = 10,
+                              qvalue = 0.01,
+                              maxPercReads = 99.9,
+                              destrand = FALSE,
+                              minCovBasesForTiles = 0,
+                              tileSize = 1000,
+                              stepSize = 1000) {
+
+    #print(info)
+
+    nbrGenerations <- length(info)
+
+    permutationList <- list()
+    permutationList[["TILES"]] <- list()
+    permutationList[["SITES"]] <- list()
+
+    permutationList[["TILES"]][["HYPER"]] <- vector("list", length(nbrGenerations))
+    permutationList[["TILES"]][["HYPO"]] <- vector("list", length(nbrGenerations))
+    permutationList[["SITES"]][["HYPER"]] <- vector("list", length(nbrGenerations))
+    permutationList[["SITES"]][["HYPO"]] <- vector("list", length(nbrGenerations))
+
+    for (i in 1:nbrGenerations) {
+        file.list    <- info[[i]][["file.list"]]
+        sampleNames  <- info[[i]][["sampleNames"]]
+        conditions   <- info[[i]][["conditions"]]
+        designName   <- info[[i]][["designName"]]
+
+
+        myobj <- methRead(location = file.list,
+                  sample.id = as.list(sampleNames),
+                  assembly = genomeVersion,
+                  context = "CpG",
+                  treatment = conditions)
+
+        ## SITES
+        if (doingSites) {
+
+            filtered.sites <- filterByCoverage(myobj,
+                                           lo.count = minReads,
+                                           lo.perc = NULL,
+                                           hi.count = NULL,
+                                           hi.perc = maxPercReads)
+
+            filtered.sites <- normalizeCoverage(filtered.sites, "median")
+
+            meth.sites <- unite(filtered.sites, destrand = destrand)
+
+            if (length(meth.sites@.Data[[1]]) == 0) {
+                stop("meth.sites IS EMPTY")
+            }
+
+            ####################################
+            ## Get diff methyl sites
+            ####################################
+            myDiff.sites <- calculateDiffMeth(meth.sites,
+                                          num.cores = nbrCoresDiffMeth)
+
+            permutationList[["SITES"]][["HYPER"]][[i]] <- getMethylDiff(myDiff.sites,
+                                            difference = minMethDiff,
+                                            qvalue = qvalue, type = "hyper")
+
+            permutationList[["SITES"]][["HYPO"]][[i]]  <- getMethylDiff(myDiff.sites,
+                                            difference = minMethDiff,
+                                            qvalue = qvalue, type = "hypo")
+        }
+
+        ## TILES
+        if (doingTiles) {
+            tiles <- tileMethylCounts(myobj, win.size = tileSize,
+                                  step.size = stepSize,
+                                  cov.bases = minCovBasesForTiles)
+
+            filtered.tiles <- filterByCoverage(tiles,
+                                           lo.count = minReads,
+                                           lo.perc = NULL,
+                                           hi.count = NULL,
+                                           hi.perc = maxPercReads)
+
+            filtered.tiles <- normalizeCoverage(filtered.tiles, "median")
+
+            meth.tiles <- unite(filtered.tiles, destrand = destrand)
+
+            ####################################
+            ## Get diff methyl tiles
+            ####################################
+            myDiff.tiles <- calculateDiffMeth(meth.tiles,
+                                          num.cores = nbrCoresDiffMeth)
+
+            permutationList[["TILES"]][["HYPER"]][[i]] <- getMethylDiff(myDiff.tiles,
+                                            difference = minMethDiff,
+                                            qvalue = qvalue, type = "hyper")
+
+            permutationList[["TILES"]][["HYPO"]][[i]]  <- getMethylDiff(myDiff.tiles,
+                                            difference = minMethDiff,
+                                            qvalue = qvalue, type = "hypo")
+        }
+    }
+
+    warnings()
+    return(permutationList)
 }

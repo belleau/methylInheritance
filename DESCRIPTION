@@ -22,7 +22,6 @@ Depends:
     R (>= 3.3)
 Imports:
     methylKit,
-    parallel,
     BiocParallel,
     S4Vectors,
     utils
