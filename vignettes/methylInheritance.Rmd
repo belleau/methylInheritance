@@ -1,5 +1,5 @@
 ---
-title: "Permutation"
+title: "Conserved Differentially Methylated Elements from One Generation to the Next: Inheritance versus Randomness"
 author: Astrid Deschenes, Pascal Belleau and Arnaud Droit 
 output:
   BiocStyle::html_document:
@@ -28,6 +28,15 @@ library(knitr)
 The **methylInheritance** package and the underlying **methylInheritance** code 
 are distributed under the Artistic license 2.0. You are free to use and 
 redistribute this software. 
+
+# TODO
+
+The analysis of treatment effects on DNA methylation, from one generation to 
+the next (inter-generational) and across generations that were not exposed to 
+the initial environment (trans-generational) represent complex designs. 
+High-throughput sequencing techniques enable genome-wide detection of 
+differentially methylated elements (DME), commonly sites (DMS) or 
+regions (DMR).
 
 
 # Loading methylInheritance package
@@ -106,29 +115,29 @@ doingSites <- TRUE
 doingTiles <- FALSE
 
 ## Run analysis with real data (without permutation)
-runRealAnalysis(allFilesByGeneration, conditionsByGeneration,
-                                output_dir = "real_results",
-                                genomeVersion = genomeVersion,
-                                nbrCores = nbrCores,
-                                nbrCoresDiffMeth = nbrCoresDiffMeth,
-                                doingSites = doingSites,
-                                doingTiles = doingTiles,
-                                minReads = 10,
-                                minMethDiff = 20,
-                                qvalue = 0.01,
-                                maxPercReads = 99.9,
-                                destrand = FALSE,
-                                tileSize = 1000,
-                                stepSize = 1000,
-                                vSeed = 233333)
+# runRealAnalysis(allFilesByGeneration, conditionsByGeneration,
+#                                 output_dir = "real_results",
+#                                 genomeVersion = genomeVersion,
+#                                 nbrCores = nbrCores,
+#                                 nbrCoresDiffMeth = nbrCoresDiffMeth,
+#                                 doingSites = doingSites,
+#                                 doingTiles = doingTiles,
+#                                 minReads = 10,
+#                                 minMethDiff = 20,
+#                                 qvalue = 0.01,
+#                                 maxPercReads = 99.9,
+#                                 destrand = FALSE,
+#                                 tileSize = 1000,
+#                                 stepSize = 1000,
+#                                 vSeed = 233333)
 
 ## Run analysis with real data (without permutation)
 ## Only 6 permutations are done but a much high number should be done
 ## for a real analysis
-runPermutation(allFilesByGeneration, conditionsByGeneration,
+a <- runPermutation(allFilesByGeneration, conditionsByGeneration,
                                 output_dir = "test_results",
                                 genomeVersion = genomeVersion,
-                                nbrPermutations = 10,
+                                nbrPermutations = 2,
                                 nbrCores = nbrCores,
                                 nbrCoresDiffMeth = nbrCoresDiffMeth,
                                 doingSites = doingSites,
@@ -146,5 +155,7 @@ runPermutation(allFilesByGeneration, conditionsByGeneration,
 data <- extractData(realAnalysis_output_dir = "real_results", 
                 permutations_output_dir = "test_results", 
                 doingSites = doingSites, doingTiles = doingTiles)
+
+data
 ```
 
