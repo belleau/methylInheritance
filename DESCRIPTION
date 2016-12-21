@@ -24,6 +24,7 @@ Imports:
     methylKit,
     BiocParallel,
     S4Vectors,
+    methods,
     utils
 Suggests:
     BiocStyle,
