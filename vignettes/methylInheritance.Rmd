@@ -29,15 +29,27 @@ The **methylInheritance** package and the underlying **methylInheritance** code
 are distributed under the Artistic license 2.0. You are free to use and 
 redistribute this software. 
 
-# TODO
+# Introduction
 
 The analysis of treatment effects on DNA methylation, from one generation to 
 the next (inter-generational) and across generations that were not exposed to 
 the initial environment (trans-generational) represent complex designs. 
 High-throughput sequencing techniques enable genome-wide detection of 
 differentially methylated elements (DME), commonly sites (DMS) or 
-regions (DMR).
+regions (DMR).Due to software design, the detection of DME is usually 
+made on each generation separately. However, the common DME between 
+generations due to randomness is not negligible when the number of DME 
+detected in each generation is high. To judge the effect on DME that is 
+inherited from a treatment in previous generation, the observed number of 
+conserved DME must be compared to the randomly expected number. 
 
+We present a permutation analysis, based on Monte Carlo sampling, aim to infer 
+a relation between the number of conserved DME from one generation to the next 
+to the inheritance effect of treatment and to dismiss stochastic effect.
+
+The `r Rpackage("methylInheritance")` package can perform a permutation 
+analysis on both differentially methylated sites (DMS) and differentially 
+methylated tiles (DMT) using the `r Biocpkg("methylKit")`.
 
 # Loading methylInheritance package
 
@@ -47,7 +59,6 @@ first be loaded with the following command:
 ```{r loadingPackage, warning=FALSE, message=FALSE}
 library(methylInheritance)
 ```
-
 
 ```{r loadingFiles, warning=FALSE, message=FALSE}
 F1_control_01 <- system.file("extdata",
@@ -111,8 +122,7 @@ conditionsByGeneration <- list(F1=conditions, F2=conditions, F3=conditions)
 genomeVersion <- "rnor5"
 nbrCores <- 1
 nbrCoresDiffMeth <- 1
-doingSites <- TRUE
-doingTiles <- FALSE
+type <- "sites"
 
 ## Run analysis with real data (without permutation)
 # runRealAnalysis(allFilesByGeneration, conditionsByGeneration,
@@ -134,28 +144,28 @@ doingTiles <- FALSE
 ## Run analysis with real data (without permutation)
 ## Only 6 permutations are done but a much high number should be done
 ## for a real analysis
-a <- runPermutation(allFilesByGeneration, conditionsByGeneration,
-                                output_dir = "test_results",
-                                genomeVersion = genomeVersion,
-                                nbrPermutations = 2,
-                                nbrCores = nbrCores,
-                                nbrCoresDiffMeth = nbrCoresDiffMeth,
-                                doingSites = doingSites,
-                                doingTiles = doingTiles,
-                                minReads = 10,
-                                minMethDiff = 20,
-                                qvalue = 0.01,
-                                maxPercReads = 99.9,
-                                destrand = FALSE,
-                                tileSize = 1000,
-                                stepSize = 1000,
-                                vSeed = 4444432)
+# a <- runPermutation(allFilesByGeneration, conditionsByGeneration,
+#                                 output_dir = "test_results",
+#                                 genomeVersion = genomeVersion,
+#                                 nbrPermutations = 2,
+#                                 nbrCores = nbrCores,
+#                                 nbrCoresDiffMeth = nbrCoresDiffMeth,
+#                                 doingSites = doingSites,
+#                                 doingTiles = doingTiles,
+#                                 minReads = 10,
+#                                 minMethDiff = 20,
+#                                 qvalue = 0.01,
+#                                 maxPercReads = 99.9,
+#                                 destrand = FALSE,
+#                                 tileSize = 1000,
+#                                 stepSize = 1000,
+#                                 vSeed = 4444432)
+# 
+# 
+# data <- extractData(realAnalysis_output_dir = "real_results", 
+#                 permutations_output_dir = "test_results", 
+#                 doingSites = doingSites, doingTiles = doingTiles)
 
-
-data <- extractData(realAnalysis_output_dir = "real_results", 
-                permutations_output_dir = "test_results", 
-                doingSites = doingSites, doingTiles = doingTiles)
-
-data
+#data
 ```
 
