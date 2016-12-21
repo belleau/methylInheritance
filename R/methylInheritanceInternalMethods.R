@@ -307,9 +307,9 @@ getSampleNameFromFileName <- function(fileName) {
 #' @title Parameters validation for the \code{\link{runPermutation}} function
 #'
 #' @description Validation of all parameters needed by the public
-#' #' \code{\link{runPermutation}} function.
+#' \code{\link{runPermutationUsingMethylKitObject}} function.
 #'
-#' @param allFilesByGeneration a \code{list} of \code{list}, a \code{list}
+#' @param methylKitObject a \code{list} of \code{list}, a \code{list}
 #' composed of \code{list}
 #' of files with methylation information for
 #' bases or regions in the genome. One \code{list} must contain all files
@@ -318,8 +318,7 @@ getSampleNameFromFileName <- function(fileName) {
 #' must be present to do a permutation analysis.
 #' The parameter
 #' corresponds to the \code{location} parameter in the  \code{methylKit} package.
-#'
-#' @param conditionsByGeneration a \code{list} of \code{vector} containing
+#' A \code{list} of \code{vector} containing
 #' \code{0} and \code{1}. The information indicating which files are
 #' associated to controls (\code{0}) and which files are cases (\code{1}).
 #' One \code{vector} must contain all informations
@@ -333,10 +332,6 @@ getSampleNameFromFileName <- function(fileName) {
 #' the results of the permutation. If the directory does not exist, it will
 #' be created.
 #'
-#' @param genomeVersion a string, the genome assembly such as hg18, mm9, etc.
-#' It can be any string. The parameter
-#' correspond to the \code{assembly} parameter in the  \code{methylKit} package.
-#'
 #' @param nbrPermutations, a positive \code{integer}, the total number of
 #' permutations that is going to be done.
 #'
@@ -348,12 +343,6 @@ getSampleNameFromFileName <- function(fileName) {
 #' used for both sites and tiles analysis. The parameter
 #' corresponds to the \code{num.cores} parameter in
 #' the \code{methylKit} package.
-#'
-#' @param doingSites a \code{logical}, when \code{TRUE} will do the analysis
-#' on the CpG dinucleotide sites.
-#'
-#' @param doingTiles a \code{logical}, when \code{TRUE} will do the analysis
-#' on the tiles.
 #'
 #' @param minReads a positive \code{integer} Bases and regions having lower
 #' coverage than this count are discarded. The parameter
@@ -405,22 +394,22 @@ getSampleNameFromFileName <- function(fileName) {
 #' @examples
 #'
 #' ## The function returns 0 when all paramaters are valid
-#' #methylInheritance:::validateRunPermutation(
+#' #methylInheritance:::validateRunPermutationethylKitObject(
 #' #allFilesByGeneration = list(list("file01.txt", "file02.txt"),
 #' #list("file03.txt", "file04.txt")),
 #' #conditionsByGeneration = list(c(0,1), c(0,1)), output_dir = "test",
-#' #genomeVersion = "hg19", nbrPermutations = 10000, nbrCores = 1,
+#' #nbrPermutations = 10000, nbrCores = 1,
 #' #nbrCoresDiffMeth = 1, doingSites = TRUE, doingTiles = TRUE,
 #' #minReads = 10, minMethDiff = 25, qvalue = 0.01, maxPercReads = 99.9,
 #' #destrand = TRUE, minCovBasesForTiles = 10, tileSize = 1000,
 #' #stepSize = 500, vSeed = 12)
 #'
 #' ## The function raises an error when at least one paramater is not valid
-#' \dontrun{methylInheritance:::validateRunPermutation(
+#' \dontrun{methylInheritance:::validateRunPermutationethylKitObject(
 #' allFilesByGeneration = list(list("file01.txt", "file02.txt"),
 #' list("file03.txt", "file04.txt")),
 #' conditionsByGeneration = list(c(0,1)), output_dir = "test",
-#' genomeVersion = "hg19", nbrPermutations = 10000, nbrCores = 1,
+#' nbrPermutations = 10000, nbrCores = 1,
 #' nbrCoresDiffMeth = 1, doingSites = TRUE, doingTiles = TRUE,
 #' minReads = 10, minMethDiff = 25, qvalue = 0.01, maxPercReads = 99.9,
 #' destrand = TRUE, minCovBasesForTiles = 10, tileSize = 1000,
@@ -429,64 +418,24 @@ getSampleNameFromFileName <- function(fileName) {
 #' @author Astrid Deschenes
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
-validateRunPermutation <- function(allFilesByGeneration,
-                                    conditionsByGeneration,
-                                    output_dir, genomeVersion,
+validateRunPermutationethylKitObject <- function(methylKitObject,
+                                    output_dir,
                                     nbrPermutations, nbrCores,
-                                    nbrCoresDiffMeth, doingSites, doingTiles,
+                                    nbrCoresDiffMeth,
                                     minReads, minMethDiff, qvalue,
                                     maxPercReads, destrand,
                                     minCovBasesForTiles, tileSize,
                                     stepSize, vSeed) {
 
-    ## Validate that the allFilesByGeneration is a list
-    if (!is.list(allFilesByGeneration)) {
-        stop("allFilesByGeneration must be a list")
-    }
-
-    ## Validate that the allFilesByGeneration contains at least 2 lists
-    if (length(allFilesByGeneration) < 2 ||
-        !all(sapply(allFilesByGeneration, is.list))) {
-        stop(paste0("allFilesByGeneration must be a list containing at ",
-                    "least 2 sub-lists"))
-    }
-
     ## Validate that all entries in allFilesByGeneration are existing files
-    for (entry in unlist(allFilesByGeneration)) {
-        if (!file.exists(entry)) {
-            stop(paste0("The file \"", entry, "\" does not exist."))
-        }
+    if (!file.exists(methylKitObject)) {
+            stop(paste0("The file \"",
+                        methylKitObjectWithCondition, "\" does not exist."))
     }
-
-    # ## Validate that the conditionsByGeneration is a list
-    # if (!is.list(conditionsByGeneration)) {
-    #     stop("conditionsByGeneration must be a list")
-    # }
-    #
-    # ## Validate that the conditionsByGeneration contains at least 2 vectors
-    # if (length(conditionsByGeneration) < 2 ||
-    #     !all(sapply(conditionsByGeneration, is.vector))) {
-    #     stop(paste0("conditionsByGeneration must be a list containing at ",
-    #                 "least 2 sub-vectors"))
-    # }
-    #
-    # ## Validate that the conditionsByGeneration and AllFilesByGeneration are
-    # ## the same length
-    # fileLengths <- sapply(allFilesByGeneration, length)
-    # conditionLengths <- sapply(conditionsByGeneration, length)
-    # if (length(fileLengths) != length(conditionsByGeneration)) {
-    #     stop(paste0("The content of the parameters \"allFilesByGeneration\" ",
-    #                 "and \"conditionsByGeneration\" must be the same length"))
-    # }
 
     ## Validate that the output_dir is an not empty string
     if (!is.character(output_dir)) {
         stop("output_dir must be a character string")
-    }
-
-    ## Validate that the genomeVersion is an not empty string
-    if (!is.character(genomeVersion)) {
-        stop("genomeVersion must be a character string")
     }
 
     ## Validate that nbrPermutations is an positive integer
@@ -520,16 +469,6 @@ validateRunPermutation <- function(allFilesByGeneration,
         stop("nbrCoresDiffMeth must be 1 on a Windows system.")
     }
 
-    ## Validate that doingSites is a logical
-    if (!is.logical(doingSites)) {
-        stop("doingSites must be a logical.")
-    }
-
-    ## Validate that doingTiles is a logical
-    if (!is.logical(doingTiles)) {
-        stop("doingTiles must be a logical.")
-    }
-
     ## Validate that minReads is an positive integer
     if (!(isSingleInteger(minReads) || isSingleNumber(minReads)) ||
             as.integer(minReads) < 1) {
@@ -559,7 +498,7 @@ validateRunPermutation <- function(allFilesByGeneration,
         stop("destrand must be a logical.")
     }
 
-    if (doingTiles) {
+    if (any(type %in% c("both", "tiles"))) {
         ## Validate that minCovBasesForTiles is an positive integer
         if (!(isSingleInteger(minCovBasesForTiles) ||
               isSingleNumber(minCovBasesForTiles)) ||
@@ -1210,6 +1149,158 @@ runTOTO <- function(info, output_dir,
             permutationList[["TILES"]][["HYPO"]][[i]]  <- getMethylDiff(myDiff.tiles,
                                             difference = minMethDiff,
                                             qvalue = qvalue, type = "hypo")
+        }
+    }
+
+    warnings()
+    return(permutationList)
+}
+
+#' @title Run one permutation using \code{methylKit} package. One permutation
+#' includes analysis for all generations associated to the same permutation.
+#'
+#' @description Run one CpG site or region analysis using the \code{methylKit}
+#' package. The output of the analysis is saved in a file in the specified
+#' directory.
+#'
+#' @param methylRawForAllGenerations TODO
+#'
+#' @param type One of the "sites","tiles" or "both" strings. Specifies the type
+#' of differentially methylated elements should be returned. For
+#' retrieving differentially methylated bases type="sites"; for
+#' differentially methylated regions type="tiles". Default: "both".
+#'
+#' @param nbrCoresDiffMeth a positive integer, the number of cores to use for
+#' parallel differential methylation calculations.Parameter used for both
+#' sites and tiles analysis. The parameter
+#' corresponds to the \code{num.cores} parameter in the
+#' package \code{methylKit}.
+#' Default: \code{1} and always \code{1} for Windows.
+#'
+#' @param minReads a positive \code{integer} Bases and regions having lower
+#' coverage than this count are discarded. The parameter
+#' correspond to the \code{lo.count} parameter in the  \code{methylKit} package.
+#'
+#' @param qvalue a positive \code{double} inferior ot \code{1}, the cutoff
+#' for qvalue of differential methylation statistic. Default: \code{0.01}.
+#'
+#' @param maxPercReads a double between [0-100], the percentile of read
+#' counts that is going to be used as upper cutoff. Bases ore regions
+#' having higher
+#' coverage than this percentile are discarded. Parameter used for both CpG
+#' sites and tiles analysis. The parameter
+#' correspond to the \code{hi.perc} parameter in the  \code{methylKit} package.
+#' Default: \code{99.9}.
+#'
+#' @param minMethDiff a positive integer betwwen [0,100], the absolute value
+#' of methylation
+#' percentage change between cases and controls. The parameter
+#' correspond to the \code{difference} parameter in the
+#' package \code{methylKit}.
+#' Default: \code{10}.
+#'
+#' @param destrand a logical, when \code{TRUE} will merge reads on both
+#' strands of a CpG dinucleotide to provide better coverage. Only advised
+#' when looking at CpG methylation. Parameter used for both
+#' sites and tiles analysis.
+#' Default: \code{FALSE}.
+#'
+#' @param minCovBasesForTiles a non-negative integer, the minimum number of
+#' bases to be covered in a given tiling window. The parameter
+#' corresponds to the \code{cov.bases} parameter in the
+#' package \code{methylKit}.
+#' Only used when \code{doingTiles} =
+#' \code{TRUE}. Default: \code{0}.
+#'
+#' @param tileSize a positive integer, the size of the tiling window. The
+#' parameter corresponds to the \code{win.size} parameter in
+#' the  \code{methylKit} package. Only
+#' used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.
+#'
+#' @param stepSize a positive integer, the step size of tiling windows. The
+#' parameter corresponds to the \code{stepSize} parameter in
+#' the  \code{methylKit} package. Only
+#' used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.
+#'
+#' @param doingSites a logical, when \code{TRUE} will do the analysis on the
+#' CpG dinucleotide sites. Default: \code{TRUE}.
+#'
+#' @param doingTiles a logical, when \code{TRUE} will do the analysis on the
+#' tiles. Default: \code{FALSE}.
+#'
+#' @param debug Default: \code{FALSE}.
+#'
+#' @return TODO
+#'
+#' @examples
+#'
+#' ##TODO
+#'
+#' @author Astrid Deschenes, Pascal Belleau
+#' @importFrom methylKit filterByCoverage normalizeCoverage unite calculateDiffMeth getMethylDiff getData tileMethylCounts methRead
+#' @keywords internal
+runOnePermutationOnAllGenerations <- function(methylRawForAllGenerations,
+                        type = c("all", "sites", "tiles"),
+                        nbrCoresDiffMeth = 1,
+                        minReads = 10, minMethDiff = 10,
+                        qvalue = 0.01, maxPercReads = 99.9,
+                        destrand = FALSE, minCovBasesForTiles = 0,
+                        tileSize = 1000, stepSize = 1000) {
+
+    nbrGenerations <- length(methylRawForAllGenerations)
+
+    permutationList <- list()
+    permutationList[["TILES"]] <- list()
+    permutationList[["SITES"]] <- list()
+
+    for (i in 1:nbrGenerations) {
+
+        myobj <- methylRawForAllGenerations[[i]]
+
+        ## SITES
+        if (any(type %in% c("sites", "all"))) {
+
+            filtered.sites <- filterByCoverage(myobj,
+                                               lo.count = minReads,
+                                               lo.perc = NULL,
+                                               hi.count = NULL,
+                                               hi.perc = maxPercReads)
+
+            ## Normalize coverage
+            filtered.sites <- normalizeCoverage(filtered.sites, "median")
+
+            meth.sites <- unite(filtered.sites, destrand = destrand)
+
+            if (length(meth.sites@.Data[[1]]) == 0) {
+                stop("meth.sites IS EMPTY")
+            }
+
+            ## Get diff methylated sites
+            permutationList[["SITES"]][[i]] <- calculateDiffMeth(meth.sites,
+                                                num.cores = nbrCoresDiffMeth)
+        }
+
+        ## TILES
+
+        if (any(type %in% c("tiles", "all"))) {
+            tiles <- tileMethylCounts(myobj, win.size = tileSize,
+                                      step.size = stepSize,
+                                      cov.bases = minCovBasesForTiles)
+
+            filtered.tiles <- filterByCoverage(tiles,
+                                               lo.count = minReads,
+                                               lo.perc = NULL,
+                                               hi.count = NULL,
+                                               hi.perc = maxPercReads)
+
+            ## Normalize coverage
+            filtered.tiles <- normalizeCoverage(filtered.tiles, "median")
+
+            meth.tiles <- unite(filtered.tiles, destrand = destrand)
+
+            ## Get diff methylated tiles
+            permutationList[["TILES"]][[i]] <- calculateDiffMeth(meth.tiles,
+                                                num.cores = nbrCoresDiffMeth)
         }
     }
 

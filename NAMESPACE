@@ -3,6 +3,7 @@
 export(extractData)
 export(runPermutation)
 export(runPermutationTEST)
+export(runPermutationUsingRDS)
 export(runRealAnalysis)
 importFrom(BiocParallel,MulticoreParam)
 importFrom(BiocParallel,SnowParam)
