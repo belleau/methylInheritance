@@ -11,6 +11,27 @@ runPermutationUsingRDS(methylKitRDS, output_dir, nbrPermutations = 1000,
   stepSize = 1000, vSeed = -1)
 }
 \arguments{
+\item{methylKitRDS}{a \code{list} of \code{list}, a \code{list}
+composed of \code{list}
+of files with methylation information for
+bases or regions in the genome. One \code{list} must contain all files
+related to the same generation. So, if 3 generations are analyzed, a
+\code{list} containing 3 \code{list} must be passed. At least 2 generations
+must be present to do a permutation analysis.
+The parameter
+corresponds to the \code{location} parameter in the package \code{methylKit}.
+A \code{list} of \code{vector} containing
+\code{0} and \code{1}. The information indicating which files are
+associated to controls (\code{0}) and which files are cases (\code{1}).
+One \code{vector} must contain all informations
+related to the same generation. So, if 3 generations are analyzed, a
+\code{list} containing 3 \code{vector} must be passed. At least 2
+generations
+must be present to do a permutation analysis.
+The parameter
+corresponds to the \code{treatment} parameter in the package
+\code{methylKit}.}
+
 \item{output_dir}{a string, the name of the directory that will contain
 the results of the permutation. If the directory does not exist, it will
 be created.}
@@ -79,27 +100,6 @@ used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.}
 \item{vSeed}{a \code{integer}, a seed used when reproducible results are
 needed. When a value inferior or equal to zero is given, a random integer
 is used. Default: \code{-1}.}
-
-\item{methylKitObject}{a \code{list} of \code{list}, a \code{list}
-composed of \code{list}
-of files with methylation information for
-bases or regions in the genome. One \code{list} must contain all files
-related to the same generation. So, if 3 generations are analyzed, a
-\code{list} containing 3 \code{list} must be passed. At least 2 generations
-must be present to do a permutation analysis.
-The parameter
-corresponds to the \code{location} parameter in the package \code{methylKit}.
-A \code{list} of \code{vector} containing
-\code{0} and \code{1}. The information indicating which files are
-associated to controls (\code{0}) and which files are cases (\code{1}).
-One \code{vector} must contain all informations
-related to the same generation. So, if 3 generations are analyzed, a
-\code{list} containing 3 \code{vector} must be passed. At least 2
-generations
-must be present to do a permutation analysis.
-The parameter
-corresponds to the \code{treatment} parameter in the package
-\code{methylKit}.}
 }
 \value{
 TODO

@@ -418,7 +418,7 @@ runRealAnalysis <- function(allFilesByGeneration, conditionsByGeneration,
 #'
 #' @description TODO
 #'
-#' @param methylKitObject a \code{list} of \code{list}, a \code{list}
+#' @param methylKitRDS a \code{list} of \code{list}, a \code{list}
 #' composed of \code{list}
 #' of files with methylation information for
 #' bases or regions in the genome. One \code{list} must contain all files
