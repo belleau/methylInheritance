@@ -590,16 +590,14 @@ runPermutationUsingRDS <- function(methylKitRDSFile,
     rm(permutationSamples)
 
     if (nbrCores == 1) {
-        bp_param <- SnowParam()
+        bpParam <- SnowParam()
     } else {
-        bp_param <- MulticoreParam(workers = nbrCores)
+        bpParam <- MulticoreParam(workers = nbrCores)
     }
 
     redoList <- list()
 
-    result <- bpmapply(FUN = runOnePermutationOnAllGenerations,
-                        finalList,
-                        MoreArgs = list(
+    result <- bplapply(finalList, FUN = runOnePermutationOnAllGenerations,
                             type = type,
                             outputDir = outputDir,
                             nbrCoresDiffMeth = nbrCoresDiffMeth,
@@ -610,9 +608,9 @@ runPermutationUsingRDS <- function(methylKitRDSFile,
                             destrand = destrand,
                             minCovBasesForTiles = minCovBasesForTiles,
                             tileSize = tileSize,
-                            stepSize = stepSize),
+                            stepSize = stepSize,
                         BPREDO = redoList,
-                        BPPARAM = bp_param)
+                        BPPARAM = bpParam)
 
     return(result)
 }
