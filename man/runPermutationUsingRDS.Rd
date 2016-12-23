@@ -2,7 +2,8 @@
 % Please edit documentation in R/methylInheritanceMethods.R
 \name{runPermutationUsingRDS}
 \alias{runPermutationUsingRDS}
-\title{TODO}
+\title{Run all permutations on the specified multi-generational dataset in
+RDS format.}
 \usage{
 runPermutationUsingRDS(methylKitRDSFile, type = c("both", "sites", "tiles"),
   outputDir = NULL, nbrPermutations = 1000, nbrCores = 1,
@@ -12,7 +13,7 @@ runPermutationUsingRDS(methylKitRDSFile, type = c("both", "sites", "tiles"),
 }
 \arguments{
 \item{methylKitRDSFile}{a string, the name of the file containing the
-methylKit objet used for the permutation.
+methylKit objet used for the permutation analysis.
 TODO
 of files with methylation information for
 bases or regions in the genome. One \code{list} must contain all files

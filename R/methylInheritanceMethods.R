@@ -413,12 +413,14 @@ runRealAnalysis <- function(allFilesByGeneration, conditionsByGeneration,
     return(result)
 }
 
-#' @title TODO
+#' @title Run all permutations on the specified multi-generational dataset in
+#' RDS format.
+#'
 #'
 #' @description TODO
 #'
 #' @param methylKitRDSFile a string, the name of the file containing the
-#' methylKit objet used for the permutation.
+#' methylKit objet used for the permutation analysis.
 #' TODO
 #' of files with methylation information for
 #' bases or regions in the genome. One \code{list} must contain all files
@@ -516,7 +518,7 @@ runRealAnalysis <- function(allFilesByGeneration, conditionsByGeneration,
 #' ##TODO
 #'
 #' @author Astrid Deschenes, Pascal Belleau
-#' @importFrom BiocParallel bplapply MulticoreParam SnowParam bptry bpok bpmapply
+#' @importFrom BiocParallel bplapply MulticoreParam SnowParam bptry bpok
 #' @importFrom methods new
 #' @export
 runPermutationUsingRDS <- function(methylKitRDSFile,

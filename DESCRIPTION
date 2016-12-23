@@ -22,6 +22,7 @@ Depends:
     R (>= 3.3)
 Imports:
     methylKit,
+    BiocGenerics,
     BiocParallel,
     S4Vectors,
     methods,
