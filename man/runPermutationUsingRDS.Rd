@@ -42,7 +42,7 @@ differentially methylated regions type="tiles". Default: "both".}
 \item{outputDir}{a string, the name of the directory that will contain
 the results of the permutation or \code{NULL}. If the directory does not
 exist, it will be created. When \code{NULL}, the results of the permutation
-are not saved.}
+are not saved. Default: \code{NULL}.}
 
 \item{nbrPermutations, }{a positive \code{integer}, the total number of
 permutations that is going to be done. Default: \code{1000}.}

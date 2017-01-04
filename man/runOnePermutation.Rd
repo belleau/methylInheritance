@@ -13,9 +13,10 @@ runOnePermutation(info, output_dir, genomeVersion, nbrCoresDiffMeth = 1,
 \arguments{
 \item{info}{TODO}
 
-\item{output_dir}{a string, the name of the directory that will contain
-the results of the permutation. If the directory does not exist, it will
-be created.}
+\item{output_dir}{a string or \code{NULL}, the name of the directory that
+will contain the results of the permutation. If the directory does not
+exist, it will be created. When \code{NULL}, the results fo the permutation
+are not saved.}
 
 \item{genomeVersion}{a string, the genome assembly such as hg18, mm9, etc.
 It can be any string. The parameter

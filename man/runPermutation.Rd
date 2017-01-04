@@ -4,12 +4,12 @@
 \alias{runPermutation}
 \title{TODO}
 \usage{
-runPermutation(allFilesByGeneration, conditionsByGeneration, output_dir,
-  genomeVersion, nbrPermutations = 1000, nbrCores = 1,
-  nbrCoresDiffMeth = 1, doingSites = TRUE, doingTiles = FALSE,
-  minReads = 10, minMethDiff = 10, qvalue = 0.01, maxPercReads = 99.9,
+runPermutation(allFilesByGeneration, conditionsByGeneration, genomeVersion,
+  nbrPermutations = 1000, nbrCores = 1, nbrCoresDiffMeth = 1,
+  doingSites = TRUE, doingTiles = FALSE, minReads = 10,
+  minMethDiff = 10, qvalue = 0.01, maxPercReads = 99.9,
   destrand = FALSE, minCovBasesForTiles = 0, tileSize = 1000,
-  stepSize = 1000, vSeed = -1)
+  stepSize = 1000, output_dir = NULL, vSeed = -1)
 }
 \arguments{
 \item{allFilesByGeneration}{a \code{list} of \code{list}, a \code{list}
@@ -33,10 +33,6 @@ must be present to do a permutation analysis.
 The parameter
 corresponds to the \code{treatment} parameter in the package
 \code{methylKit}.}
-
-\item{output_dir}{a string, the name of the directory that will contain
-the results of the permutation. If the directory does not exist, it will
-be created.}
 
 \item{genomeVersion}{a string, the genome assembly such as hg18, mm9, etc.
 It can be any string. The parameter
@@ -103,6 +99,11 @@ used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.}
 The parameter corresponds to the \code{stepSize} parameter in
 the package \code{methylKit}. Only
 used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.}
+
+\item{output_dir}{a string or \code{NULL}, the name of the directory that
+will contain the results of the permutation. If the directory does not
+exist, it will be created. When \code{NULL}, the results fo the permutation
+are not saved. Default: \code{NULL}.}
 
 \item{vSeed}{a \code{integer}, a seed used when reproducible results are
 needed. When a value inferior or equal to zero is given, a random integer

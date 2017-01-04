@@ -6,9 +6,10 @@
 #'
 #' @param info TODO
 #'
-#' @param output_dir a string, the name of the directory that will contain
-#' the results of the permutation. If the directory does not exist, it will
-#' be created.
+#' @param output_dir a string or \code{NULL}, the name of the directory that
+#' will contain the results of the permutation. If the directory does not
+#' exist, it will be created. When \code{NULL}, the results fo the permutation
+#' are not saved.
 #'
 #' @param genomeVersion a string, the genome assembly such as hg18, mm9, etc.
 #' It can be any string. The parameter
@@ -104,7 +105,7 @@ runOnePermutation <- function(info, output_dir,
     conditions  <- info$conditions
 
     ####################################
-    ## prepare data
+    ## Prepare data
     ####################################
 
     myobj <- read(location = file.list,
@@ -1238,8 +1239,6 @@ runTOTO <- function(info, output_dir,
 #' @param doingTiles a logical, when \code{TRUE} will do the analysis on the
 #' tiles. Default: \code{FALSE}.
 #'
-#' @param debug Default: \code{FALSE}.
-#'
 #' @return TODO
 #'
 #' @examples
@@ -1258,55 +1257,69 @@ runOnePermutationOnAllGenerations <- function(methylRawForAllGenerations,
                         destrand = FALSE, minCovBasesForTiles = 0,
                         tileSize = 1000, stepSize = 1000) {
 
+    doTiles <- any(type %in% c("tiles", "both"))
+    doSites <- any(type %in% c("sites", "both"))
+
     nbrGenerations <- length(methylRawForAllGenerations)
 
+    ## Preparing list that will receive final results
     permutationList <- list()
-    permutationList[["TILES"]] <- list()
-    permutationList[["SITES"]] <- list()
+    if (doTiles) {
+        permutationList[["TILES"]] <- list()
+    }
+    if (doSites) {
+        permutationList[["SITES"]] <- list()
+    }
 
     for (i in 1:nbrGenerations) {
 
-        myobj <- methylRawForAllGenerations[[i]]
+        allSamplesForOneGeneration <- methylRawForAllGenerations[[i]]
 
         ## SITES
-        if (any(type %in% c("sites", "both"))) {
+        if (doSites) {
 
-            filtered.sites <- filterByCoverage(myobj,
-                                               lo.count = minReads,
-                                               lo.perc = NULL,
-                                               hi.count = NULL,
-                                               hi.perc = maxPercReads)
+            ## Filter sites by coverage
+            filtered.sites <- filterByCoverage(allSamplesForOneGeneration,
+                                                lo.count = minReads,
+                                                lo.perc = NULL,
+                                                hi.count = NULL,
+                                                hi.perc = maxPercReads)
 
             ## Normalize coverage
             filtered.sites <- normalizeCoverage(filtered.sites, "median")
 
+            ## Merge all samples to one table
             meth.sites <- unite(filtered.sites, destrand = destrand)
 
             if (length(meth.sites@.Data[[1]]) == 0) {
                 stop("meth.sites IS EMPTY")
             }
 
-            ## Get diff methylated sites
+            ## Get differentially methylated sites
             permutationList[["SITES"]][[i]] <- calculateDiffMeth(meth.sites,
                                                 num.cores = nbrCoresDiffMeth)
         }
 
         ## TILES
+        if (doTiles) {
 
-        if (any(type %in% c("tiles", "both"))) {
-            tiles <- tileMethylCounts(myobj, win.size = tileSize,
-                                      step.size = stepSize,
-                                      cov.bases = minCovBasesForTiles)
+            ## Summarize methylated base counts over tilling windows
+            tiles <- tileMethylCounts(allSamplesForOneGeneration,
+                                        win.size = tileSize,
+                                        step.size = stepSize,
+                                        cov.bases = minCovBasesForTiles)
 
+            ## Filter tiles by coverage
             filtered.tiles <- filterByCoverage(tiles,
-                                               lo.count = minReads,
-                                               lo.perc = NULL,
-                                               hi.count = NULL,
-                                               hi.perc = maxPercReads)
+                                                lo.count = minReads,
+                                                lo.perc = NULL,
+                                                hi.count = NULL,
+                                                hi.perc = maxPercReads)
 
             ## Normalize coverage
             filtered.tiles <- normalizeCoverage(filtered.tiles, "median")
 
+            ## Merge all samples to one table
             meth.tiles <- unite(filtered.tiles, destrand = destrand)
 
             ## Get diff methylated tiles
@@ -1315,6 +1328,8 @@ runOnePermutationOnAllGenerations <- function(methylRawForAllGenerations,
         }
     }
 
-    warnings()
+    ## TODO
+    ## add intersection function
+
     return(permutationList)
 }

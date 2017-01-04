@@ -24,10 +24,6 @@
 #' corresponds to the \code{treatment} parameter in the package
 #' \code{methylKit}.
 #'
-#' @param output_dir a string, the name of the directory that will contain
-#' the results of the permutation. If the directory does not exist, it will
-#' be created.
-#'
 #' @param genomeVersion a string, the genome assembly such as hg18, mm9, etc.
 #' It can be any string. The parameter
 #' correspond to the \code{assembly} parameter in the package \code{methylKit}.
@@ -94,6 +90,11 @@
 #' the package \code{methylKit}. Only
 #' used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.
 #'
+#' @param output_dir a string or \code{NULL}, the name of the directory that
+#' will contain the results of the permutation. If the directory does not
+#' exist, it will be created. When \code{NULL}, the results fo the permutation
+#' are not saved. Default: \code{NULL}.
+#'
 #' @param vSeed a \code{integer}, a seed used when reproducible results are
 #' needed. When a value inferior or equal to zero is given, a random integer
 #' is used. Default: \code{-1}.
@@ -109,7 +110,6 @@
 #' @importFrom utils flush.console write.table
 #' @export
 runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
-                            output_dir,
                             genomeVersion,
                             nbrPermutations = 1000,
                             nbrCores = 1,
@@ -124,15 +124,16 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
                             minCovBasesForTiles = 0,
                             tileSize = 1000,
                             stepSize = 1000,
+                            output_dir = NULL,
                             vSeed = -1) {
 
-    ## Parameters validation
+    # # Parameters validation
     # validateRunPermutation(allFilesByGeneration, conditionsByGeneration,
-    #                         output_dir, genomeVersion, nbrPermutations,
+    #                         genomeVersion, nbrPermutations,
     #                         nbrCores, nbrCoresDiffMeth, doingSites, doingTiles,
     #                         minReads, minMethDiff, qvalue, maxPercReads,
     #                         destrand, minCovBasesForTiles, tileSize,
-    #                         stepSize, vSeed)
+    #                         stepSize, output_dir, vSeed)
 
     ## Add last slash to path when absent
     if (substr(output_dir, nchar(output_dir), nchar(output_dir)) != "/") {
@@ -449,7 +450,7 @@ runRealAnalysis <- function(allFilesByGeneration, conditionsByGeneration,
 #' @param outputDir a string, the name of the directory that will contain
 #' the results of the permutation or \code{NULL}. If the directory does not
 #' exist, it will be created. When \code{NULL}, the results of the permutation
-#' are not saved.
+#' are not saved. Default: \code{NULL}.
 #'
 #' @param nbrPermutations, a positive \code{integer}, the total number of
 #' permutations that is going to be done. Default: \code{1000}.
@@ -566,19 +567,18 @@ runPermutationUsingRDS <- function(methylKitRDSFile,
     nbSamples  <- sum(nbSamplesByGeneration)
     allSamples <- unlist(methylInfo, recursive = FALSE)
 
+    ## Create all permutations
     permutationSamples <- t(replicate(nbrPermutations, sample(1:nbSamples)))
 
     finalList <- vector("list", nbrPermutations)
 
     for (i in 1:nbrPermutations) {
-
-        # Randomnly mixt all samples
-        #samples <- sample(allSamples, size=nbSamples, replace = FALSE)
-
+        ## Create list that will contain information for all generations
+        ## related to the same permutation analysis
         permutationList <- vector("list", nbGenerations)
-        start = 1
+        start <- 1
         for (j in 1:nbGenerations) {
-            end = start + nbSamplesByGeneration[j] - 1
+            end <- start + nbSamplesByGeneration[j] - 1
             samplePos <- permutationSamples[i, start:end]
             treatment <- methylInfo[[1]]@treatment
             newSampleList <- new("methylRawList", allSamples[samplePos],

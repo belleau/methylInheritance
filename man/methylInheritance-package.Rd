@@ -14,9 +14,7 @@ and that stochastic effect can be dismissed.
 }
 \author{
 Astrid Deschênes,
-Pascal Belleau,
-Mathieu Dalvai,
-Janice Bailey and
+Pascal Belleau and
 Arnaud Droit
 
 Maintainer:

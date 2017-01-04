@@ -12,10 +12,6 @@ Author@R: c(person("Astrid", "Deschênes",
     role=c("cre","aut")),
     person("Pascal", "Belleau",
     email="pascal.belleau@crchuq.ulaval.ca", role=c("aut")),
-    person("Mathieu", "Dalvai",
-    email="Mathieu.dalvai@fsaa.ulaval.ca", role=c("ctb")),
-    person("Janice", "Bailey",
-    email="janice.bailey@fsaa.ulaval.ca", role=c("ctb")),
     person("Arnaud", "Droit",
     email="arnaud.droit@crchuq.ulaval.ca", role=c("aut")))
 Depends:
