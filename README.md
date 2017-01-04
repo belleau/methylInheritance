@@ -1,6 +1,6 @@
 # methylInheritance
 Permutation analysis, based on Monte Carlo sampling, for testing the 
-hypothesis that the number of conserved DME, between several generations, is 
+hypothesis that the number of conserved differentially methylated elements, between several generations, is 
 associated to an effect inherited from a treatment and that stochastic effect 
 can be dismissed. 
 
