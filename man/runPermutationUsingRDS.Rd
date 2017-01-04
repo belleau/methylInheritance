@@ -112,7 +112,12 @@ TODO
 }
 \examples{
 
-##TODO
+## Loading dataset
+data(samplesForTransgenerationalAnalysis)
+
+## Run a permutation analysis
+\dontrun{runPermutationUsingRDS(methylKitRDSFile=samplesForTransgenerationalAnalysis,
+type = "sites", nbrPermutations = 10, vSeed = 2001)}
 
 }
 \author{

@@ -418,7 +418,11 @@ runRealAnalysis <- function(allFilesByGeneration, conditionsByGeneration,
 #' RDS format.
 #'
 #'
-#' @description TODO
+#' @description Run a permutation analysis, based on Monte Carlo sampling,
+#' for testing the hypothesis that the number of conserved differentially
+#' methylated elements (sites, tiles or both), between
+#' several generations, is associated to an effect inherited from a treatment
+#' and that stochastic effect can be dismissed.
 #'
 #' @param methylKitRDSFile a string, the name of the file containing the
 #' methylKit objet used for the permutation analysis.
@@ -516,7 +520,12 @@ runRealAnalysis <- function(allFilesByGeneration, conditionsByGeneration,
 #'
 #' @examples
 #'
-#' ##TODO
+#' ## Loading dataset
+#' data(samplesForTransgenerationalAnalysis)
+#'
+#' ## Run a permutation analysis
+#' \dontrun{runPermutationUsingRDS(methylKitRDSFile=samplesForTransgenerationalAnalysis,
+#' type = "sites", nbrPermutations = 10, vSeed = 2001)}
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @importFrom BiocParallel bplapply MulticoreParam SnowParam bptry bpok
