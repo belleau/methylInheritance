@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/adeschen/methylInheritance.svg?branch=master)](https://travis-ci.org/adeschen/methylInheritance)
+
 # methylInheritance
 Permutation analysis, based on Monte Carlo sampling, for testing the 
 hypothesis that the number of conserved differentially methylated elements, between several generations, is 
