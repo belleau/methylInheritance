@@ -31,12 +31,13 @@ redistribute this software.
 
 # Introduction
 
-The analysis of treatment effects on DNA methylation, from one generation to 
-the next (inter-generational) and across generations that were not exposed to 
-the initial environment (trans-generational) represent complex designs. 
-High-throughput sequencing techniques enable genome-wide detection of 
-differentially methylated elements (DME), commonly sites (DMS) or 
-regions (DMR).Due to software design, the detection of DME is usually 
+DNA methylation plays an important role in the biology of tissue development 
+and diseases. High-throughput sequencing techniques enable genome-wide 
+detection of differentially methylated elements (DME), commonly sites (DMS) or 
+regions (DMR). The analysis of treatment effects on DNA methylation, from 
+one generation to the next (inter-generational) and across generations that 
+were not exposed to the initial environment (trans-generational) represent 
+complex designs. Due to software design, the detection of DME is usually 
 made on each generation separately. However, the common DME between 
 generations due to randomness is not negligible when the number of DME 
 detected in each generation is high. To judge the effect on DME that is 
