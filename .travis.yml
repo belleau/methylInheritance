@@ -22,4 +22,4 @@ r_binary_packages:
 
 # To send info to codecov
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - Rscript -e 'library(covr);codecov()'
