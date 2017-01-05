@@ -515,3 +515,164 @@ test.validateRunPermutationUsingRDS_tileSize_negative_type_tiles <- function() {
     checkEquals(obs, exp, msg = message)
 }
 
+## Test when stepSize is a string and type is tiles
+test.validateRunPermutationUsingRDS_stepSize_string_type_tiles <- function() {
+    obs <- tryCatch(methylInheritance:::validateRunPermutationUsingRDS(
+        methylKitRDSFile = METHYL_OBJ_FILE,  outputDir = NULL, type = "tiles",
+        nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
+        minReads = 10, minMethDiff = 10, qvalue = 0.05,
+        maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
+        tileSize = 10000, stepSize = "one", vSeed = 222),
+        error=conditionMessage)
+
+    exp <- "stepSize must be a positive integer or numeric"
+
+    message <- paste0(" test.validateRunPermutationUsingRDS_stepSize_string_type_tiles() ",
+                      "- Not valid stepSize did not generated expected message.")
+
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test when stepSize is zero and type is tiles
+test.validateRunPermutationUsingRDS_stepSizee_zero_type_tiles <- function() {
+    obs <- tryCatch(methylInheritance:::validateRunPermutationUsingRDS(
+        methylKitRDSFile = METHYL_OBJ_FILE,  outputDir = NULL, type = "tiles",
+        nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
+        minReads = 10, minMethDiff = 10, qvalue = 0.05,
+        maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
+        tileSize = 10000, stepSize = 0, vSeed = 222),
+        error=conditionMessage)
+
+    exp <- "stepSize must be a positive integer or numeric"
+
+    message <- paste0(" test.validateRunPermutationUsingRDS_stepSizee_zero_type_tiles() ",
+                      "- Not valid stepSize did not generated expected message.")
+
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test when stepSize is negative and type is tiles
+test.validateRunPermutationUsingRDS_stepSize_negative_type_tiles <- function() {
+    obs <- tryCatch(methylInheritance:::validateRunPermutationUsingRDS(
+        methylKitRDSFile = METHYL_OBJ_FILE,  outputDir = NULL, type = "tiles",
+        nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
+        minReads = 10, minMethDiff = 10, qvalue = 0.05,
+        maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
+        tileSize = 10000, stepSize = -1, vSeed = 222),
+        error=conditionMessage)
+
+    exp <- "stepSize must be a positive integer or numeric"
+
+    message <- paste0(" test.validateRunPermutationUsingRDS_stepSize_negative_type_tiles() ",
+                      "- Not valid stepSize did not generated expected message.")
+
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test when stepSize is a string and type is both
+test.validateRunPermutationUsingRDS_stepSize_string_type_both <- function() {
+    obs <- tryCatch(methylInheritance:::validateRunPermutationUsingRDS(
+        methylKitRDSFile = METHYL_OBJ_FILE,  outputDir = NULL, type = "both",
+        nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
+        minReads = 10, minMethDiff = 10, qvalue = 0.05,
+        maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
+        tileSize = 10000, stepSize = "one", vSeed = 222),
+        error=conditionMessage)
+
+    exp <- "stepSize must be a positive integer or numeric"
+
+    message <- paste0(" test.validateRunPermutationUsingRDS_stepSize_string_type_both() ",
+                      "- Not valid stepSize did not generated expected message.")
+
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test when stepSize is zero and type is both
+test.validateRunPermutationUsingRDS_stepSizee_zero_type_both <- function() {
+    obs <- tryCatch(methylInheritance:::validateRunPermutationUsingRDS(
+        methylKitRDSFile = METHYL_OBJ_FILE,  outputDir = NULL, type = "both",
+        nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
+        minReads = 10, minMethDiff = 10, qvalue = 0.05,
+        maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
+        tileSize = 10000, stepSize = 0, vSeed = 222),
+        error=conditionMessage)
+
+    exp <- "stepSize must be a positive integer or numeric"
+
+    message <- paste0(" test.validateRunPermutationUsingRDS_stepSizee_zero_type_both() ",
+                      "- Not valid stepSize did not generated expected message.")
+
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test when stepSize is negative and type is both
+test.validateRunPermutationUsingRDS_stepSize_negative_type_both <- function() {
+    obs <- tryCatch(methylInheritance:::validateRunPermutationUsingRDS(
+        methylKitRDSFile = METHYL_OBJ_FILE,  outputDir = NULL, type = "both",
+        nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
+        minReads = 10, minMethDiff = 10, qvalue = 0.05,
+        maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
+        tileSize = 10000, stepSize = -1, vSeed = 222),
+        error=conditionMessage)
+
+    exp <- "stepSize must be a positive integer or numeric"
+
+    message <- paste0(" test.validateRunPermutationUsingRDS_stepSize_negative_type_both() ",
+                      "- Not valid stepSize did not generated expected message.")
+
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test when vSeed is a string
+test.validateRunPermutationUsingRDS_vSeed_string <- function() {
+    obs <- tryCatch(methylInheritance:::validateRunPermutationUsingRDS(
+        methylKitRDSFile = METHYL_OBJ_FILE,  outputDir = NULL, type = "both",
+        nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
+        minReads = 10, minMethDiff = 10, qvalue = 0.05,
+        maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
+        tileSize = 10000, stepSize = 100, vSeed = "222"),
+        error=conditionMessage)
+
+    exp <- "vSeed must be either -1 or a positive integer or numeric"
+
+    message <- paste0(" test.validateRunPermutationUsingRDS_vSeed_string() ",
+                      "- Not valid vSeed did not generated expected message.")
+
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test when vSeed is a string
+test.validateRunPermutationUsingRDS_vSeed_string <- function() {
+    obs <- tryCatch(methylInheritance:::validateRunPermutationUsingRDS(
+        methylKitRDSFile = METHYL_OBJ_FILE,  outputDir = NULL, type = "both",
+        nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
+        minReads = 10, minMethDiff = 10, qvalue = 0.05,
+        maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
+        tileSize = 10000, stepSize = 100, vSeed = "33"),
+        error=conditionMessage)
+
+    exp <- "vSeed must be an integer or numeric"
+
+    message <- paste0(" test.validateRunPermutationUsingRDS_vSeed_string() ",
+                      "- Not valid vSeed did not generated expected message.")
+
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test when all parameters valid
+test.validateRunPermutationUsingRDS_all_valid_parameters_01 <- function() {
+    obs <- tryCatch(methylInheritance:::validateRunPermutationUsingRDS(
+        methylKitRDSFile = METHYL_OBJ_FILE,  outputDir = NULL, type = "sites",
+        nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
+        minReads = 10, minMethDiff = 10, qvalue = 0.05,
+        maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = -3,
+        tileSize = -1, stepSize = -2, vSeed = 22),
+        error=conditionMessage)
+
+    exp <- 0
+
+    message <- paste0(" test.validateRunPermutationUsingRDS_all_valid_parameters_01() ",
+                      "- All valid parameters did not generated expected message.")
+
+    checkEquals(obs, exp, msg = message)
+}
