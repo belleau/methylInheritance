@@ -19,7 +19,7 @@
 #' coverage than this count are discarded. The parameter
 #' correspond to the \code{lo.count} parameter in the  \code{methylKit} package.
 #'
-#' @param qvalue a positive \code{double} inferior ot \code{1}, the cutoff
+#' @param qvalue a positive \code{double} inferior to \code{1}, the cutoff
 #' for qvalue of differential methylation statistic. Default: \code{0.01}.
 #'
 #' @param maxPercReads a double between [0-100], the percentile of read
@@ -506,7 +506,7 @@ validateRunPermutationUsingRDS <- function(methylKitRDSFile,
 
     ## Validate that destrand is a logical
     if (!is.logical(destrand)) {
-        stop("destrand must be a logical.")
+        stop("destrand must be a logical")
     }
 
     if (any(type %in% c("both", "tiles"))) {
