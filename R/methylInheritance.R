@@ -13,9 +13,7 @@
 #' @aliases methylInheritance-package methylInheritance
 #'
 #' @author Astrid Deschênes,
-#' Pascal Belleau,
-#' Mathieu Dalvai,
-#' Janice Bailey and
+#' Pascal Belleau and
 #' Arnaud Droit
 #'
 #' Maintainer:
@@ -27,4 +25,51 @@
 #' }
 #'
 #' @keywords package
+NULL
+
+#' All samples information, formated by \code{methylKit}, in a
+#' \code{methylRawList} format (for demo purpose).
+#'
+#' The object contains a list with 3 entries. Each entry correspond to the
+#' information for one generation (first entry = first generation, etc..).
+#' There is 12 samples (6 controls and 6 cases) for each generation. Each
+#' sample information is stored in a \code{methylRaw} object.
+#'
+#' This dataset can be
+#' used to test the \code{runPermutationUsingRDS} function.
+#'
+#' @name samplesForTransgenerationalAnalysis
+#'
+#' @docType data
+#'
+#' @aliases samplesForTransgenerationalAnalysis
+#'
+#' @format A \code{methylRawList} containing all samples information. Each
+#' entry correspond to the information for one generation (first entry = first
+#' generation, etc..). Each sample information is stored in a \code{methylRaw}
+#' object.
+#'
+#' @return A \code{methylRawList} containing all samples information. Each
+#' entry correspond to the information for one generation (first entry = first
+#' generation, etc..). Each sample information is stored in a \code{methylRaw}
+#' object.
+#' @seealso
+#' \itemize{
+#'     \item \code{\link{runPermutationUsingRDS}} {for running a
+#'     permutation analysis}
+#' }
+#'
+#' @usage data(samplesForTransgenerationalAnalysis)
+#'
+#' @keywords datasets
+#'
+#' @examples
+#'
+#' ## Loading dataset
+#' data(samplesForTransgenerationalAnalysis)
+#'
+#' ## Run a permutation analysis
+#' \dontrun{runPermutationUsingRDS(methylKitRDSFile=samplesForTransgenerationalAnalysis,
+#' type = "sites", nbrPermutations=3, vSeed = 2001)}
+#'
 NULL

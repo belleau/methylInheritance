@@ -2,7 +2,8 @@
 % Please edit documentation in R/methylInheritanceMethods.R
 \name{runPermutationUsingRDS}
 \alias{runPermutationUsingRDS}
-\title{TODO}
+\title{Run all permutations on the specified multi-generational dataset in
+RDS format.}
 \usage{
 runPermutationUsingRDS(methylKitRDSFile, type = c("both", "sites", "tiles"),
   outputDir = NULL, nbrPermutations = 1000, nbrCores = 1,
@@ -12,7 +13,7 @@ runPermutationUsingRDS(methylKitRDSFile, type = c("both", "sites", "tiles"),
 }
 \arguments{
 \item{methylKitRDSFile}{a string, the name of the file containing the
-methylKit objet used for the permutation.
+methylKit objet used for the permutation analysis.
 TODO
 of files with methylation information for
 bases or regions in the genome. One \code{list} must contain all files
@@ -41,7 +42,7 @@ differentially methylated regions type="tiles". Default: "both".}
 \item{outputDir}{a string, the name of the directory that will contain
 the results of the permutation or \code{NULL}. If the directory does not
 exist, it will be created. When \code{NULL}, the results of the permutation
-are not saved.}
+are not saved. Default: \code{NULL}.}
 
 \item{nbrPermutations, }{a positive \code{integer}, the total number of
 permutations that is going to be done. Default: \code{1000}.}
@@ -107,11 +108,20 @@ is used. Default: \code{-1}.}
 TODO
 }
 \description{
-TODO
+Run a permutation analysis, based on Monte Carlo sampling,
+for testing the hypothesis that the number of conserved differentially
+methylated elements (sites, tiles or both), between
+several generations, is associated to an effect inherited from a treatment
+and that stochastic effect can be dismissed.
 }
 \examples{
 
-##TODO
+## Loading dataset
+data(samplesForTransgenerationalAnalysis)
+
+## Run a permutation analysis
+\dontrun{runPermutationUsingRDS(methylKitRDSFile=samplesForTransgenerationalAnalysis,
+type = "sites", nbrPermutations = 10, vSeed = 2001)}
 
 }
 \author{

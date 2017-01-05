@@ -76,8 +76,6 @@ CpG dinucleotide sites. Default: \code{TRUE}.}
 
 \item{doingTiles}{a logical, when \code{TRUE} will do the analysis on the
 tiles. Default: \code{FALSE}.}
-
-\item{debug}{Default: \code{FALSE}.}
 }
 \value{
 TODO
