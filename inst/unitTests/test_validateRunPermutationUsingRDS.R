@@ -162,7 +162,7 @@ test.validateRunPermutationUsingRDS_minReads_zero <- function() {
 
     exp <- "minReads must be a positive integer or numeric"
 
-    message <- paste0(" test.validateRunPermutationUsingRDS_minReads_zero () ",
+    message <- paste0(" test.validateRunPermutationUsingRDS_minReads_zero() ",
                       "- Not valid minReads did not generated expected message.")
 
     checkEquals(obs, exp, msg = message)
@@ -180,7 +180,7 @@ test.validateRunPermutationUsingRDS_minReads_negative <- function() {
 
     exp <- "minReads must be a positive integer or numeric"
 
-    message <- paste0(" test.validateRunPermutationUsingRDS_minReads_negative () ",
+    message <- paste0(" test.validateRunPermutationUsingRDS_minReads_negative() ",
                       "- Not valid minReads did not generated expected message.")
 
     checkEquals(obs, exp, msg = message)
@@ -198,7 +198,7 @@ test.validateRunPermutationUsingRDS_minMethDiff_negative <- function() {
 
     exp <- "minMethDiff must be a positive double between [0,100]"
 
-    message <- paste0(" test.validateRunPermutationUsingRDS_minMethDiff_negative () ",
+    message <- paste0(" test.validateRunPermutationUsingRDS_minMethDiff_negative() ",
                       "- Not valid minMethDiff did not generated expected message.")
 
     checkEquals(obs, exp, msg = message)
@@ -206,18 +206,18 @@ test.validateRunPermutationUsingRDS_minMethDiff_negative <- function() {
 
 
 ## Test when minMethDiff is above 100
-test.validateRunPermutationUsingRDS_minMethDiff_negative <- function() {
+test.validateRunPermutationUsingRDS_minMethDiff_above_100 <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingRDS(
         methylKitRDSFile = METHYL_OBJ_FILE,  outputDir = NULL,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
-        minReads = 10, minMethDiff =-0.1, qvalue = 0.05,
+        minReads = 10, minMethDiff = 100.1, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
         tileSize = 1000, stepSize = 100, vSeed = 222),
         error=conditionMessage)
 
     exp <- "minMethDiff must be a positive double between [0,100]"
 
-    message <- paste0(" test.validateRunPermutationUsingRDS_minMethDiff_negative () ",
+    message <- paste0(" test.validateRunPermutationUsingRDS_minMethDiff_above_100() ",
                       "- Not valid minMethDiff did not generated expected message.")
 
     checkEquals(obs, exp, msg = message)

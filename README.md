@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/adeschen/methylInheritance.svg?branch=master)](https://travis-ci.org/adeschen/methylInheritance)
+[![codecov](https://codecov.io/gh/adeschen/methylInheritance/branch/master/graph/badge.svg)](https://codecov.io/gh/adeschen/methylInheritance)
+
 
 # methylInheritance
 Permutation analysis, based on Monte Carlo sampling, for testing the 
