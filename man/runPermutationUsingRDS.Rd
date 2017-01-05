@@ -2,18 +2,47 @@
 % Please edit documentation in R/methylInheritanceMethods.R
 \name{runPermutationUsingRDS}
 \alias{runPermutationUsingRDS}
-\title{TODO}
+\title{Run all permutations on the specified multi-generational dataset in
+RDS format.}
 \usage{
-runPermutationUsingRDS(methylKitRDS, output_dir, nbrPermutations = 1000,
-  nbrCores = 1, nbrCoresDiffMeth = 1, type = c("both", "sites", "tiles"),
-  minReads = 10, minMethDiff = 10, qvalue = 0.01, maxPercReads = 99.9,
-  destrand = FALSE, minCovBasesForTiles = 0, tileSize = 1000,
-  stepSize = 1000, vSeed = -1)
+runPermutationUsingRDS(methylKitRDSFile, type = c("both", "sites", "tiles"),
+  outputDir = NULL, nbrPermutations = 1000, nbrCores = 1,
+  nbrCoresDiffMeth = 1, minReads = 10, minMethDiff = 10, qvalue = 0.01,
+  maxPercReads = 99.9, destrand = FALSE, minCovBasesForTiles = 0,
+  tileSize = 1000, stepSize = 1000, vSeed = -1)
 }
 \arguments{
-\item{output_dir}{a string, the name of the directory that will contain
-the results of the permutation. If the directory does not exist, it will
-be created.}
+\item{methylKitRDSFile}{a string, the name of the file containing the
+methylKit objet used for the permutation analysis.
+TODO
+of files with methylation information for
+bases or regions in the genome. One \code{list} must contain all files
+related to the same generation. So, if 3 generations are analyzed, a
+\code{list} containing 3 \code{list} must be passed. At least 2 generations
+must be present to do a permutation analysis.
+The parameter
+corresponds to the \code{location} parameter in the package \code{methylKit}.
+A \code{list} of \code{vector} containing
+\code{0} and \code{1}. The information indicating which files are
+associated to controls (\code{0}) and which files are cases (\code{1}).
+One \code{vector} must contain all informations
+related to the same generation. So, if 3 generations are analyzed, a
+\code{list} containing 3 \code{vector} must be passed. At least 2
+generations
+must be present to do a permutation analysis.
+The parameter
+corresponds to the \code{treatment} parameter in the package
+\code{methylKit}.}
+
+\item{type}{One of the "sites","tiles" or "both" strings. Specifies the type
+of differentially methylated elements should be returned. For
+retrieving differentially methylated bases type="sites"; for
+differentially methylated regions type="tiles". Default: "both".}
+
+\item{outputDir}{a string, the name of the directory that will contain
+the results of the permutation or \code{NULL}. If the directory does not
+exist, it will be created. When \code{NULL}, the results of the permutation
+are not saved. Default: \code{NULL}.}
 
 \item{nbrPermutations, }{a positive \code{integer}, the total number of
 permutations that is going to be done. Default: \code{1000}.}
@@ -27,11 +56,6 @@ used for both sites and tiles analysis. The parameter
 corresponds to the \code{num.cores} parameter in the package
 \code{methylKit}.
 Default: \code{1} and always \code{1} for Windows.}
-
-\item{type}{One of the "sites","tiles" or "both" strings. Specifies the type
-of differentially methylated elements should be returned. For
-retrieving differentially methylated bases type="sites"; for
-differentially methylated regions type="tiles". Default: "both".}
 
 \item{minReads}{a positive \code{integer} Bases and regions having lower
 coverage than this count are discarded. The parameter
@@ -79,37 +103,25 @@ used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.}
 \item{vSeed}{a \code{integer}, a seed used when reproducible results are
 needed. When a value inferior or equal to zero is given, a random integer
 is used. Default: \code{-1}.}
-
-\item{methylKitObject}{a \code{list} of \code{list}, a \code{list}
-composed of \code{list}
-of files with methylation information for
-bases or regions in the genome. One \code{list} must contain all files
-related to the same generation. So, if 3 generations are analyzed, a
-\code{list} containing 3 \code{list} must be passed. At least 2 generations
-must be present to do a permutation analysis.
-The parameter
-corresponds to the \code{location} parameter in the package \code{methylKit}.
-A \code{list} of \code{vector} containing
-\code{0} and \code{1}. The information indicating which files are
-associated to controls (\code{0}) and which files are cases (\code{1}).
-One \code{vector} must contain all informations
-related to the same generation. So, if 3 generations are analyzed, a
-\code{list} containing 3 \code{vector} must be passed. At least 2
-generations
-must be present to do a permutation analysis.
-The parameter
-corresponds to the \code{treatment} parameter in the package
-\code{methylKit}.}
 }
 \value{
 TODO
 }
 \description{
-TODO
+Run a permutation analysis, based on Monte Carlo sampling,
+for testing the hypothesis that the number of conserved differentially
+methylated elements (sites, tiles or both), between
+several generations, is associated to an effect inherited from a treatment
+and that stochastic effect can be dismissed.
 }
 \examples{
 
-##TODO
+## Loading dataset
+data(samplesForTransgenerationalAnalysis)
+
+## Run a permutation analysis
+\dontrun{runPermutationUsingRDS(methylKitRDSFile=samplesForTransgenerationalAnalysis,
+type = "sites", nbrPermutations = 10, vSeed = 2001)}
 
 }
 \author{

@@ -6,9 +6,10 @@
 #'
 #' @param info TODO
 #'
-#' @param output_dir a string, the name of the directory that will contain
-#' the results of the permutation. If the directory does not exist, it will
-#' be created.
+#' @param output_dir a string or \code{NULL}, the name of the directory that
+#' will contain the results of the permutation. If the directory does not
+#' exist, it will be created. When \code{NULL}, the results fo the permutation
+#' are not saved.
 #'
 #' @param genomeVersion a string, the genome assembly such as hg18, mm9, etc.
 #' It can be any string. The parameter
@@ -18,7 +19,7 @@
 #' coverage than this count are discarded. The parameter
 #' correspond to the \code{lo.count} parameter in the  \code{methylKit} package.
 #'
-#' @param qvalue a positive \code{double} inferior ot \code{1}, the cutoff
+#' @param qvalue a positive \code{double} inferior to \code{1}, the cutoff
 #' for qvalue of differential methylation statistic. Default: \code{0.01}.
 #'
 #' @param maxPercReads a double between [0-100], the percentile of read
@@ -104,7 +105,7 @@ runOnePermutation <- function(info, output_dir,
     conditions  <- info$conditions
 
     ####################################
-    ## prepare data
+    ## Prepare data
     ####################################
 
     myobj <- read(location = file.list,
@@ -304,12 +305,16 @@ getSampleNameFromFileName <- function(fileName) {
 }
 
 
-#' @title Parameters validation for the \code{\link{runPermutation}} function
+#' @title Parameters validation for the \code{\link{runPermutationUsingRDS}}
+#' function
 #'
 #' @description Validation of all parameters needed by the public
-#' \code{\link{runPermutationUsingMethylKitObject}} function.
+#' \code{\link{runPermutationUsingRDS}} function.
 #'
-#' @param methylKitObject a \code{list} of \code{list}, a \code{list}
+#' @param methylKitRDSFile a string, the name of the file containing the
+#' methylKit objet used for the permutation.
+#' TODO
+#' a \code{list} of \code{list}, a \code{list}
 #' composed of \code{list}
 #' of files with methylation information for
 #' bases or regions in the genome. One \code{list} must contain all files
@@ -317,7 +322,8 @@ getSampleNameFromFileName <- function(fileName) {
 #' \code{list} containing 3 \code{list} must be passed. At least 2 generations
 #' must be present to do a permutation analysis.
 #' The parameter
-#' corresponds to the \code{location} parameter in the  \code{methylKit} package.
+#' corresponds to the \code{location} parameter in the  \code{methylKit}
+#' package.
 #' A \code{list} of \code{vector} containing
 #' \code{0} and \code{1}. The information indicating which files are
 #' associated to controls (\code{0}) and which files are cases (\code{1}).
@@ -328,7 +334,12 @@ getSampleNameFromFileName <- function(fileName) {
 #' The parameter corresponds to the \code{treatment} parameter in
 #' the \code{methylKit} package.
 #'
-#' @param output_dir a string, the name of the directory that will contain
+#' @param type One of the "sites","tiles" or "both" strings. Specifies the type
+#' of differentially methylated elements should be returned. For
+#' retrieving differentially methylated bases type="sites"; for
+#' differentially methylated regions type="tiles". Default: "both".
+#'
+#' @param outputDir a string, the name of the directory that will contain
 #' the results of the permutation. If the directory does not exist, it will
 #' be created.
 #'
@@ -394,7 +405,7 @@ getSampleNameFromFileName <- function(fileName) {
 #' @examples
 #'
 #' ## The function returns 0 when all paramaters are valid
-#' #methylInheritance:::validateRunPermutationethylKitObject(
+#' #methylInheritance:::validateRunPermutationUsingRDS(
 #' #allFilesByGeneration = list(list("file01.txt", "file02.txt"),
 #' #list("file03.txt", "file04.txt")),
 #' #conditionsByGeneration = list(c(0,1), c(0,1)), output_dir = "test",
@@ -405,7 +416,7 @@ getSampleNameFromFileName <- function(fileName) {
 #' #stepSize = 500, vSeed = 12)
 #'
 #' ## The function raises an error when at least one paramater is not valid
-#' \dontrun{methylInheritance:::validateRunPermutationethylKitObject(
+#' \dontrun{methylInheritance:::validateRunPermutationUsingRDS(
 #' allFilesByGeneration = list(list("file01.txt", "file02.txt"),
 #' list("file03.txt", "file04.txt")),
 #' conditionsByGeneration = list(c(0,1)), output_dir = "test",
@@ -418,8 +429,8 @@ getSampleNameFromFileName <- function(fileName) {
 #' @author Astrid Deschenes
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
-validateRunPermutationethylKitObject <- function(methylKitObject,
-                                    output_dir,
+validateRunPermutationUsingRDS <- function(methylKitRDSFile,
+                                    type, outputDir,
                                     nbrPermutations, nbrCores,
                                     nbrCoresDiffMeth,
                                     minReads, minMethDiff, qvalue,
@@ -428,14 +439,14 @@ validateRunPermutationethylKitObject <- function(methylKitObject,
                                     stepSize, vSeed) {
 
     ## Validate that all entries in allFilesByGeneration are existing files
-    if (!file.exists(methylKitObject)) {
+    if (!file.exists(methylKitRDSFile)) {
             stop(paste0("The file \"",
-                        methylKitObjectWithCondition, "\" does not exist."))
+                        methylKitRDSFile, "\" does not exist."))
     }
 
     ## Validate that the output_dir is an not empty string
-    if (!is.character(output_dir)) {
-        stop("output_dir must be a character string")
+    if (!is.null(outputDir) && !is.character(outputDir)) {
+        stop("output_dir must be a character string or NULL")
     }
 
     ## Validate that nbrPermutations is an positive integer
@@ -495,7 +506,7 @@ validateRunPermutationethylKitObject <- function(methylKitObject,
 
     ## Validate that destrand is a logical
     if (!is.logical(destrand)) {
-        stop("destrand must be a logical.")
+        stop("destrand must be a logical")
     }
 
     if (any(type %in% c("both", "tiles"))) {
@@ -519,10 +530,9 @@ validateRunPermutationethylKitObject <- function(methylKitObject,
         }
 
     }
-    ## Validate that nbrPermutations is an positive integer
-    if (!(isSingleInteger(vSeed) ||
-          isSingleNumber(vSeed)) && as.integer(vSeed) != -1) {
-        stop("vSeed must be either -1 or a positive integer or numeric")
+    ## Validate that vSeed is an integer
+    if (!(isSingleInteger(vSeed) || isSingleNumber(vSeed))) {
+        stop("vSeed must be an integer or numeric")
     }
 
     return(0)
@@ -1317,8 +1327,6 @@ runTOTO <- function(info, output_dir,
 #' @param doingTiles a logical, when \code{TRUE} will do the analysis on the
 #' tiles. Default: \code{FALSE}.
 #'
-#' @param debug Default: \code{FALSE}.
-#'
 #' @return TODO
 #'
 #' @examples
@@ -1329,62 +1337,77 @@ runTOTO <- function(info, output_dir,
 #' @importFrom methylKit filterByCoverage normalizeCoverage unite calculateDiffMeth getMethylDiff getData tileMethylCounts methRead
 #' @keywords internal
 runOnePermutationOnAllGenerations <- function(methylRawForAllGenerations,
-                        type = c("all", "sites", "tiles"),
+                        type = c("both", "sites", "tiles"),
+                        outputDir = NULL,
                         nbrCoresDiffMeth = 1,
                         minReads = 10, minMethDiff = 10,
                         qvalue = 0.01, maxPercReads = 99.9,
                         destrand = FALSE, minCovBasesForTiles = 0,
                         tileSize = 1000, stepSize = 1000) {
 
+    doTiles <- any(type %in% c("tiles", "both"))
+    doSites <- any(type %in% c("sites", "both"))
+
     nbrGenerations <- length(methylRawForAllGenerations)
 
+    ## Preparing list that will receive final results
     permutationList <- list()
-    permutationList[["TILES"]] <- list()
-    permutationList[["SITES"]] <- list()
+    if (doTiles) {
+        permutationList[["TILES"]] <- list()
+    }
+    if (doSites) {
+        permutationList[["SITES"]] <- list()
+    }
 
     for (i in 1:nbrGenerations) {
 
-        myobj <- methylRawForAllGenerations[[i]]
+        allSamplesForOneGeneration <- methylRawForAllGenerations[[i]]
 
         ## SITES
-        if (any(type %in% c("sites", "all"))) {
+        if (doSites) {
 
-            filtered.sites <- filterByCoverage(myobj,
-                                               lo.count = minReads,
-                                               lo.perc = NULL,
-                                               hi.count = NULL,
-                                               hi.perc = maxPercReads)
+            ## Filter sites by coverage
+            filtered.sites <- filterByCoverage(allSamplesForOneGeneration,
+                                                lo.count = minReads,
+                                                lo.perc = NULL,
+                                                hi.count = NULL,
+                                                hi.perc = maxPercReads)
 
             ## Normalize coverage
             filtered.sites <- normalizeCoverage(filtered.sites, "median")
 
+            ## Merge all samples to one table
             meth.sites <- unite(filtered.sites, destrand = destrand)
 
             if (length(meth.sites@.Data[[1]]) == 0) {
                 stop("meth.sites IS EMPTY")
             }
 
-            ## Get diff methylated sites
+            ## Get differentially methylated sites
             permutationList[["SITES"]][[i]] <- calculateDiffMeth(meth.sites,
                                                 num.cores = nbrCoresDiffMeth)
         }
 
         ## TILES
+        if (doTiles) {
 
-        if (any(type %in% c("tiles", "all"))) {
-            tiles <- tileMethylCounts(myobj, win.size = tileSize,
-                                      step.size = stepSize,
-                                      cov.bases = minCovBasesForTiles)
+            ## Summarize methylated base counts over tilling windows
+            tiles <- tileMethylCounts(allSamplesForOneGeneration,
+                                        win.size = tileSize,
+                                        step.size = stepSize,
+                                        cov.bases = minCovBasesForTiles)
 
+            ## Filter tiles by coverage
             filtered.tiles <- filterByCoverage(tiles,
-                                               lo.count = minReads,
-                                               lo.perc = NULL,
-                                               hi.count = NULL,
-                                               hi.perc = maxPercReads)
+                                                lo.count = minReads,
+                                                lo.perc = NULL,
+                                                hi.count = NULL,
+                                                hi.perc = maxPercReads)
 
             ## Normalize coverage
             filtered.tiles <- normalizeCoverage(filtered.tiles, "median")
 
+            ## Merge all samples to one table
             meth.tiles <- unite(filtered.tiles, destrand = destrand)
 
             ## Get diff methylated tiles
@@ -1393,6 +1416,8 @@ runOnePermutationOnAllGenerations <- function(methylRawForAllGenerations,
         }
     }
 
-    warnings()
+    ## TODO
+    ## add intersection function
+
     return(permutationList)
 }
