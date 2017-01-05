@@ -530,10 +530,9 @@ validateRunPermutationUsingRDS <- function(methylKitRDSFile,
         }
 
     }
-    ## Validate that nbrPermutations is an positive integer
-    if (!(isSingleInteger(vSeed) ||
-          isSingleNumber(vSeed)) && as.integer(vSeed) != -1) {
-        stop("vSeed must be either -1 or a positive integer or numeric")
+    ## Validate that vSeed is an integer
+    if (!(isSingleInteger(vSeed) || isSingleNumber(vSeed))) {
+        stop("vSeed must be an integer or numeric")
     }
 
     return(0)
