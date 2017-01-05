@@ -899,6 +899,95 @@ extractDataFromFile <- function(directory, elementType = c("SITES", "TILES")) {
     return(elements_per_generation)
 }
 
+#' @title TODO
+#'
+#' @description TODO
+#'
+#' @param methDiff, TODO
+#'
+#' @param pDiff, TODO
+#'
+#' @param qCut, TODO
+#'
+#' @param typeD, TODO
+#'
+#' @return TODO
+#'
+#' @examples
+#'
+#' ## TODO
+#'
+#' @author Astrid Deschenes
+#' @importFrom methylKit
+#' @keywords internal
+getGRangesFromMethylDiff <- function(methDiff, pDiff, qCut, typeD= "all"){
+
+    methDiffK <- lapply(1:length(methDiff), FUN = function(i,
+                                                           methDiff,
+                                                           pDiff,
+                                                           qCut, typeD){
+        methK <- getMethylDiff(methDiff[[i]],difference=pDiff,qvalue=qCut, type=typeD)
+        GRanges(seqnames = methK$chr, ranges = IRanges(start = methK$start,
+                                                       end = methK$end),
+                strand = methK$strand, pvalue = methK$pvalue,
+                qvalue = methK$qvalue, meth.diff = methK$meth.diff)
+    }, methDiff = methDiff, pDiff = pDiff, qCut = qCut, typeD=typeD)
+
+    methDiffK
+}
+
+
+#' @title TODO
+#'
+#' @description TODO
+#'
+#' @param resultAllGenGR \code{GRanges} from \code{getGRangesFromMethylDiff}, TODO
+#'
+#' @return \code{list} with 2 elements
+#'         i2 list of intersection G1 and G2, G2 and G3, ...
+#'         iAll list of intersection G1 and G2 and G3,
+#'              G1 and G2 and G3 and G4, ...
+#'         TODO
+#'
+#' @examples
+#' ## sum(width(res))
+#' ## TODO
+#'
+#' @author Astrid Deschenes
+#' @importFrom GRanges
+#' @keywords internal
+
+interGeneration <- function(resultAllGenGR){
+
+    lInter <- list("i2" = list(), "iAll" = list())
+
+    lInter$i2 <- lapply(2:length(resultAllGenGR), FUN = function(i,b){
+        upM <- intersect(b[[i-1]][b[[i-1]]$meth.diff > 0], b[[i]][b[[i]]$meth.diff > 0])
+        downM <- intersect(b[[i-1]][b[[i-1]]$meth.diff < 0], b[[i]][b[[i]]$meth.diff < 0])
+        typeDiff <- DataFrame(typeDiff=rep(1,length(upM)))
+        values(upM) <- cbind(values(upM), typeDiff)
+        typeDiff <- DataFrame(typeDiff=rep(-1,length(downM)))
+        values(downM) <- cbind(values(downM), typeDiff)
+        c(upM,downM)
+    }, b = resultAllGenGR)
+
+    cur <- lInter$i2[[1]]
+    for(i in 3:length(resultAllGenGR)){
+        upM <- intersect(cur[cur$typeDiff > 0],
+                         resultAllGenGR[[i]][resultAllGenGR[[i]]$meth.diff > 0])
+        downM <- intersect(cur[cur$typeDiff < 0],
+                           resultAllGenGR[[i]][
+                               resultAllGenGR[[i]]$meth.diff < 0])
+        typeDiff <- DataFrame(typeDiff=rep(1,length(upM)))
+        values(upM) <- cbind(values(upM), typeDiff)
+        typeDiff <- DataFrame(typeDiff=rep(-1,length(downM)))
+        values(downM) <- cbind(values(downM), typeDiff)
+
+        lInter$iAll[[i-2]] <- c(upM,downM)
+        cur <- lInter$iAll[[i-2]]
+    }
+    lInter
+}
 
 #' @title TODO
 #'
