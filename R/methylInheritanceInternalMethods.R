@@ -305,34 +305,18 @@ getSampleNameFromFileName <- function(fileName) {
 }
 
 
-#' @title Parameters validation for the \code{\link{runPermutationUsingRDS}}
-#' function
+#' @title Parameters validation for the
+#' \code{\link{runPermutationUsingMethylKitInfo}} function
 #'
 #' @description Validation of all parameters needed by the public
-#' \code{\link{runPermutationUsingRDS}} function.
+#' \code{\link{runPermutationUsingMethylKitInfo}} function.
 #'
-#' @param methylKitRDSFile a string, the name of the file containing the
-#' methylKit objet used for the permutation.
-#' TODO
-#' a \code{list} of \code{list}, a \code{list}
-#' composed of \code{list}
-#' of files with methylation information for
-#' bases or regions in the genome. One \code{list} must contain all files
-#' related to the same generation. So, if 3 generations are analyzed, a
-#' \code{list} containing 3 \code{list} must be passed. At least 2 generations
-#' must be present to do a permutation analysis.
-#' The parameter
-#' corresponds to the \code{location} parameter in the  \code{methylKit}
-#' package.
-#' A \code{list} of \code{vector} containing
-#' \code{0} and \code{1}. The information indicating which files are
-#' associated to controls (\code{0}) and which files are cases (\code{1}).
-#' One \code{vector} must contain all informations
-#' related to the same generation. So, if 3 generations are analyzed, a
-#' \code{list} containing 3 \code{vector} must be passed. At least 2
-#' generations must be present to do a permutation analysis.
-#' The parameter corresponds to the \code{treatment} parameter in
-#' the \code{methylKit} package.
+#' @param methylKitInfo a \code{list} of \code{methylRawList} entries. Each
+#' \code{methylRawList} contains all the \code{methylRaw} entries related to
+#' one generation. The number of generations must correspond to the number
+#' of entries in the \code{methylKitInfo}.At least 2 generations
+#' must be present to do a permutation analysis. More information can be found
+#' in the Bioconductor methylKit package.
 #'
 #' @param type One of the "sites","tiles" or "both" strings. Specifies the type
 #' of differentially methylated elements should be returned. For
@@ -429,7 +413,7 @@ getSampleNameFromFileName <- function(fileName) {
 #' @author Astrid Deschenes
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
-validateRunPermutationUsingRDS <- function(methylKitRDSFile,
+validateRunPermutationUsingMethylKitInfo <- function(methylKitInfo,
                                     type, outputDir,
                                     nbrPermutations, nbrCores,
                                     nbrCoresDiffMeth,
@@ -438,10 +422,12 @@ validateRunPermutationUsingRDS <- function(methylKitRDSFile,
                                     minCovBasesForTiles, tileSize,
                                     stepSize, vSeed) {
 
-    ## Validate that all entries in allFilesByGeneration are existing files
-    if (!file.exists(methylKitRDSFile)) {
-            stop(paste0("The file \"",
-                        methylKitRDSFile, "\" does not exist."))
+    ## Validate that methylKitInfo is a list of methylRawList
+    if (class(methylKitInfo) != "list" ||
+        !all(sapply(methylKitInfo, class) == "methylRawList")) {
+        stop(paste0("methylKitInfo must be a list containing ",
+                    "\"methylRawList\" entries; each entry must contain ",
+                    "all \"methylRaw\" objects related to one generation"))
     }
 
     ## Validate that the output_dir is an not empty string
