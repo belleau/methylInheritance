@@ -108,7 +108,11 @@ is used. Default: \code{-1}.}
 TODO
 }
 \description{
-TODO
+Run a permutation analysis, based on Monte Carlo sampling,
+for testing the hypothesis that the number of conserved differentially
+methylated elements (sites, tiles or both), between
+several generations, is associated to an effect inherited from a treatment
+and that stochastic effect can be dismissed.
 }
 \examples{
 
