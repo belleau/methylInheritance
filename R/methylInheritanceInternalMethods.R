@@ -955,7 +955,7 @@ getGRangesFromMethylDiff <- function(methDiff, pDiff, qCut, typeD= "all"){
 #'
 #' @description TODO
 #'
-#' @param resultAllGenGR \code{GRanges} from \code{getGRangesFromMethyl}, TODO
+#' @param resultAllGenGR \code{GRanges} from \code{getGRangesFromMethylDiff}, TODO
 #'
 #' @return \code{list} with 2 elements
 #'         i2 list of intersection G1 and G2, G2 and G3, ...
