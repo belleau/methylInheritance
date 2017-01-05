@@ -20,6 +20,8 @@ Imports:
     methylKit,
     BiocGenerics,
     BiocParallel,
+    GenomicRanges,
+    IRanges,
     S4Vectors,
     methods,
     utils

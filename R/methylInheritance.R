@@ -55,8 +55,8 @@ NULL
 #' object.
 #' @seealso
 #' \itemize{
-#'     \item \code{\link{runPermutationUsingRDS}} {for running a
-#'     permutation analysis}
+#'     \item \code{\link{runPermutationUsingMethylKitInfo}} {for running a
+#'     permutation analysis using methylKit info entry}
 #' }
 #'
 #' @usage data(samplesForTransgenerationalAnalysis)
@@ -69,7 +69,8 @@ NULL
 #' data(samplesForTransgenerationalAnalysis)
 #'
 #' ## Run a permutation analysis
-#' \dontrun{runPermutationUsingRDS(methylKitRDSFile=samplesForTransgenerationalAnalysis,
-#' type = "sites", nbrPermutations=3, vSeed = 2001)}
+#' \dontrun{runPermutationUsingMethylKitInfo(methylKitRDSFile =
+#' samplesForTransgenerationalAnalysis, type = "sites", nbrPermutations = 3,
+#' vSeed = 2001)}
 #'
 NULL
