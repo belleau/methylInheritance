@@ -141,7 +141,7 @@ runPermutation <- function(allFilesByGeneration, conditionsByGeneration,
     }
 
     ## Set vSeed value when negative seed is given
-    if (vSeed <= -1) {
+    if (vSeed <= 0) {
         tSeed <- as.numeric(Sys.time())
         vSeed <- 1e8 * (tSeed - floor(tSeed))
     }
