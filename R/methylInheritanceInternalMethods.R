@@ -917,8 +917,10 @@ extractDataFromFile <- function(directory, elementType = c("SITES", "TILES")) {
 #'
 #' ## TODO
 #'
-#' @author Astrid Deschenes
-#' @importFrom methylKit
+#' @author Pascal Belleau
+#' @importFrom methylKit getMethylDiff
+#' @importFrom GenomicRanges GRanges
+#' @importFrom IRanges IRanges
 #' @keywords internal
 getGRangesFromMethylDiff <- function(methDiff, pDiff, qCut, typeD= "all"){
 
@@ -953,10 +955,10 @@ getGRangesFromMethylDiff <- function(methDiff, pDiff, qCut, typeD= "all"){
 #' ## sum(width(res))
 #' ## TODO
 #'
-#' @author Astrid Deschenes
-#' @importFrom GRanges
+#' @author Pascal Belleau
+#' @importFrom GenomicRanges intersect GRanges
+#' @importFrom S4Vectors DataFrame values
 #' @keywords internal
-
 interGeneration <- function(resultAllGenGR){
 
     lInter <- list("i2" = list(), "iAll" = list())
