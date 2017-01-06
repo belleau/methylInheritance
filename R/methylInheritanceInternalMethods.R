@@ -1132,6 +1132,7 @@ createOutputDir <- function(output_dir, nbrGenerations,
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @importFrom methylKit filterByCoverage normalizeCoverage unite calculateDiffMeth getMethylDiff getData tileMethylCounts methRead
+#' @importFrom GenomicRanges width
 #' @keywords internal
 runOnePermutationOnAllGenerations <- function(methylRawForAllGenerations,
                         type = c("both", "sites", "tiles"),
@@ -1213,8 +1214,62 @@ runOnePermutationOnAllGenerations <- function(methylRawForAllGenerations,
         }
     }
 
-    ## TODO
-    ## add intersection function
+    permutationFinal <- list()
 
-    return(permutationList)
+    ## Calculate the number of SITES in the intersection
+    if (doSites) {
+        permutationFinal[["SITES"]] <- list()
+        permutationFinal[["SITES"]][["i2"]] <- list()
+        permutationFinal[["SITES"]][["i2"]][["HYPER"]] <- list()
+        permutationFinal[["SITES"]][["i2"]][["HYPO"]]  <- list()
+        permutationFinal[["SITES"]][["iAll"]][["HYPER"]]  <- list()
+        permutationFinal[["SITES"]][["iAll"]][["HYPO"]]   <- list()
+
+        resultGR <- getGRangesFromMethylDiff(permutationList[["SITES"]],
+                                            minMethDiff, qvalue, typeD = "all")
+
+        result <- interGeneration(resultGR)
+
+        permutationFinal[["SITES"]][["i2"]][["HYPER"]] <- lapply(result$i2,
+                        FUN = function(x) {sum(width(x[x$typeDiff > 0]))})
+
+        permutationFinal[["SITES"]][["i2"]][["HYPO"]] <- lapply(result$i2,
+                        FUN = function(x) {sum(width(x[x$typeDiff < 0]))})
+
+
+        permutationFinal[["SITES"]][["iAll"]][["HYPER"]] <- lapply(result$iAll,
+                        FUN = function(x) {sum(width(x[x$typeDiff > 0]))})
+
+        permutationFinal[["SITES"]][["iAll"]][["HYPO"]] <- lapply(result$iAll,
+                        FUN = function(x) {sum(width(x[x$typeDiff < 0]))})
+    }
+
+    ## Calculate the number of TILES in the intersection
+    if (doTiles) {
+        permutationFinal[["TILES"]] <- list()
+        permutationFinal[["TILES"]][["i2"]] <- list()
+        permutationFinal[["TILES"]][["i2"]][["HYPER"]] <- list()
+        permutationFinal[["TILES"]][["i2"]][["HYPO"]]  <- list()
+        permutationFinal[["TILES"]][["iAll"]][["HYPER"]]  <- list()
+        permutationFinal[["TILES"]][["iAll"]][["HYPO"]]   <- list()
+
+        resultGR <- getGRangesFromMethylDiff(permutationList[["TILES"]],
+                                minMethDiff, qvalue, typeD = "all")
+
+        result <- interGeneration(resultGR)
+
+        permutationFinal[["TILES"]][["i2"]][["HYPER"]] <- lapply(result$i2,
+                            FUN = function(x) {sum(width(x[x$typeDiff > 0]))})
+
+        permutationFinal[["TILES"]][["i2"]][["HYPO"]] <- lapply(result$i2,
+                            FUN = function(x) {sum(width(x[x$typeDiff < 0]))})
+
+        permutationFinal[["TILES"]][["iAll"]][["HYPER"]] <- lapply(result$iAll,
+                            FUN = function(x) {sum(width(x[x$typeDiff > 0]))})
+
+        permutationFinal[["TILES"]][["iAll"]][["HYPO"]] <- lapply(result$iAll,
+                            FUN = function(x) {sum(width(x[x$typeDiff < 0]))})
+    }
+
+    return(permutationFinal)
 }
