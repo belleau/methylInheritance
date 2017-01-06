@@ -5,15 +5,13 @@
 \title{Run one permutation using \code{methylKit} package. One permutation
 includes analysis for all generations associated to the same permutation.}
 \usage{
-runOnePermutationOnAllGenerations(methylRawForAllGenerations, type = c("both",
-  "sites", "tiles"), outputDir = NULL, nbrCoresDiffMeth = 1,
-  minReads = 10, minMethDiff = 10, qvalue = 0.01, maxPercReads = 99.9,
-  destrand = FALSE, minCovBasesForTiles = 0, tileSize = 1000,
-  stepSize = 1000)
+runOnePermutationOnAllGenerations(methylInfoForAllGenerations,
+  type = c("both", "sites", "tiles"), outputDir = NULL,
+  nbrCoresDiffMeth = 1, minReads = 10, minMethDiff = 10, qvalue = 0.01,
+  maxPercReads = 99.9, destrand = FALSE, minCovBasesForTiles = 0,
+  tileSize = 1000, stepSize = 1000)
 }
 \arguments{
-\item{methylRawForAllGenerations}{TODO}
-
 \item{type}{One of the "sites","tiles" or "both" strings. Specifies the type
 of differentially methylated elements should be returned. For
 retrieving differentially methylated bases type="sites"; for
@@ -70,6 +68,8 @@ used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.}
 parameter corresponds to the \code{stepSize} parameter in
 the  \code{methylKit} package. Only
 used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.}
+
+\item{methylRawForAllGenerations}{TODO}
 
 \item{doingSites}{a logical, when \code{TRUE} will do the analysis on the
 CpG dinucleotide sites. Default: \code{TRUE}.}

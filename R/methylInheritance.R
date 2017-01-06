@@ -21,7 +21,9 @@
 #'
 #' @seealso
 #' \itemize{
-#'     \item \code{\link{runPermutation}} { todo }
+#'     \item \code{\link{runPermutationUsingRDSFile}} { for running a
+#'     permutation analysis on the specified multi-generational dataset in
+#'     RDS format}
 #' }
 #'
 #' @keywords package
