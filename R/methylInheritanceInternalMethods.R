@@ -957,7 +957,7 @@ getGRangesFromMethylDiff <- function(methDiff, pDiff, qCut, typeD= "all"){
 #'
 #' @author Pascal Belleau
 #' @importFrom GenomicRanges intersect GRanges
-#' @importFrom S4Vectors DataFrame values
+#' @importFrom S4Vectors DataFrame values<- values
 #' @keywords internal
 interGeneration <- function(resultAllGenGR){
 
@@ -990,6 +990,7 @@ interGeneration <- function(resultAllGenGR){
     }
     lInter
 }
+
 
 #' @title TODO
 #'
@@ -1050,198 +1051,6 @@ createOutputDir <- function(output_dir, nbrGenerations,
     return(0)
 }
 
-#' @title Run one analysis using \code{methylKit} package
-#'
-#' @description Run one CpG site or region analysis using the \code{methylKit}
-#' package. The output of the analysis is saved in a file in the specified
-#' directory.
-#'
-#' @param info TODO
-#'
-#' @param output_dir a string, the name of the directory that will contain
-#' the results of the permutation. If the directory does not exist, it will
-#' be created.
-#'
-#' @param genomeVersion a string, the genome assembly such as hg18, mm9, etc.
-#' It can be any string. The parameter
-#' correspond to the \code{assembly} parameter in the \code{methylKit} package.
-#'
-#' @param minReads a positive \code{integer} Bases and regions having lower
-#' coverage than this count are discarded. The parameter
-#' correspond to the \code{lo.count} parameter in the  \code{methylKit} package.
-#'
-#' @param qvalue a positive \code{double} inferior ot \code{1}, the cutoff
-#' for qvalue of differential methylation statistic. Default: \code{0.01}.
-#'
-#' @param maxPercReads a double between [0-100], the percentile of read
-#' counts that is going to be used as upper cutoff. Bases ore regions
-#' having higher
-#' coverage than this percentile are discarded. Parameter used for both CpG
-#' sites and tiles analysis. The parameter
-#' correspond to the \code{hi.perc} parameter in the  \code{methylKit} package.
-#' Default: \code{99.9}.
-#'
-#' @param minMethDiff a positive integer betwwen [0,100], the absolute value
-#' of methylation
-#' percentage change between cases and controls. The parameter
-#' correspond to the \code{difference} parameter in the
-#' package \code{methylKit}.
-#' Default: \code{10}.
-#'
-#' @param destrand a logical, when \code{TRUE} will merge reads on both
-#' strands of a CpG dinucleotide to provide better coverage. Only advised
-#' when looking at CpG methylation. Parameter used for both
-#' sites and tiles analysis.
-#' Default: \code{FALSE}.
-#'
-#' @param nbrCoresDiffMeth a positive integer, the number of cores to use for
-#' parallel differential methylation calculations.Parameter used for both
-#' sites and tiles analysis. The parameter
-#' corresponds to the \code{num.cores} parameter in the
-#' package \code{methylKit}.
-#' Default: \code{1} and always \code{1} for Windows.
-#'
-#' @param minCovBasesForTiles a non-negative integer, the minimum number of
-#' bases to be covered in a given tiling window. The parameter
-#' corresponds to the \code{cov.bases} parameter in the
-#' package \code{methylKit}.
-#' Only used when \code{doingTiles} =
-#' \code{TRUE}. Default: \code{0}.
-#'
-#' @param tileSize a positive integer, the size of the tiling window. The
-#' parameter corresponds to the \code{win.size} parameter in
-#' the  \code{methylKit} package. Only
-#' used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.
-#'
-#' @param stepSize a positive integer, the step size of tiling windows. The
-#' parameter corresponds to the \code{stepSize} parameter in
-#' the  \code{methylKit} package. Only
-#' used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.
-#'
-#' @param doingSites a logical, when \code{TRUE} will do the analysis on the
-#' CpG dinucleotide sites. Default: \code{TRUE}.
-#'
-#' @param doingTiles a logical, when \code{TRUE} will do the analysis on the
-#' tiles. Default: \code{FALSE}.
-#'
-#' @param debug Default: \code{FALSE}.
-#'
-#' @return TODO
-#'
-#' @examples
-#'
-#' ##TODO
-#'
-#' @author Astrid Deschenes, Pascal Belleau
-#' @importFrom methylKit filterByCoverage normalizeCoverage unite calculateDiffMeth getMethylDiff getData tileMethylCounts methRead
-#' @keywords internal
-runTOTO <- function(info, output_dir,
-                              genomeVersion,
-                              nbrCoresDiffMeth = 1,
-                              doingSites = TRUE,
-                              doingTiles = FALSE,
-                              minReads = 10,
-                              minMethDiff = 10,
-                              qvalue = 0.01,
-                              maxPercReads = 99.9,
-                              destrand = FALSE,
-                              minCovBasesForTiles = 0,
-                              tileSize = 1000,
-                              stepSize = 1000) {
-
-    #print(info)
-
-    nbrGenerations <- length(info)
-
-    permutationList <- list()
-    permutationList[["TILES"]] <- list()
-    permutationList[["SITES"]] <- list()
-
-    permutationList[["TILES"]][["HYPER"]] <- vector("list", length(nbrGenerations))
-    permutationList[["TILES"]][["HYPO"]] <- vector("list", length(nbrGenerations))
-    permutationList[["SITES"]][["HYPER"]] <- vector("list", length(nbrGenerations))
-    permutationList[["SITES"]][["HYPO"]] <- vector("list", length(nbrGenerations))
-
-    for (i in 1:nbrGenerations) {
-        file.list    <- info[[i]][["file.list"]]
-        sampleNames  <- info[[i]][["sampleNames"]]
-        conditions   <- info[[i]][["conditions"]]
-        designName   <- info[[i]][["designName"]]
-
-
-        myobj <- methRead(location = file.list,
-                  sample.id = as.list(sampleNames),
-                  assembly = genomeVersion,
-                  context = "CpG",
-                  treatment = conditions)
-
-        ## SITES
-        if (doingSites) {
-
-            filtered.sites <- filterByCoverage(myobj,
-                                           lo.count = minReads,
-                                           lo.perc = NULL,
-                                           hi.count = NULL,
-                                           hi.perc = maxPercReads)
-
-            filtered.sites <- normalizeCoverage(filtered.sites, "median")
-
-            meth.sites <- unite(filtered.sites, destrand = destrand)
-
-            if (length(meth.sites@.Data[[1]]) == 0) {
-                stop("meth.sites IS EMPTY")
-            }
-
-            ####################################
-            ## Get diff methyl sites
-            ####################################
-            myDiff.sites <- calculateDiffMeth(meth.sites,
-                                          num.cores = nbrCoresDiffMeth)
-
-            permutationList[["SITES"]][["HYPER"]][[i]] <- getMethylDiff(myDiff.sites,
-                                            difference = minMethDiff,
-                                            qvalue = qvalue, type = "hyper")
-
-            permutationList[["SITES"]][["HYPO"]][[i]]  <- getMethylDiff(myDiff.sites,
-                                            difference = minMethDiff,
-                                            qvalue = qvalue, type = "hypo")
-        }
-
-        ## TILES
-        if (doingTiles) {
-            tiles <- tileMethylCounts(myobj, win.size = tileSize,
-                                  step.size = stepSize,
-                                  cov.bases = minCovBasesForTiles)
-
-            filtered.tiles <- filterByCoverage(tiles,
-                                           lo.count = minReads,
-                                           lo.perc = NULL,
-                                           hi.count = NULL,
-                                           hi.perc = maxPercReads)
-
-            filtered.tiles <- normalizeCoverage(filtered.tiles, "median")
-
-            meth.tiles <- unite(filtered.tiles, destrand = destrand)
-
-            ####################################
-            ## Get diff methyl tiles
-            ####################################
-            myDiff.tiles <- calculateDiffMeth(meth.tiles,
-                                          num.cores = nbrCoresDiffMeth)
-
-            permutationList[["TILES"]][["HYPER"]][[i]] <- getMethylDiff(myDiff.tiles,
-                                            difference = minMethDiff,
-                                            qvalue = qvalue, type = "hyper")
-
-            permutationList[["TILES"]][["HYPO"]][[i]]  <- getMethylDiff(myDiff.tiles,
-                                            difference = minMethDiff,
-                                            qvalue = qvalue, type = "hypo")
-        }
-    }
-
-    warnings()
-    return(permutationList)
-}
 
 #' @title Run one permutation using \code{methylKit} package. One permutation
 #' includes analysis for all generations associated to the same permutation.
