@@ -656,7 +656,7 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 #' data(samplesForTransgenerationalAnalysis)
 #'
 #' ## Run a permutation analysis
-#' \dontrun{runPermutationUsingRDS(methylKitInfo =
+#' \dontrun{runPermutationUsingMethylKitInfo(methylKitInfo =
 #' samplesForTransgenerationalAnalysis, type = "sites",
 #' nbrPermutations = 3, vSeed = 221)}
 #'
