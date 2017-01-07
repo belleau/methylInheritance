@@ -12,7 +12,7 @@ runPermutationUsingMethylKitInfo(methylKitInfo, type = c("both", "sites",
   tileSize = 1000, stepSize = 1000, vSeed = -1)
 }
 \arguments{
-\item{methylKitInfo}{a \code{list} of \code{methylRawList} entries. Each
+\item{methylKitInfo}{a \code{list} of \code{methylRawList} entries, each
 \code{methylRawList} contains all the \code{methylRaw} entries related to
 one generation. The number of generations must correspond to the number
 of entries in the \code{methylKitInfo}.At least 2 generations

@@ -2,8 +2,9 @@
 % Please edit documentation in R/methylInheritanceInternalMethods.R
 \name{runOnePermutationOnAllGenerations}
 \alias{runOnePermutationOnAllGenerations}
-\title{Run one permutation using \code{methylKit} package. One permutation
-includes analysis for all generations associated to the same permutation.}
+\title{Run the analysis on one permutation dataset using
+\code{methylKit} package. One permutation dataset
+includes data for all generations.}
 \usage{
 runOnePermutationOnAllGenerations(methylInfoForAllGenerations,
   type = c("both", "sites", "tiles"), outputDir = NULL,
@@ -12,6 +13,17 @@ runOnePermutationOnAllGenerations(methylInfoForAllGenerations,
   tileSize = 1000, stepSize = 1000)
 }
 \arguments{
+\item{methylInfoForAllGenerations}{a \code{list} containing the
+following elements:
+\itemize{
+\item \code{sample} a \code{list} of \code{methylRawList} entries, each
+\code{methylRawList} contains all the \code{methylRaw} entries related to
+one generation. The number of generations must correspond to the number
+of entries in the \code{methylKitInfo}. At least 2 generations
+must be present to do a permutation analysis.
+\item \code{id} an integer, the permutation id.
+}}
+
 \item{type}{One of the "sites","tiles" or "both" strings. Specifies the type
 of differentially methylated elements should be returned. For
 retrieving differentially methylated bases type="sites"; for
@@ -69,8 +81,6 @@ parameter corresponds to the \code{stepSize} parameter in
 the  \code{methylKit} package. Only
 used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.}
 
-\item{methylRawForAllGenerations}{TODO}
-
 \item{doingSites}{a logical, when \code{TRUE} will do the analysis on the
 CpG dinucleotide sites. Default: \code{TRUE}.}
 
@@ -78,12 +88,19 @@ CpG dinucleotide sites. Default: \code{TRUE}.}
 tiles. Default: \code{FALSE}.}
 }
 \value{
-TODO
+a \code{list} containing the following elements:
+\itemize{
+\item \code{SITES} TODO
+\item \code{TILES} TODO
+}
 }
 \description{
-Run one CpG site or region analysis using the \code{methylKit}
-package. The output of the analysis is saved in a file in the specified
-directory.
+Run CpG site or region analysis using the \code{methylKit}
+package for each generation present in the dataset. The intersection of
+conserved elements is obtained for each group of two consecutive
+generations, as well as, for larger group subset. The output of the
+analysis is saved in a RDS file when an directory is
+specified.
 }
 \examples{
 

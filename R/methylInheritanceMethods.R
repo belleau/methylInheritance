@@ -154,7 +154,7 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 #' several generations, is associated to an effect inherited from a treatment
 #' and that stochastic effect can be dismissed.
 #'
-#' @param methylKitInfo a \code{list} of \code{methylRawList} entries. Each
+#' @param methylKitInfo a \code{list} of \code{methylRawList} entries, each
 #' \code{methylRawList} contains all the \code{methylRaw} entries related to
 #' one generation. The number of generations must correspond to the number
 #' of entries in the \code{methylKitInfo}.At least 2 generations
