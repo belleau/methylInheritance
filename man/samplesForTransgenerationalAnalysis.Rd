@@ -5,28 +5,31 @@
 \alias{samplesForTransgenerationalAnalysis}
 \title{All samples information, formated by \code{methylKit}, in a
 \code{methylRawList} format (for demo purpose).}
-\format{A \code{methylRawList} containing all samples information. Each
-entry correspond to the information for one generation (first entry = first
-generation, etc..). Each sample information is stored in a \code{methylRaw}
-object.}
+\format{A \code{list} containing three \code{methylRawList} objects. Each
+\code{methylRawList} contains the information for one generation
+(first entry = first generation, etc..). Each sample information is
+stored in a \code{methylRaw} object. There is \code{methylRaw} objects
+ (6 controls and 6 cases) in each generation.}
 \usage{
 data(samplesForTransgenerationalAnalysis)
 }
 \value{
-A \code{methylRawList} containing all samples information. Each
-entry correspond to the information for one generation (first entry = first
-generation, etc..). Each sample information is stored in a \code{methylRaw}
-object.
+A \code{list} containing three \code{methylRawList} objects. Each
+\code{methylRawList} contains the information for one generation
+(first entry = first generation, etc..). Each sample information is
+stored in a \code{methylRaw} object. There is \code{methylRaw} objects
+ (6 controls and 6 cases) in each generation.
 }
 \description{
-The object contains a list with 3 entries. Each entry correspond to the
-information for one generation (first entry = first generation, etc..).
+The object is a \code{list} with 3 entries. Each entry correspond to the
+information for one generation (first entry = first generation, etc..)
+stored in a \code{methylRawList}.
 There is 12 samples (6 controls and 6 cases) for each generation. Each
 sample information is stored in a \code{methylRaw} object.
 }
 \details{
 This dataset can be
-used to test the \code{runPermutationUsingRDS} function.
+used to test the \code{runPermutationUsingMethylKitInfo} function.
 }
 \examples{
 
@@ -34,7 +37,7 @@ used to test the \code{runPermutationUsingRDS} function.
 data(samplesForTransgenerationalAnalysis)
 
 ## Run a permutation analysis
-\dontrun{runPermutationUsingMethylKitInfo(methylKitRDSFile =
+\dontrun{runPermutationUsingMethylKitInfo(methylKitInfo =
 samplesForTransgenerationalAnalysis, type = "sites", nbrPermutations = 3,
 vSeed = 2001)}
 
