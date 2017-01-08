@@ -12,7 +12,7 @@ runPermutationUsingMethylKitInfo(methylKitInfo, type = c("both", "sites",
   tileSize = 1000, stepSize = 1000, vSeed = -1)
 }
 \arguments{
-\item{methylKitInfo}{a \code{list} of \code{methylRawList} entries. Each
+\item{methylKitInfo}{a \code{list} of \code{methylRawList} entries, each
 \code{methylRawList} contains all the \code{methylRaw} entries related to
 one generation. The number of generations must correspond to the number
 of entries in the \code{methylKitInfo}.At least 2 generations
@@ -105,7 +105,7 @@ and that stochastic effect can be dismissed.
 data(samplesForTransgenerationalAnalysis)
 
 ## Run a permutation analysis
-\dontrun{runPermutationUsingRDS(methylKitInfo =
+\dontrun{runPermutationUsingMethylKitInfo(methylKitInfo =
 samplesForTransgenerationalAnalysis, type = "sites",
 nbrPermutations = 3, vSeed = 221)}
 

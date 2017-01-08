@@ -22,7 +22,11 @@ Astrid Deschenes <astrid-louise.deschenes@crchudequebec.ulaval.ca>
 }
 \seealso{
 \itemize{
-    \item \code{\link{runPermutation}} { todo }
+    \item \code{\link{runPermutationUsingRDSFile}} { for running a
+    permutation analysis on the specified multi-generational dataset in
+    RDS format}
+    \item \code{\link{runPermutationUsingMethylKitInfo}} {for running a
+    permutation analysis using methylKit info entry}
 }
 }
 \keyword{package}

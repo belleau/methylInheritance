@@ -2,15 +2,14 @@
 % Please edit documentation in R/methylInheritanceInternalMethods.R
 \name{createOutputDir}
 \alias{createOutputDir}
-\title{TODO}
+\title{Create directories that will contained the results of the
+permutations in RDS format.}
 \usage{
-createOutputDir(output_dir, nbrGenerations, doingSites = TRUE,
-  doingTiles = FALSE)
+createOutputDir(output_dir, doingSites = TRUE, doingTiles = FALSE)
 }
 \arguments{
-\item{output_dir}{a string of \code{character}, TODO}
-
-\item{nbrGenerations}{a positive \code{integer}, TODO}
+\item{output_dir}{a string of \code{character}, the name of the main
+directory to be created.}
 
 \item{doingSites}{a \code{logical}, TODO}
 
@@ -20,7 +19,8 @@ createOutputDir(output_dir, nbrGenerations, doingSites = TRUE,
 \code{0} when all directories are created without problem.
 }
 \description{
-TODO
+Create directories that will contained the results of the
+permutations in RDS format.
 }
 \examples{
 

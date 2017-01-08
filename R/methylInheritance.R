@@ -21,7 +21,11 @@
 #'
 #' @seealso
 #' \itemize{
-#'     \item \code{\link{runPermutation}} { todo }
+#'     \item \code{\link{runPermutationUsingRDSFile}} { for running a
+#'     permutation analysis on the specified multi-generational dataset in
+#'     RDS format}
+#'     \item \code{\link{runPermutationUsingMethylKitInfo}} {for running a
+#'     permutation analysis using methylKit info entry}
 #' }
 #'
 #' @keywords package
@@ -30,13 +34,14 @@ NULL
 #' All samples information, formated by \code{methylKit}, in a
 #' \code{methylRawList} format (for demo purpose).
 #'
-#' The object contains a list with 3 entries. Each entry correspond to the
-#' information for one generation (first entry = first generation, etc..).
+#' The object is a \code{list} with 3 entries. Each entry correspond to the
+#' information for one generation (first entry = first generation, etc..)
+#' stored in a \code{methylRawList}.
 #' There is 12 samples (6 controls and 6 cases) for each generation. Each
 #' sample information is stored in a \code{methylRaw} object.
 #'
 #' This dataset can be
-#' used to test the \code{runPermutationUsingRDS} function.
+#' used to test the \code{runPermutationUsingMethylKitInfo} function.
 #'
 #' @name samplesForTransgenerationalAnalysis
 #'
@@ -44,15 +49,18 @@ NULL
 #'
 #' @aliases samplesForTransgenerationalAnalysis
 #'
-#' @format A \code{methylRawList} containing all samples information. Each
-#' entry correspond to the information for one generation (first entry = first
-#' generation, etc..). Each sample information is stored in a \code{methylRaw}
-#' object.
+#' @format A \code{list} containing three \code{methylRawList} objects. Each
+#' \code{methylRawList} contains the information for one generation
+#' (first entry = first generation, etc..). Each sample information is
+#' stored in a \code{methylRaw} object. There is \code{methylRaw} objects
+#'  (6 controls and 6 cases) in each generation.
 #'
-#' @return A \code{methylRawList} containing all samples information. Each
-#' entry correspond to the information for one generation (first entry = first
-#' generation, etc..). Each sample information is stored in a \code{methylRaw}
-#' object.
+#' @return A \code{list} containing three \code{methylRawList} objects. Each
+#' \code{methylRawList} contains the information for one generation
+#' (first entry = first generation, etc..). Each sample information is
+#' stored in a \code{methylRaw} object. There is \code{methylRaw} objects
+#'  (6 controls and 6 cases) in each generation.
+#'
 #' @seealso
 #' \itemize{
 #'     \item \code{\link{runPermutationUsingMethylKitInfo}} {for running a
@@ -69,7 +77,7 @@ NULL
 #' data(samplesForTransgenerationalAnalysis)
 #'
 #' ## Run a permutation analysis
-#' \dontrun{runPermutationUsingMethylKitInfo(methylKitRDSFile =
+#' \dontrun{runPermutationUsingMethylKitInfo(methylKitInfo =
 #' samplesForTransgenerationalAnalysis, type = "sites", nbrPermutations = 3,
 #' vSeed = 2001)}
 #'
