@@ -741,7 +741,9 @@ runOnePermutationOnAllGenerations <- function(methylInfoForAllGenerations,
 
         result <- interGeneration(resultGR)
 
-        saveInterGenerationResults(outputDir, id, type = "sites", result)
+        if (!is.null(outputDir)) {
+            saveInterGenerationResults(outputDir, id, type = "sites", result)
+        }
 
         permutationFinal[["SITES"]][["i2"]][["HYPER"]] <- lapply(result$i2,
                         FUN = function(x) {sum(width(x[x$typeDiff > 0]))})
@@ -771,7 +773,9 @@ runOnePermutationOnAllGenerations <- function(methylInfoForAllGenerations,
 
         result <- interGeneration(resultGR)
 
-        saveInterGenerationResults(outputDir, id, type = "tiles", result)
+        if (!is.null(outputDir)) {
+            saveInterGenerationResults(outputDir, id, type = "tiles", result)
+        }
 
         permutationFinal[["TILES"]][["i2"]][["HYPER"]] <- lapply(result$i2,
                             FUN = function(x) {sum(width(x[x$typeDiff > 0]))})
