@@ -7,11 +7,8 @@
 ###################################################
 
 ###################################################
-
-## Test the methylInheritanceInternalMethods functions
-
+## Test the validateRunPermutationUsingMethylKitInfo function
 ###################################################
-
 
 DIRECTORY <- system.file("extdata", package = "methylInheritance")
 
@@ -21,9 +18,7 @@ METHYL_OBJ_FILE <- dir(system.file("extdata", package = "methylInheritance"),
 METHYL_OBJ <- readRDS(METHYL_OBJ_FILE)
 
 ###########################################################
-
 ## validateRunPermutationUsingMethylKitInfo() function
-
 ###########################################################
 
 ## Test when methylKitInfo is a string
