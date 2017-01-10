@@ -7,27 +7,15 @@
 #' several generations, is associated to an effect inherited from a treatment
 #' and that stochastic effect can be dismissed.
 #'
-#' @param methylKitRDSFile a string, the name of the file containing the
-#' methylKit objet used for the permutation analysis.
-#' TODO
-#' of files with methylation information for
-#' bases or regions in the genome. One \code{list} must contain all files
-#' related to the same generation. So, if 3 generations are analyzed, a
-#' \code{list} containing 3 \code{list} must be passed. At least 2 generations
-#' must be present to do a permutation analysis.
-#' The parameter
-#' corresponds to the \code{location} parameter in the package \code{methylKit}.
-#' A \code{list} of \code{vector} containing
-#' \code{0} and \code{1}. The information indicating which files are
-#' associated to controls (\code{0}) and which files are cases (\code{1}).
-#' One \code{vector} must contain all informations
-#' related to the same generation. So, if 3 generations are analyzed, a
-#' \code{list} containing 3 \code{vector} must be passed. At least 2
-#' generations
-#' must be present to do a permutation analysis.
-#' The parameter
-#' corresponds to the \code{treatment} parameter in the package
-#' \code{methylKit}.
+#' @param methylKitRDSFile a string, the name of the RDS file containing the
+#' methylKit objet used for the permutation analysis. The RDS file must
+#' hold a \code{list} of \code{methylRawList} entries, each
+#' \code{methylRawList} contains all the \code{methylRaw} entries related to
+#' one generation (first entry = first generation, second entry = second
+#' generation, etc..). The number of generations must correspond to the number
+#' of entries in the \code{methylKitInfo}.At least 2 generations
+#' must be present to do a permutation analysis. More information can be found
+#' in the methylKit package
 #'
 #' @param type One of the "sites","tiles" or "both" strings. Specifies the type
 #' of differentially methylated elements should be returned. For
@@ -137,6 +125,7 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
     ## Extract information from RDS file
     methylInfo <- readRDS(methylKitRDSFile)
 
+    ## Call permutation analysis with the methylInfo object as an parameter
     runPermutationUsingMethylKitInfo(methylInfo, type, outputDir,
                             nbrPermutations, nbrCores, nbrCoresDiffMeth,
                             minReads, minMethDiff, qvalue, maxPercReads,
@@ -156,7 +145,8 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 #'
 #' @param methylKitInfo a \code{list} of \code{methylRawList} entries, each
 #' \code{methylRawList} contains all the \code{methylRaw} entries related to
-#' one generation. The number of generations must correspond to the number
+#' one generation (first entry = first generation, second entry = second
+#' generation, etc..). The number of generations must correspond to the number
 #' of entries in the \code{methylKitInfo}.At least 2 generations
 #' must be present to do a permutation analysis. More information can be found
 #' in the methylKit package.

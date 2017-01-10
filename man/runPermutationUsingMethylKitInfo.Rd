@@ -14,7 +14,8 @@ runPermutationUsingMethylKitInfo(methylKitInfo, type = c("both", "sites",
 \arguments{
 \item{methylKitInfo}{a \code{list} of \code{methylRawList} entries, each
 \code{methylRawList} contains all the \code{methylRaw} entries related to
-one generation. The number of generations must correspond to the number
+one generation (first entry = first generation, second entry = second
+generation, etc..). The number of generations must correspond to the number
 of entries in the \code{methylKitInfo}.At least 2 generations
 must be present to do a permutation analysis. More information can be found
 in the methylKit package.}
