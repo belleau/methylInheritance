@@ -2,6 +2,7 @@
 
 export(extractData)
 export(runAnalysisUsingMethylKitInfo)
+export(runAnalysisUsingRDSFile)
 export(runPermutationUsingMethylKitInfo)
 export(runPermutationUsingRDSFile)
 export(runPermutationUsingRDSTEST)
