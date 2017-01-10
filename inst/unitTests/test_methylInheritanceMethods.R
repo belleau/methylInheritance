@@ -27,7 +27,7 @@ test.runPermutationUsingRDSFile_methylKitRDSFile_not_valid <- function() {
         methylKitRDSFile = "HI",  outputDir = NULL,
         nbrPermutations = 2, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
-        maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
+        maxPercReads = 99.9, destrand = FALSE, minCovBasesForTiles = 2,
         tileSize = 1000, stepSize = 100, vSeed = 222),
         error=conditionMessage)
 
@@ -38,6 +38,39 @@ test.runPermutationUsingRDSFile_methylKitRDSFile_not_valid <- function() {
 
     checkEquals(obs, exp, msg = message)
 }
+
+# ## Test when all parameters valid
+# test.runPermutationUsingRDSFile_good_001 <- function() {
+#     obs <- tryCatch(runPermutationUsingRDSFile(
+#         methylKitRDSFile = METHYL_OBJ_FILE,  outputDir = NULL,
+#         nbrPermutations = 2, nbrCores = 1, nbrCoresDiffMeth = 1,
+#         minReads = 10, minMethDiff = 10, qvalue = 0.05,
+#         maxPercReads = 99.9, destrand = FALSE, minCovBasesForTiles = 2,
+#         tileSize = 1000, stepSize = 100, vSeed = 222),
+#         error=conditionMessage)
+#
+#     exp <- list()
+#     exp[["SITES"]] <- list()
+#     exp[["SITES"]][["i2"]] <- list()
+#     exp[["SITES"]][["i2"]][["HYPER"]] <- list(12,19)
+#     exp[["SITES"]][["i2"]][["HYPO"]] <- list(9,9)
+#     exp[["SITES"]][["iAll"]] <- list()
+#     exp[["SITES"]][["iAll"]][["HYPER"]] <- list(7)
+#     exp[["SITES"]][["iAll"]][["HYPO"]] <- list(2)
+#     exp[["TILES"]]<-list()
+#     exp[["TILES"]][["i2"]] <- list()
+#     exp[["TILES"]][["i2"]][["HYPER"]] <- list(0,0)
+#     exp[["TILES"]][["i2"]][["HYPO"]] <- list(1000, 1800)
+#     exp[["TILES"]][["iAll"]] <- list()
+#     exp[["TILES"]][["iAll"]][["HYPER"]] <- list(0)
+#     exp[["TILES"]][["iAll"]][["HYPO"]] <- list(0)
+#
+#     message <- paste0(" test.runPermutationUsingRDSFile_good_001() ",
+#                       "- All valid parameters did not generated expected result.")
+#
+#     checkEquals(obs, exp, msg = message)
+# }
+
 
 
 ###########################################################
