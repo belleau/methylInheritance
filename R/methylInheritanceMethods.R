@@ -476,6 +476,12 @@ runAnalysisUsingMethylKitInfo <- function(methylKitInfo,
 
     methylInfo <- list(sample = methylKitInfo, id = 0)
 
+    if (!is.null(outputDir)) {
+        doTiles <- any(type %in% c("tiles", "both"))
+        doSites <- any(type %in% c("sites", "both"))
+        createOutputDir(outputDir, doingSites = doSites, doingTiles = doTiles)
+    }
+
     ## Extract information
     result <- runOnePermutationOnAllGenerations(methylInfoForAllGenerations = methylInfo,
                                     type = type, outputDir = outputDir,
@@ -491,7 +497,6 @@ runAnalysisUsingMethylKitInfo <- function(methylKitInfo,
 
     return(result)
 }
-
 
 #' @title Run a differentially methylation analysis on each generation
 #' present in a dataset.
