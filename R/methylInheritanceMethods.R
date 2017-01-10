@@ -888,3 +888,193 @@ extractData <- function(realAnalysis_output_dir, permutations_output_dir,
 
     return(nbr_sites_per_generation)
 }
+
+
+#' @title TODO
+#'
+#' @description  TODO
+#'
+#' @param analysisResultsDIR TODO
+#'
+#' @param permutationResultsDIR TODO
+#'
+#' @param doingSites TODO
+#'
+#' @param doingTiles TODO
+#'
+#' @return TODO
+#'
+#' @examples
+#'
+#' ## TODO
+#'
+#' @author Astrid Deschenes, Pascal Belleau
+#' @export
+loadAllPermutationRDS <- function(analysisResultsDIR,
+                                    permutationResultsDIR,
+                                    doingSites = TRUE,
+                                    doingTiles = FALSE) {
+
+    ## Add last slash to path when absent
+    if (!is.null(analysisResultsDIR) &&
+        (substr(analysisResultsDIR, nchar(analysisResultsDIR),
+                    nchar(analysisResultsDIR)) != "/")) {
+        analysisResultsDIR <- paste0(analysisResultsDIR, "/")
+    }
+
+    ## Add last slash to path when absent
+    if (!is.null(permutationResultsDIR) &&
+        (substr(permutationResultsDIR, nchar(permutationResultsDIR),
+                    nchar(permutationResultsDIR)) != "/")) {
+        permutationResultsDIR <- paste0(permutationResultsDIR, "/")
+    }
+
+    result<-list()
+
+    if (doingSites) {
+        analysisResults <- readRDS(file = paste0(analysisResultsDIR,
+                                             "SITES/SITES_permutation_0.RDS"))
+        analysisStruct <- createDataStructure(interGenerationResult = analysisResults)
+        result[["OBSERVED"]][["SITES"]] <- analysisStruct
+
+
+        filesInDir <- list.files(path = paste0(permutationResultsDIR, "SITES/"),
+                             pattern = ".RDS", all.files = FALSE,
+                             full.names = TRUE, recursive = FALSE,
+                             ignore.case = FALSE, include.dirs = FALSE, no.. = FALSE)
+
+        sitesPerm <- lapply(filesInDir, FUN = function(x) {readRDS(file = x)})
+
+        t <- lapply(sitesPerm, FUN = function(x) {
+            createDataStructure(interGenerationResult = x)})
+
+        result[["PERMUTATION"]][["SITES"]] <- t
+    }
+
+    if (doingTiles) {
+        analysisResults <- readRDS(file = paste0(analysisResultsDIR,
+                                                 "TILES/TILES_permutation_0.RDS"))
+        analysisStruct <- createDataStructure(interGenerationResult = analysisResults)
+        result[["OBSERVED"]][["TILES"]] <- analysisStruct
+
+        filesInDir <- list.files(path = paste0(permutationResultsDIR, "TILES/"),
+                                 pattern = ".RDS", all.files = FALSE,
+                                 full.names = TRUE, recursive = FALSE,
+                                 ignore.case = FALSE, include.dirs = FALSE, no.. = FALSE)
+
+        tilesPerm <- lapply(filesInDir, FUN = function(x) {readRDS(file = x)})
+
+        t <- lapply(tilesPerm, FUN = function(x) {
+            createDataStructure(interGenerationResult = x)})
+
+        result[["PERMUTATION"]][["TILES"]] <- t
+    }
+
+    return(result)
+}
+
+
+#' @title TODO
+#'
+#' @description  TODO
+#'
+#' @param analysisandPermutationResults TODO
+#'
+#' @param type TODO
+#'
+#' @param inter TODO
+#'
+#' @param position TODO
+#'
+#' @return  TODO
+#'
+#' @examples
+#'
+#' ## TODO
+#'
+#' @author Astrid Deschenes, Pascal Belleau
+#' @export
+formatForGraph <- function(analysisandPermutationResults, type = c("sites", "tiles"),
+                        inter=c("i2", "iAll"), position) {
+
+    type <- toupper(type)
+
+    real <- analysisandPermutationResults[["OBSERVED"]][[type]][[inter]]
+
+    dataConserved <- data.frame(TYPE=c("HYPO", "HYPER"),
+                                result=c(real[["HYPO"]][[position]], real[["HYPER"]][[position]]),
+                                SOURCE=c("OBSERVED", "OBSERVED"))
+
+    for (i in 1:length(analysisandPermutationResults[["PERMUTATION"]][[type]])) {
+        permutation <- analysisandPermutationResults[["PERMUTATION"]][[type]][[i]][[inter]]
+        dataConserved <- rbind(dataConserved, data.frame(TYPE=c("HYPO", "HYPER"),
+                        result=c(permutation[["HYPO"]][[position]], permutation[["HYPER"]][[position]]),
+                        SOURCE=c("PERMUTATION", "PERMUTATION")))
+    }
+
+    return(dataConserved)
+
+}
+
+
+#' @title TODO
+#'
+#' @description  TODO
+#'
+#' @param formatForGraphDataFrame TODO
+#'
+#' @return TODO
+#'
+#' @author Astrid Deschenes, Pascal Belleau
+#' @importFrom ggplot2 ggplot geom_text facet_grid theme geom_vline geom_histogram labs aes
+#' @export
+plotGraph <- function(formatForGraphDataFrame) {
+
+    # Basic graph using dataframe
+    # Columns names : TYPE (HYPER or HYPO), result (nbr conseved sites), SOURCE (OBSERVED or PERMUTATION)
+    p <- ggplot(data=formatForGraphDataFrame, aes(formatForGraphDataFrame$result)) +
+        geom_histogram(col="blue",
+                       fill="lightblue",
+                       binwidth=2,
+                       alpha = .2) +
+        labs(title="") +
+        labs(x="Number of conserved differentially methylated sites", y="Frequency")
+
+    # Split to have one section for HYPER and one for HYPO
+    p <- p + facet_grid(.~TYPE)
+
+    # Add vertical line corresponding to the number of conserved elements
+    # in the observed results (real results)
+    interceptFrame <- subset(formatForGraphDataFrame, formatForGraphDataFrame$SOURCE == "OBSERVED")
+    p <- p + geom_vline(aes(xintercept = interceptFrame$result, color="red"),
+                        data = interceptFrame, linetype="longdash", show.legend = NA)
+
+    # Calculate the significant level for HYPER AND HYPO
+    hypoDataSet <- subset(formatForGraphDataFrame, formatForGraphDataFrame$TYPE == "HYPO")
+    hypoTotal <- nrow(hypoDataSet)
+    hypoNumber <- interceptFrame[interceptFrame$TYPE == "HYPO",]$result
+    signifLevelHypo <- nrow(subset(hypoDataSet, hypoDataSet$result <= hypoNumber))/hypoTotal
+
+    hyperDataSet <- subset(formatForGraphDataFrame, formatForGraphDataFrame$TYPE == "HYPER")
+    hyperTotal <- nrow(hyperDataSet)
+    hyperNumber <- interceptFrame[interceptFrame$TYPE == "HYPER",]$result
+    signifLevelHyper <- nrow(subset(hyperDataSet, hyperDataSet$result <= hyperNumber))/hyperTotal
+
+    # Add significant level value as annotated text
+    ann_text <- data.frame(TYPE = c("HYPO", "HYPER"),
+                           lab = c(sprintf("%.6f", signifLevelHypo),
+                                   sprintf("%.6f", signifLevelHyper)))
+    p <- p + geom_text(data = ann_text,
+                       aes(x=100, y=100, label=ann_text$lab, size=15, color="red"),
+                       inherit.aes=FALSE, parse=FALSE)
+
+    # Add number of observed conserved elements as annotated text
+    ann_text_2 <- data.frame(TYPE = c("HYPO", "HYPER"),
+                           lab = c(sprintf("%d observed", hypoNumber), sprintf("%d observed", hyperNumber)))
+    p <- p + geom_text(data = ann_text_2,  aes(x=100, y=300, label=ann_text_2$lab, size=15, color="red"), inherit.aes=FALSE, parse=FALSE)
+
+    p <- p + theme(legend.position="none")
+
+    return(p)
+
+}

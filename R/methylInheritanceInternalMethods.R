@@ -835,3 +835,46 @@ saveInterGenerationResults <- function(outputDir, permutationID,
     return(0)
 
 }
+
+#' @title TODO
+#'
+#' @description TODO
+#'
+#' @param interGenerationResult TODO
+#'
+#' @param type One of the "sites" or "tiles". Specifies the type
+#' of elements that should be returned. For
+#' retrieving differentially methylated bases type="sites"; for
+#' differentially methylated regions type="tiles". Default: "sites".
+#'
+#' @param result TODO
+#'
+#' @return \code{0} a list containing:
+#'
+#' @examples
+#'
+#' ##TODO
+#'
+#' @author Astrid Deschenes, Pascal Belleau
+#' @keywords internal
+createDataStructure <- function(interGenerationResult) {
+
+    result <- list()
+    result[["i2"]] <- list()
+    result[["i2"]][["HYPER"]] <- list()
+    result[["i2"]][["HYPO"]]  <- list()
+    result[["iAll"]][["HYPER"]]  <- list()
+    result[["iAll"]][["HYPO"]]   <- list()
+    result[["i2"]][["HYPER"]] <- lapply(interGenerationResult$i2,
+                        FUN = function(x) {sum(width(x[x$typeDiff > 0]))})
+    result[["i2"]][["HYPO"]]  <- lapply(interGenerationResult$i2,
+                        FUN = function(x) {sum(width(x[x$typeDiff < 0]))})
+    result[["iAll"]][["HYPER"]] <- lapply(interGenerationResult$iAll,
+                        FUN = function(x) {sum(width(x[x$typeDiff > 0]))})
+    result[["iAll"]][["HYPO"]]  <- lapply(interGenerationResult$iAll,
+                        FUN = function(x) {sum(width(x[x$typeDiff < 0]))})
+
+    return(result)
+}
+
+
