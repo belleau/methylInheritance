@@ -2,9 +2,13 @@
 [![codecov](https://codecov.io/gh/adeschen/methylInheritance/branch/master/graph/badge.svg)](https://codecov.io/gh/adeschen/methylInheritance)
 
 
-# methylInheritance
-Permutation analysis, based on Monte Carlo sampling, for testing the 
-hypothesis that the number of conserved differentially methylated elements, between several generations, is 
+## Conserved Differentially Methylated Elements from One Generation to the Next: Inheritance versus Randomness
+
+
+The **methylInheritance** package implements a permutation analysis, based 
+on Monte Carlo sampling, for testing the 
+hypothesis that the number of conserved differentially methylated 
+elements, between several generations, is 
 associated to an effect inherited from a treatment and that stochastic effect 
 can be dismissed. 
 
