@@ -1,15 +1,10 @@
 ###################################################
-
 # Created by Astrid Deschenes
-
 # 2017-01-05
-
 ###################################################
 
 ###################################################
-
 ## Test the methylInheritanceMethods functions
-
 ###################################################
 
 
@@ -20,10 +15,10 @@ METHYL_OBJ_FILE <- dir(system.file("extdata", package = "methylInheritance"),
 
 METHYL_OBJ <- readRDS(METHYL_OBJ_FILE)
 
+data(analysisResults)
+
 ###########################################################
-
 ## runPermutationUsingRDSFile() function
-
 ###########################################################
 
 ## Test when methylKitRDSFile is not a valid RDS file name
@@ -43,3 +38,27 @@ test.runPermutationUsingRDSFile_methylKitRDSFile_not_valid <- function() {
 
     checkEquals(obs, exp, msg = message)
 }
+
+
+###########################################################
+# formatForGraph() function
+###########################################################
+
+## Test result when all parameters are good
+test.formatForGraph_good_01 <- function() {
+    obs <- tryCatch(formatForGraph(analysisandPermutationResults =
+                    analysisResults, type = "sites", inter="i2", 1),
+                    error=conditionMessage)
+
+    exp <- data.frame(TYPE = rep(c("HYPO","HYPER"), 21),
+                      result = c(2,4,2,4,4,3,1,5,3,3,4,2,0,0,0,1,1,0,6,2,2,5,1,
+                                 3,2,4,222,67,6,4,183,53,1,6,34,102,2,2,4,3,2,2),
+                      SOURCE = c("OBSERVED", "OBSERVED",
+                                    rep("PERMUTATION", 40)))
+
+    message <- paste0(" test.formatForGraph_good_01() ",
+                      "- Valid parameters for formatForGraph did not generated expected results.")
+
+    checkEquals(obs, exp, msg = message)
+}
+

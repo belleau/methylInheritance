@@ -890,9 +890,11 @@ extractData <- function(realAnalysis_output_dir, permutations_output_dir,
 }
 
 
-#' @title TODO
+#' @title Load all RDS files created by the permutation analysis
 #'
-#' @description  TODO
+#' @description  Load all RDS files created by the permutation analysis and
+#' create an object of \code{class} "methylInheritanceAllResults" to hold all
+#' the pertinent information.
 #'
 #' @param analysisResultsDIR TODO
 #'
@@ -902,7 +904,20 @@ extractData <- function(realAnalysis_output_dir, permutations_output_dir,
 #'
 #' @param doingTiles TODO
 #'
-#' @return TODO
+#' @return an \code{list} of \code{class} "methylInheritanceAllResults"
+#' containing the following elements:
+#' \itemize{
+#'     \item \code{OBSERVED}, a \code{list} that contains one or two
+#'     \code{list} depending
+#'     of the specified parameters. When \code{doingSites} = \code{TRUE}, a
+#'     list of called "SITES" is present. When \code{doingTiles} = \code{TRUE},
+#'     a list of called "TILES" is present. TODO
+#'     \item \code{PERMUTATION}, a \code{list}  contains one or two \code{list}
+#'     depending of the specified parameters. When
+#'     \code{doingSites} = \code{TRUE}, a
+#'     list of called "SITES" is present. When \code{doingTiles} = \code{TRUE},
+#'     a list of called "TILES" is present. TODO
+#' }
 #'
 #' @examples
 #'
@@ -915,14 +930,14 @@ loadAllPermutationRDS <- function(analysisResultsDIR,
                                     doingSites = TRUE,
                                     doingTiles = FALSE) {
 
-    ## Add last slash to path when absent
+    ## Add last slash to analysisResultsDIR when absent
     if (!is.null(analysisResultsDIR) &&
         (substr(analysisResultsDIR, nchar(analysisResultsDIR),
                     nchar(analysisResultsDIR)) != "/")) {
         analysisResultsDIR <- paste0(analysisResultsDIR, "/")
     }
 
-    ## Add last slash to path when absent
+    ## Add last slash to permutationResultsDIR when absent
     if (!is.null(permutationResultsDIR) &&
         (substr(permutationResultsDIR, nchar(permutationResultsDIR),
                     nchar(permutationResultsDIR)) != "/")) {
@@ -934,41 +949,47 @@ loadAllPermutationRDS <- function(analysisResultsDIR,
     if (doingSites) {
         analysisResults <- readRDS(file = paste0(analysisResultsDIR,
                                              "SITES/SITES_permutation_0.RDS"))
-        analysisStruct <- createDataStructure(interGenerationResult = analysisResults)
+        analysisStruct <- createDataStructure(interGenerationResult =
+                                                    analysisResults)
         result[["OBSERVED"]][["SITES"]] <- analysisStruct
 
 
         filesInDir <- list.files(path = paste0(permutationResultsDIR, "SITES/"),
-                             pattern = ".RDS", all.files = FALSE,
-                             full.names = TRUE, recursive = FALSE,
-                             ignore.case = FALSE, include.dirs = FALSE, no.. = FALSE)
+                                pattern = ".RDS", all.files = FALSE,
+                                full.names = TRUE, recursive = FALSE,
+                                ignore.case = FALSE, include.dirs = FALSE,
+                                no.. = FALSE)
 
         sitesPerm <- lapply(filesInDir, FUN = function(x) {readRDS(file = x)})
 
         t <- lapply(sitesPerm, FUN = function(x) {
-            createDataStructure(interGenerationResult = x)})
+                    createDataStructure(interGenerationResult = x)})
 
         result[["PERMUTATION"]][["SITES"]] <- t
     }
 
     if (doingTiles) {
         analysisResults <- readRDS(file = paste0(analysisResultsDIR,
-                                                 "TILES/TILES_permutation_0.RDS"))
-        analysisStruct <- createDataStructure(interGenerationResult = analysisResults)
+                                            "TILES/TILES_permutation_0.RDS"))
+        analysisStruct <- createDataStructure(interGenerationResult =
+                                                    analysisResults)
         result[["OBSERVED"]][["TILES"]] <- analysisStruct
 
         filesInDir <- list.files(path = paste0(permutationResultsDIR, "TILES/"),
-                                 pattern = ".RDS", all.files = FALSE,
-                                 full.names = TRUE, recursive = FALSE,
-                                 ignore.case = FALSE, include.dirs = FALSE, no.. = FALSE)
+                                    pattern = ".RDS", all.files = FALSE,
+                                    full.names = TRUE, recursive = FALSE,
+                                    ignore.case = FALSE, include.dirs = FALSE,
+                                    no.. = FALSE)
 
         tilesPerm <- lapply(filesInDir, FUN = function(x) {readRDS(file = x)})
 
         t <- lapply(tilesPerm, FUN = function(x) {
-            createDataStructure(interGenerationResult = x)})
+                    createDataStructure(interGenerationResult = x)})
 
         result[["PERMUTATION"]][["TILES"]] <- t
     }
+
+    class(result)<-"methylInheritanceAllResults"
 
     return(result)
 }
@@ -986,29 +1007,39 @@ loadAllPermutationRDS <- function(analysisResultsDIR,
 #'
 #' @param position TODO
 #'
-#' @return  TODO
+#' @return TODO
 #'
 #' @examples
 #'
-#' ## TODO
+#' ## Loading dataset containing all results
+#' data(analysisResults)
+#'
+#' ## Extract information for the intersection between conserved differentially
+#' ## methylated sites (type = sites) between the intersection of 2
+#' ## generations (inter = i2): F2 and F3 (position = 2)
+#' formatForGraph(analysisandPermutationResults = analysisResults,
+#' type = "sites", inter="i2", 2)
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
-formatForGraph <- function(analysisandPermutationResults, type = c("sites", "tiles"),
-                        inter=c("i2", "iAll"), position) {
+formatForGraph <- function(analysisandPermutationResults,
+                            type = c("sites", "tiles"),
+                            inter=c("i2", "iAll"), position) {
 
     type <- toupper(type)
 
     real <- analysisandPermutationResults[["OBSERVED"]][[type]][[inter]]
 
     dataConserved <- data.frame(TYPE=c("HYPO", "HYPER"),
-                                result=c(real[["HYPO"]][[position]], real[["HYPER"]][[position]]),
+                                result=c(real[["HYPO"]][[position]],
+                                            real[["HYPER"]][[position]]),
                                 SOURCE=c("OBSERVED", "OBSERVED"))
 
     for (i in 1:length(analysisandPermutationResults[["PERMUTATION"]][[type]])) {
         permutation <- analysisandPermutationResults[["PERMUTATION"]][[type]][[i]][[inter]]
         dataConserved <- rbind(dataConserved, data.frame(TYPE=c("HYPO", "HYPER"),
-                        result=c(permutation[["HYPO"]][[position]], permutation[["HYPER"]][[position]]),
+                        result=c(permutation[["HYPO"]][[position]],
+                                    permutation[["HYPER"]][[position]]),
                         SOURCE=c("PERMUTATION", "PERMUTATION")))
     }
 

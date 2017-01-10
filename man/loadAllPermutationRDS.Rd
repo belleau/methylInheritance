@@ -2,7 +2,8 @@
 % Please edit documentation in R/methylInheritanceMethods.R
 \name{loadAllPermutationRDS}
 \alias{loadAllPermutationRDS}
-\title{TODO}
+\title{Load all RDS files created by the permutation analysis and create
+a}
 \usage{
 loadAllPermutationRDS(analysisResultsDIR, permutationResultsDIR,
   doingSites = TRUE, doingTiles = FALSE)
@@ -17,7 +18,20 @@ loadAllPermutationRDS(analysisResultsDIR, permutationResultsDIR,
 \item{doingTiles}{TODO}
 }
 \value{
-TODO
+an \code{list} of \code{class} "methylInheritanceAllResults"
+containing the following elements:
+\itemize{
+    \item \code{OBSERVED}, a \code{list} that contains one or two
+    \code{list} depending
+    of the specified parameters. When \code{doingSites} = \code{TRUE}, a
+    list of called "SITES" is present. When \code{doingTiles} = \code{TRUE},
+    a list of called "TILES" is present. TODO
+    \item \code{PERMUTATION}, a \code{list}  contains one or two \code{list}
+    depending of the specified parameters. When
+    \code{doingSites} = \code{TRUE}, a
+    list of called "SITES" is present. When \code{doingTiles} = \code{TRUE},
+    a list of called "TILES" is present. TODO
+}
 }
 \description{
 TODO
