@@ -109,7 +109,7 @@ methylFile <- dir(system.file("extdata", package = "methylInheritance"),
 pattern = "methylObj_001.RDS", full.names = TRUE)
 
 ## Run a permutation analysis
-\dontrun{runPermutationUsingRDS(methylKitRDSFile = methylFile,
+\dontrun{runPermutationUsingRDSFile(methylKitRDSFile = methylFile,
 type = "sites", nbrPermutations = 10, vSeed = 2001)}
 
 }

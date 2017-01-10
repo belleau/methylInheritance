@@ -96,7 +96,7 @@
 #' pattern = "methylObj_001.RDS", full.names = TRUE)
 #'
 #' ## Run a permutation analysis
-#' \dontrun{runPermutationUsingRDS(methylKitRDSFile = methylFile,
+#' \dontrun{runPermutationUsingRDSFile(methylKitRDSFile = methylFile,
 #' type = "sites", nbrPermutations = 10, vSeed = 2001)}
 #'
 #' @author Astrid Deschenes, Pascal Belleau
@@ -946,6 +946,7 @@ loadAllPermutationRDS <- function(analysisResultsDIR,
 
     result<-list()
 
+    ## SITES
     if (doingSites) {
         analysisResults <- readRDS(file = paste0(analysisResultsDIR,
                                              "SITES/SITES_permutation_0.RDS"))
@@ -968,6 +969,7 @@ loadAllPermutationRDS <- function(analysisResultsDIR,
         result[["PERMUTATION"]][["SITES"]] <- t
     }
 
+    ## TILES
     if (doingTiles) {
         analysisResults <- readRDS(file = paste0(analysisResultsDIR,
                                             "TILES/TILES_permutation_0.RDS"))

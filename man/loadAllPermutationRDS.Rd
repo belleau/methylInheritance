@@ -2,8 +2,7 @@
 % Please edit documentation in R/methylInheritanceMethods.R
 \name{loadAllPermutationRDS}
 \alias{loadAllPermutationRDS}
-\title{Load all RDS files created by the permutation analysis and create
-a}
+\title{Load all RDS files created by the permutation analysis}
 \usage{
 loadAllPermutationRDS(analysisResultsDIR, permutationResultsDIR,
   doingSites = TRUE, doingTiles = FALSE)
@@ -34,7 +33,9 @@ containing the following elements:
 }
 }
 \description{
-TODO
+Load all RDS files created by the permutation analysis and
+create an object of \code{class} "methylInheritanceAllResults" to hold all
+the pertinent information.
 }
 \examples{
 
