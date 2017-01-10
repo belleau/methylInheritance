@@ -339,6 +339,157 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
     return(result)
 }
 
+
+#' @title Run a differentially methylation analysis on each generation
+#' present in a dataset.
+#'
+#' @description Run a differentially methylation analysis on each generation
+#' present in a dataset. The number of conserved differentially
+#' methylated elements (sites, tile or both) is them calculated. The
+#' methylKit package is used to identify the differentially methylated
+#' elements.
+#'
+#' @param methylKitInfo a \code{list} of \code{methylRawList} entries, each
+#' \code{methylRawList} contains all the \code{methylRaw} entries related to
+#' one generation (first entry = first generation, second entry = second
+#' generation, etc..). The number of generations must correspond to the number
+#' of entries in the \code{methylKitInfo}.At least 2 generations
+#' must be present to calculate the conserved elements. More information can
+#' be found in the methylKit package.
+#'
+#' @param type One of the "sites","tiles" or "both" strings. Specifies the type
+#' of differentially methylated elements should be returned. For
+#' retrieving differentially methylated bases type="sites"; for
+#' differentially methylated regions type="tiles". Default: "both".
+#'
+#' @param outputDir a string, the name of the directory that will contain
+#' the results of the permutation or \code{NULL}. If the directory does not
+#' exist, it will be created. When \code{NULL}, the results of the permutation
+#' are not saved. Default: \code{NULL}.
+#'
+#' @param nbrPermutations, a positive \code{integer}, the total number of
+#' permutations that is going to be done. Default: \code{1000}.
+#'
+#' @param nbrCoresDiffMeth a positive \code{integer}, the number of cores
+#' to use for parallel differential methylation calculations.Parameter
+#' used for both sites and tiles analysis. The parameter
+#' corresponds to the \code{num.cores} parameter in the package
+#' \code{methylKit}.
+#' Default: \code{1} and always \code{1} for Windows.
+#'
+#' @param minReads a positive \code{integer} Bases and regions having lower
+#' coverage than this count are discarded. The parameter
+#' correspond to the \code{lo.count} parameter in the package \code{methylKit}.
+#'
+#' @param minMethDiff a positive \code{double} betwwen [0,100], the absolute
+#' value of methylation percentage change between cases and controls. The
+#' parameter correspond to the \code{difference} parameter in
+#' the methylKit package. Default: \code{10}.
+#'
+#' @param qvalue a positive \code{double} betwwen [0,1], the cutoff
+#' for qvalue of differential methylation statistic. Default: \code{0.01}.
+#'
+#' @param maxPercReads a \code{double} between [0,100], the percentile of read
+#' counts that is going to be used as upper cutoff. Bases ore regions
+#' having higher
+#' coverage than this percentile are discarded. Parameter used for both CpG
+#' sites and tiles analysis. The parameter
+#' correspond to the \code{hi.perc} parameter in the package \code{methylKit}.
+#' Default: \code{99.9}.
+#'
+#' @param destrand a \code{logical}, when \code{TRUE} will merge reads on both
+#' strands of a CpG dinucleotide to provide better coverage. Only advised
+#' when looking at CpG methylation. Parameter used for both CpG
+#' sites and tiles analysis.
+#' Default: \code{FALSE}.
+#'
+#' @param minCovBasesForTiles a non-negative \code{integer}, the minimum
+#' number of bases to be covered in a given tiling window. The parameter
+#' corresponds to the \code{cov.bases} parameter in the package
+#' \code{methylKit}.
+#' Only used when \code{doingTiles} =
+#' \code{TRUE}. Default: \code{0}.
+#'
+#' @param tileSize a positive \code{integer}, the size of the tiling window.
+#' The parameter corresponds to the \code{win.size} parameter in
+#' the package \code{methylKit}. Only
+#' used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.
+#'
+#' @param stepSize a positive \code{integer}, the step size of tiling windows.
+#' The parameter corresponds to the \code{stepSize} parameter in
+#' the package \code{methylKit}. Only
+#' used when \code{doingTiles} = \code{TRUE}. Default: \code{1000}.
+#'
+#' @param vSeed a \code{integer}, a seed used when reproducible results are
+#' needed. When a value inferior or equal to zero is given, a random integer
+#' is used. Default: \code{-1}.
+#'
+#' @return TODO
+#'
+#' @examples
+#'
+#' ## Load methyl information
+#' data(samplesForTransgenerationalAnalysis)
+#'
+#' ## Run a permutation analysis
+#' \dontrun{runAnalysisUsingMethylKitInfo(methylKitInfo =
+#' samplesForTransgenerationalAnalysis, type = "sites",
+#' nbrPermutations = 0, vSeed = 221)}
+#'
+#' @author Astrid Deschenes, Pascal Belleau
+#' @export
+runAnalysisUsingMethylKitInfo <- function(methylKitInfo,
+                                            type = c("both", "sites", "tiles"),
+                                            outputDir = NULL,
+                                            nbrPermutations = 0,
+                                            nbrCores = 1,
+                                            nbrCoresDiffMeth = 1,
+                                            minReads = 10,
+                                            minMethDiff = 10,
+                                            qvalue = 0.01,
+                                            maxPercReads = 99.9,
+                                            destrand = FALSE,
+                                            minCovBasesForTiles = 0,
+                                            tileSize = 1000,
+                                            stepSize = 1000,
+                                            vSeed = -1) {
+
+
+    ## Parameters validation
+    ## TODO
+
+    ## Add last slash to path when absent
+    if (!is.null(outputDir) &&
+        (substr(outputDir, nchar(outputDir), nchar(outputDir)) != "/")) {
+        outputDir <- paste0(outputDir, "/")
+    }
+
+    ## Set vSeed value when negative seed is given
+    if (vSeed <= -1) {
+        tSeed <- as.numeric(Sys.time())
+        vSeed <- 1e8 * (tSeed - floor(tSeed))
+    }
+    set.seed(vSeed)
+
+    methylInfo <- list(sample = methylKitInfo, id = 0)
+
+    ## Extract information
+    result <- runOnePermutationOnAllGenerations(methylInfoForAllGeneration = methylInfo,
+                                    type = type, outputDir = outputDir,
+                                    nbrCoresDiffMeth = nbrCoresDiffMeth,
+                                    minReads = minReads,
+                                    minMethDiff = minMethDiff,
+                                    qvalue = qvalue,
+                                    maxPercReads = maxPercReads,
+                                    destrand = destrand,
+                                    minCovBasesForTiles = minCovBasesForTiles,
+                                    tileSize = tileSize,
+                                    stepSize = stepSize)
+
+    return(result)
+}
+
+
 #' @title TODO
 #'
 #' @description TODO
