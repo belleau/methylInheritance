@@ -14,7 +14,8 @@ can be dismissed.
 
 ## Citing ##
 
-If you use this package for a publication, we would ask you to cite the following:
+If you use this package for a publication, we would ask you to cite the 
+following:
 
 > Astrid Deschênes, Pascal Belleau and Arnaud Droit (2016). methylInheritance: Permutation-Based Analysis associating Conserved Differentially Methylated Elements from One Generation to the Next to a Treatment Effect. R package version 0.99.0.
 
@@ -33,8 +34,8 @@ website.
 
 ## License ##
 
-This package and the underlying methylInheritance code are distributed under the 
-Artistic license 2.0. You are free to use and redistribute this software. 
+This package and the underlying methylInheritance code are distributed under 
+the Artistic license 2.0. You are free to use and redistribute this software. 
 
 For more information on Artistic 2.0 License see
 [http://opensource.org/licenses/Artistic-2.0](http://opensource.org/licenses/Artistic-2.0)
