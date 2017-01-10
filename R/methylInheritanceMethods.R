@@ -1053,12 +1053,12 @@ plotGraph <- function(formatForGraphDataFrame) {
     hypoDataSet <- subset(formatForGraphDataFrame, formatForGraphDataFrame$TYPE == "HYPO")
     hypoTotal <- nrow(hypoDataSet)
     hypoNumber <- interceptFrame[interceptFrame$TYPE == "HYPO",]$result
-    signifLevelHypo <- nrow(subset(hypoDataSet, hypoDataSet$result <= hypoNumber))/hypoTotal
+    signifLevelHypo <- nrow(subset(hypoDataSet, hypoDataSet$result >= hypoNumber))/hypoTotal
 
     hyperDataSet <- subset(formatForGraphDataFrame, formatForGraphDataFrame$TYPE == "HYPER")
     hyperTotal <- nrow(hyperDataSet)
     hyperNumber <- interceptFrame[interceptFrame$TYPE == "HYPER",]$result
-    signifLevelHyper <- nrow(subset(hyperDataSet, hyperDataSet$result <= hyperNumber))/hyperTotal
+    signifLevelHyper <- nrow(subset(hyperDataSet, hyperDataSet$result >= hyperNumber))/hyperTotal
 
     # Add significant level value as annotated text
     ann_text <- data.frame(TYPE = c("HYPO", "HYPER"),
