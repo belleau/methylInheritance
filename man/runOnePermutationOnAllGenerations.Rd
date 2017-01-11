@@ -47,7 +47,7 @@ correspond to the \code{difference} parameter in the
 package \code{methylKit}.
 Default: \code{10}.}
 
-\item{qvalue}{a positive \code{double} inferior ot \code{1}, the cutoff
+\item{qvalue}{a positive \code{double} inferior to \code{1}, the cutoff
 for qvalue of differential methylation statistic. Default: \code{0.01}.}
 
 \item{maxPercReads}{a double between [0-100], the percentile of read

@@ -2,7 +2,7 @@
 % Please edit documentation in R/methylInheritanceInternalMethods.R
 \name{saveInterGenerationResults}
 \alias{saveInterGenerationResults}
-\title{Save the result of on CpG site or region analysis on all generations.
+\title{Save the result of on CpG site or tile analysis on all generations.
 The anaysis can come from observed or permutated dataset. Each case is
 saved with a different extension.}
 \usage{
@@ -25,7 +25,9 @@ of differentially methylated elements should be returned. For
 retrieving differentially methylated bases type="sites"; for
 differentially methylated regions type="tiles". Default: "both".}
 
-\item{result}{TODO}
+\item{result}{a \code{list} that corresponds to the output of the
+\code{interGeneration} function, the result of on CpG site or tile
+analysis on all generations.}
 
 \item{type}{One of the "sites" or "tiles" strings. Specifies the type
 of differentially methylated elements should be saved. Default: "sites".}
@@ -35,7 +37,7 @@ of differentially methylated elements should be saved. Default: "sites".}
 successful.
 }
 \description{
-Save the result of on CpG site or region analysis on all
+Save the result of on CpG site or tile analysis on all
 generations. The results are saved in a RDS file. The anaysis can come
 from observed or permutated dataset.
 Each case is saved with a different extension. The files containing the

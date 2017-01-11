@@ -402,13 +402,15 @@ extractDataFromFile <- function(directory, elementType = c("SITES", "TILES")) {
 #'
 #' @description TODO
 #'
-#' @param methDiff, TODO
+#' @param methDiff TODO
 #'
-#' @param pDiff, TODO
+#' @param qvalue a positive \code{double} inferior to \code{1}, the cutoff
+#' for qvalue of differential methylation statistic.
 #'
-#' @param qCut, TODO
-#'
-#' @param typeD, TODO
+#' @param type One of the "hyper","hypo" or "all" strings, the string pecifies
+#' what type of differentially methylated bases/tiles should be returned. For
+#' retrieving hyper-methylated tiles/bases type="hyper"; for
+#' hypo-methylated type="hypo". Default: "all".
 #'
 #' @return TODO
 #'
@@ -421,20 +423,22 @@ extractDataFromFile <- function(directory, elementType = c("SITES", "TILES")) {
 #' @importFrom GenomicRanges GRanges
 #' @importFrom IRanges IRanges
 #' @keywords internal
-getGRangesFromMethylDiff <- function(methDiff, pDiff, qCut, typeD= "all"){
+getGRangesFromMethylDiff <- function(methDiff, pDiff, qvalue,
+                                        type = c("all", "hyper", "hypo")){
 
     methDiffK <- lapply(1:length(methDiff), FUN = function(i,
                                                            methDiff,
                                                            pDiff,
                                                            qCut, typeD){
-        methK <- getMethylDiff(methDiff[[i]],difference=pDiff,qvalue=qCut, type=typeD)
+        methK <- getMethylDiff(methDiff[[i]], difference = pDiff,
+                               qvalue = qCut, type = typeD)
         GRanges(seqnames = methK$chr, ranges = IRanges(start = methK$start,
                                                        end = methK$end),
                 strand = methK$strand, pvalue = methK$pvalue,
                 qvalue = methK$qvalue, meth.diff = methK$meth.diff)
-    }, methDiff = methDiff, pDiff = pDiff, qCut = qCut, typeD=typeD)
+    }, methDiff = methDiff, pDiff = pDiff, qCut = qvalue, typeD = typeD)
 
-    methDiffK
+    return(methDiffK)
 }
 
 
@@ -578,7 +582,7 @@ createOutputDir <- function(output_dir, doingSites = TRUE,
 #' coverage than this count are discarded. The parameter
 #' correspond to the \code{lo.count} parameter in the  \code{methylKit} package.
 #'
-#' @param qvalue a positive \code{double} inferior ot \code{1}, the cutoff
+#' @param qvalue a positive \code{double} inferior to \code{1}, the cutoff
 #' for qvalue of differential methylation statistic. Default: \code{0.01}.
 #'
 #' @param maxPercReads a double between [0-100], the percentile of read
@@ -735,7 +739,7 @@ runOnePermutationOnAllGenerations <- function(methylInfoForAllGenerations,
         permutationFinal[["SITES"]][["iAll"]][["HYPO"]]   <- list()
 
         resultGR <- getGRangesFromMethylDiff(permutationList[["SITES"]],
-                                            minMethDiff, qvalue, typeD = "all")
+                                        minMethDiff, qvalue, type = "all")
 
         result <- interGeneration(resultGR)
 
@@ -767,7 +771,7 @@ runOnePermutationOnAllGenerations <- function(methylInfoForAllGenerations,
         permutationFinal[["TILES"]][["iAll"]][["HYPO"]]   <- list()
 
         resultGR <- getGRangesFromMethylDiff(permutationList[["TILES"]],
-                                minMethDiff, qvalue, typeD = "all")
+                                minMethDiff, qvalue, type = "all")
 
         result <- interGeneration(resultGR)
 
@@ -792,11 +796,11 @@ runOnePermutationOnAllGenerations <- function(methylInfoForAllGenerations,
 }
 
 
-#' @title Save the result of on CpG site or region analysis on all generations.
+#' @title Save the result of on CpG site or tile analysis on all generations.
 #' The anaysis can come from observed or permutated dataset. Each case is
 #' saved with a different extension.
 #'
-#' @description Save the result of on CpG site or region analysis on all
+#' @description Save the result of on CpG site or tile analysis on all
 #' generations. The results are saved in a RDS file. The anaysis can come
 #' from observed or permutated dataset.
 #' Each case is saved with a different extension. The files containing the
@@ -820,7 +824,9 @@ runOnePermutationOnAllGenerations <- function(methylInfoForAllGenerations,
 #' @param type One of the "sites" or "tiles" strings. Specifies the type
 #' of differentially methylated elements should be saved. Default: "sites".
 #'
-#' @param result TODO
+#' @param result a \code{list} that corresponds to the output of the
+#' \code{interGeneration} function, the result of on CpG site or tile
+#' analysis on all generations.
 #'
 #' @return \code{0} indicating that all parameters validations have been
 #' successful.
@@ -854,14 +860,14 @@ saveInterGenerationResults <- function(outputDir, permutationID,
 #'
 #' @param interGenerationResult TODO
 #'
-#' @param type One of the "sites" or "tiles". Specifies the type
+#' @param type One of the "sites" or "tiles" strings. Specifies the type
 #' of elements that should be returned. For
 #' retrieving differentially methylated bases type="sites"; for
 #' differentially methylated regions type="tiles". Default: "sites".
 #'
 #' @param result TODO
 #'
-#' @return \code{0} a list containing:
+#' @return a \code{list} containing:
 #'
 #' @examples
 #'

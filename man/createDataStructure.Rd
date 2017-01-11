@@ -9,7 +9,7 @@ createDataStructure(interGenerationResult)
 \arguments{
 \item{interGenerationResult}{TODO}
 
-\item{type}{One of the "sites" or "tiles". Specifies the type
+\item{type}{One of the "sites" or "tiles" strings. Specifies the type
 of elements that should be returned. For
 retrieving differentially methylated bases type="sites"; for
 differentially methylated regions type="tiles". Default: "sites".}
@@ -17,7 +17,7 @@ differentially methylated regions type="tiles". Default: "sites".}
 \item{result}{TODO}
 }
 \value{
-\code{0} a list containing:
+a \code{list} containing:
 }
 \description{
 TODO

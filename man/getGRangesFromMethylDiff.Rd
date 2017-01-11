@@ -4,16 +4,19 @@
 \alias{getGRangesFromMethylDiff}
 \title{TODO}
 \usage{
-getGRangesFromMethylDiff(methDiff, pDiff, qCut, typeD = "all")
+getGRangesFromMethylDiff(methDiff, pDiff, qvalue, type = c("all", "hyper",
+  "hypo"))
 }
 \arguments{
-\item{methDiff, }{TODO}
+\item{methDiff}{TODO}
 
-\item{pDiff, }{TODO}
+\item{qvalue}{a positive \code{double} inferior to \code{1}, the cutoff
+for qvalue of differential methylation statistic.}
 
-\item{qCut, }{TODO}
-
-\item{typeD, }{TODO}
+\item{type}{One of the "hyper","hypo" or "all" strings, the string pecifies
+what type of differentially methylated bases/tiles should be returned. For
+retrieving hyper-methylated tiles/bases type="hyper"; for
+hypo-methylated type="hypo". Default: "all".}
 }
 \value{
 TODO
