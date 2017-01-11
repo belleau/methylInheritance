@@ -124,9 +124,9 @@ head(samplesForTransgenerationalAnalysis[[2]][[1]])
 ## head(samplesForTransgenerationalAnalysis[[2]]@.Data[[1]]) 
 
 ## The treatment vector for each generation
-samplesForTransgenerationalAnalysis[[1]]@treatment
-samplesForTransgenerationalAnalysis[[2]]@treatment
-samplesForTransgenerationalAnalysis[[3]]@treatment
+slot(samplesForTransgenerationalAnalysis[[1]], "treatment")
+slot(samplesForTransgenerationalAnalysis[[2]], "treatment")
+slot(samplesForTransgenerationalAnalysis[[3]], "treatment")
 
 ```
 
