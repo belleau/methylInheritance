@@ -19,7 +19,6 @@ Depends:
     R (>= 3.3)
 Imports:
     methylKit,
-    BiocGenerics,
     BiocParallel,
     GenomicRanges,
     IRanges,
@@ -29,6 +28,7 @@ Imports:
     utils
 Suggests:
     BiocStyle,
+    BiocGenerics,
     knitr,
     rmarkdown,
     RUnit
