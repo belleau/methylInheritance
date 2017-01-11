@@ -39,38 +39,54 @@ test.runPermutationUsingRDSFile_methylKitRDSFile_not_valid <- function() {
     checkEquals(obs, exp, msg = message)
 }
 
-# ## Test when all parameters valid
-# test.runPermutationUsingRDSFile_good_001 <- function() {
-#     obs <- tryCatch(runPermutationUsingRDSFile(
-#         methylKitRDSFile = METHYL_OBJ_FILE,  outputDir = NULL,
-#         nbrPermutations = 2, nbrCores = 1, nbrCoresDiffMeth = 1,
-#         minReads = 10, minMethDiff = 10, qvalue = 0.05,
-#         maxPercReads = 99.9, destrand = FALSE, minCovBasesForTiles = 2,
-#         tileSize = 1000, stepSize = 100, vSeed = 222),
-#         error=conditionMessage)
-#
-#     exp <- list()
-#     exp[["SITES"]] <- list()
-#     exp[["SITES"]][["i2"]] <- list()
-#     exp[["SITES"]][["i2"]][["HYPER"]] <- list(12,19)
-#     exp[["SITES"]][["i2"]][["HYPO"]] <- list(9,9)
-#     exp[["SITES"]][["iAll"]] <- list()
-#     exp[["SITES"]][["iAll"]][["HYPER"]] <- list(7)
-#     exp[["SITES"]][["iAll"]][["HYPO"]] <- list(2)
-#     exp[["TILES"]]<-list()
-#     exp[["TILES"]][["i2"]] <- list()
-#     exp[["TILES"]][["i2"]][["HYPER"]] <- list(0,0)
-#     exp[["TILES"]][["i2"]][["HYPO"]] <- list(1000, 1800)
-#     exp[["TILES"]][["iAll"]] <- list()
-#     exp[["TILES"]][["iAll"]][["HYPER"]] <- list(0)
-#     exp[["TILES"]][["iAll"]][["HYPO"]] <- list(0)
-#
-#     message <- paste0(" test.runPermutationUsingRDSFile_good_001() ",
-#                       "- All valid parameters did not generated expected result.")
-#
-#     checkEquals(obs, exp, msg = message)
-# }
+## Test when all parameters valid
+test.runPermutationUsingRDSFile_good_001 <- function() {
+    obs <- tryCatch(runPermutationUsingRDSFile(
+        methylKitRDSFile = METHYL_OBJ_FILE,  outputDir = NULL,
+        nbrPermutations = 2, nbrCores = 1, nbrCoresDiffMeth = 1,
+        minReads = 10, minMethDiff = 10, qvalue = 0.05,
+        maxPercReads = 99.9, destrand = FALSE, minCovBasesForTiles = 2,
+        tileSize = 1000, stepSize = 100, vSeed = 222),
+        error=conditionMessage)
 
+    cas_01<-list()
+    cas_01[["SITES"]] <- list()
+    cas_01[["SITES"]][["i2"]] <- list()
+    cas_01[["SITES"]][["i2"]][["HYPER"]] <- list(12,19)
+    cas_01[["SITES"]][["i2"]][["HYPO"]] <- list(9,9)
+    cas_01[["SITES"]][["iAll"]] <- list()
+    cas_01[["SITES"]][["iAll"]][["HYPER"]] <- list(7)
+    cas_01[["SITES"]][["iAll"]][["HYPO"]] <- list(2)
+    cas_01[["TILES"]]<-list()
+    cas_01[["TILES"]][["i2"]] <- list()
+    cas_01[["TILES"]][["i2"]][["HYPER"]] <- list(0,0)
+    cas_01[["TILES"]][["i2"]][["HYPO"]] <- list(1000, 1800)
+    cas_01[["TILES"]][["iAll"]] <- list()
+    cas_01[["TILES"]][["iAll"]][["HYPER"]] <- list(0)
+    cas_01[["TILES"]][["iAll"]][["HYPO"]] <- list(0)
+    cas_02<-list()
+    cas_02[["SITES"]] <- list()
+    cas_02[["SITES"]][["i2"]] <- list()
+    cas_02[["SITES"]][["i2"]][["HYPER"]] <- list(15,15)
+    cas_02[["SITES"]][["i2"]][["HYPO"]] <- list(12,10)
+    cas_02[["SITES"]][["iAll"]] <- list()
+    cas_02[["SITES"]][["iAll"]][["HYPER"]] <- list(4)
+    cas_02[["SITES"]][["iAll"]][["HYPO"]] <- list(4)
+    cas_02[["TILES"]]<-list()
+    cas_02[["TILES"]][["i2"]] <- list()
+    cas_02[["TILES"]][["i2"]][["HYPER"]] <- list(1000,0)
+    cas_02[["TILES"]][["i2"]][["HYPO"]] <- list(1700, 0)
+    cas_02[["TILES"]][["iAll"]] <- list()
+    cas_02[["TILES"]][["iAll"]][["HYPER"]] <- list(0)
+    cas_02[["TILES"]][["iAll"]][["HYPO"]] <- list(0)
+
+    exp <- list(cas_01, cas_02)
+
+    message <- paste0(" test.runPermutationUsingRDSFile_good_001() ",
+                      "- All valid parameters did not generated expected result.")
+
+    checkEquals(obs, exp, msg = message)
+}
 
 
 ###########################################################
