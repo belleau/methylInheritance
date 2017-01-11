@@ -10,7 +10,10 @@ formatForGraph(analysisandPermutationResults, type = c("sites", "tiles"),
 \arguments{
 \item{analysisandPermutationResults}{TODO}
 
-\item{type}{TODO}
+\item{type}{One of the "sites" or "tiles" strings. Specifies the type
+of differentially methylated elements should be returned. For
+retrieving differentially methylated bases type="sites"; for
+differentially methylated regions type="tiles". Default: "sites".}
 
 \item{inter}{TODO}
 

@@ -92,27 +92,24 @@ Validation of all parameters needed by the public
 }
 \examples{
 
+## Load dataset
+data(samplesForTransgenerationalAnalysis)
+
 ## The function returns 0 when all paramaters are valid
-#methylInheritance:::validateRunPermutationUsingRDS(
-#allFilesByGeneration = list(list("file01.txt", "file02.txt"),
-#list("file03.txt", "file04.txt")),
-#conditionsByGeneration = list(c(0,1), c(0,1)), output_dir = "test",
-#nbrPermutations = 10000, nbrCores = 1,
-#nbrCoresDiffMeth = 1, doingSites = TRUE, doingTiles = TRUE,
-#minReads = 10, minMethDiff = 25, qvalue = 0.01, maxPercReads = 99.9,
-#destrand = TRUE, minCovBasesForTiles = 10, tileSize = 1000,
-#stepSize = 500, vSeed = 12)
+methylInheritance:::validateRunPermutationUsingMethylKitInfo(
+methylKitInfo = samplesForTransgenerationalAnalysis, type = "sites",
+outputDir = NULL, nbrPermutations = 10000, nbrCores = 1,
+nbrCoresDiffMeth = 1, minReads = 10, minMethDiff = 25, qvalue = 0.01,
+maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
+tileSize = 1000, stepSize = 500, vSeed = 12)
 
 ## The function raises an error when at least one paramater is not valid
-\dontrun{methylInheritance:::validateRunPermutationUsingRDS(
-allFilesByGeneration = list(list("file01.txt", "file02.txt"),
-list("file03.txt", "file04.txt")),
-conditionsByGeneration = list(c(0,1)), output_dir = "test",
+\dontrun{methylInheritance:::validateRunPermutationUsingMethylKitInfo(
+methylKitInfo = "HI",type = "tiles", outputDir = NULL,
 nbrPermutations = 10000, nbrCores = 1,
-nbrCoresDiffMeth = 1, doingSites = TRUE, doingTiles = TRUE,
-minReads = 10, minMethDiff = 25, qvalue = 0.01, maxPercReads = 99.9,
-destrand = TRUE, minCovBasesForTiles = 10, tileSize = 1000,
-stepSize = 500, vSeed = 12)}
+nbrCoresDiffMeth = 1, minReads = 10, minMethDiff = 25, qvalue = 0.01,
+maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
+tileSize = 1000, stepSize = 500, vSeed = 12)}
 
 }
 \author{

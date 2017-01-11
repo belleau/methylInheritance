@@ -2,8 +2,9 @@
 % Please edit documentation in R/methylInheritanceInternalMethods.R
 \name{saveInterGenerationResults}
 \alias{saveInterGenerationResults}
-\title{Run one permutation using \code{methylKit} package. One permutation
-includes analysis for all generations associated to the same permutation.}
+\title{Save the result of on CpG site or region analysis on all generations.
+The anaysis can come from observed or permutated dataset. Each case is
+saved with a different extension.}
 \usage{
 saveInterGenerationResults(outputDir, permutationID, type = c("sites",
   "tiles"), result)
@@ -12,9 +13,14 @@ saveInterGenerationResults(outputDir, permutationID, type = c("sites",
 \item{outputDir}{a string, the name of the directory that will contain
 the results of the permutation. The name should end with a slash.}
 
-\item{permutationID}{an integer, the identifiant of the permutation.}
+\item{permutationID}{an integer, the identifiant of the permutation. When
+the \code{permutationID} = \code{0}, the results are considered as the
+observed results and are saved in a file with the "_observed_results.RDS"
+extension. When the \code{permutationID} != \code{0}, the results are
+considered as permutation results and are saved in a file with the
+"_permutation_{permutationID}.RDS" extension.}
 
-\item{type}{One of the "sites","tiles" or "both" strings. Specifies the type
+\item{type}{One of the "sites" or "tiles" strings. Specifies the type
 of differentially methylated elements should be returned. For
 retrieving differentially methylated bases type="sites"; for
 differentially methylated regions type="tiles". Default: "both".}
@@ -29,9 +35,11 @@ of differentially methylated elements should be saved. Default: "sites".}
 successful.
 }
 \description{
-Run one CpG site or region analysis using the \code{methylKit}
-package. The output of the analysis is saved in a file in the specified
-directory.
+Save the result of on CpG site or region analysis on all
+generations. The results are saved in a RDS file. The anaysis can come
+from observed or permutated dataset.
+Each case is saved with a different extension. The files containing the
+permutation results have the permutation identifiant in their name.
 }
 \examples{
 

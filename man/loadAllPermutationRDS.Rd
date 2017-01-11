@@ -34,8 +34,8 @@ containing the following elements:
 }
 \description{
 Load all RDS files created by the permutation analysis and
-create an object of \code{class} "methylInheritanceAllResults" to hold all
-the pertinent information.
+return an object of \code{class} "methylInheritanceAllResults" that holds
+all the pertinent information.
 }
 \examples{
 

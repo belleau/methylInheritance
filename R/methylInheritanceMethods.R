@@ -483,7 +483,8 @@ runAnalysisUsingMethylKitInfo <- function(methylKitInfo,
     }
 
     ## Extract information
-    result <- runOnePermutationOnAllGenerations(methylInfoForAllGenerations = methylInfo,
+    result <- runOnePermutationOnAllGenerations(methylInfoForAllGenerations =
+                                                        methylInfo,
                                     type = type, outputDir = outputDir,
                                     nbrCoresDiffMeth = nbrCoresDiffMeth,
                                     minReads = minReads,
@@ -893,8 +894,8 @@ extractData <- function(realAnalysis_output_dir, permutations_output_dir,
 #' @title Load all RDS files created by the permutation analysis
 #'
 #' @description  Load all RDS files created by the permutation analysis and
-#' create an object of \code{class} "methylInheritanceAllResults" to hold all
-#' the pertinent information.
+#' return an object of \code{class} "methylInheritanceAllResults" that holds
+#' all the pertinent information.
 #'
 #' @param analysisResultsDIR TODO
 #'
@@ -949,7 +950,7 @@ loadAllPermutationRDS <- function(analysisResultsDIR,
     ## SITES
     if (doingSites) {
         analysisResults <- readRDS(file = paste0(analysisResultsDIR,
-                                             "SITES/SITES_permutation_0.RDS"))
+                                        "SITES/SITES_observed_results.RDS"))
         analysisStruct <- createDataStructure(interGenerationResult =
                                                     analysisResults)
         result[["OBSERVED"]][["SITES"]] <- analysisStruct
@@ -972,16 +973,16 @@ loadAllPermutationRDS <- function(analysisResultsDIR,
     ## TILES
     if (doingTiles) {
         analysisResults <- readRDS(file = paste0(analysisResultsDIR,
-                                            "TILES/TILES_permutation_0.RDS"))
+                                        "TILES/TILES_observed_results.RDS"))
         analysisStruct <- createDataStructure(interGenerationResult =
                                                     analysisResults)
         result[["OBSERVED"]][["TILES"]] <- analysisStruct
 
         filesInDir <- list.files(path = paste0(permutationResultsDIR, "TILES/"),
-                                    pattern = ".RDS", all.files = FALSE,
-                                    full.names = TRUE, recursive = FALSE,
-                                    ignore.case = FALSE, include.dirs = FALSE,
-                                    no.. = FALSE)
+                                pattern = "[[:digit:]].RDS", all.files = FALSE,
+                                full.names = TRUE, recursive = FALSE,
+                                ignore.case = FALSE, include.dirs = FALSE,
+                                no.. = FALSE)
 
         tilesPerm <- lapply(filesInDir, FUN = function(x) {readRDS(file = x)})
 
@@ -1003,7 +1004,10 @@ loadAllPermutationRDS <- function(analysisResultsDIR,
 #'
 #' @param analysisandPermutationResults TODO
 #'
-#' @param type TODO
+#' @param type One of the "sites" or "tiles" strings. Specifies the type
+#' of differentially methylated elements should be returned. For
+#' retrieving differentially methylated bases type="sites"; for
+#' differentially methylated regions type="tiles". Default: "sites".
 #'
 #' @param inter TODO
 #'
