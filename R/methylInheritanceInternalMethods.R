@@ -373,7 +373,7 @@ getGRangesFromMethylDiff <- function(methDiff, pDiff, qvalue,
                                                        end = methK$end),
                 strand = methK$strand, pvalue = methK$pvalue,
                 qvalue = methK$qvalue, meth.diff = methK$meth.diff)
-    }, methDiff = methDiff, pDiff = pDiff, qCut = qvalue, typeD = typeD)
+    }, methDiff = methDiff, pDiff = pDiff, qCut = qvalue, typeD = type)
 
     return(methDiffK)
 }
