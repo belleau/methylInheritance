@@ -27,6 +27,10 @@
 #' exist, it will be created. When \code{NULL}, the results of the permutation
 #' are not saved. Default: \code{NULL}.
 #'
+#' @param runObservedAnalysis a \code{logical}, when \code{runObservedAnalysis}
+#' = \code{TRUE}, a CpG analysis on the observed dataset is done. Default:
+#' \code{TRUE}.
+#'
 #' @param nbrPermutations, a positive \code{integer}, the total number of
 #' permutations that is going to be done. Default: \code{1000}.
 #'
@@ -104,6 +108,7 @@
 runPermutationUsingRDSFile <- function(methylKitRDSFile,
                                     type = c("both", "sites", "tiles"),
                                     outputDir = NULL,
+                                    runObservedAnalysis = TRUE,
                                     nbrPermutations = 1000,
                                     nbrCores = 1,
                                     nbrCoresDiffMeth = 1,
@@ -127,6 +132,7 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 
     ## Call permutation analysis with the methylInfo object as an parameter
     runPermutationUsingMethylKitInfo(methylInfo, type, outputDir,
+                            runObservedAnalysis,
                             nbrPermutations, nbrCores, nbrCoresDiffMeth,
                             minReads, minMethDiff, qvalue, maxPercReads,
                             destrand, minCovBasesForTiles, tileSize, stepSize,
@@ -160,6 +166,10 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 #' the results of the permutation or \code{NULL}. If the directory does not
 #' exist, it will be created. When \code{NULL}, the results of the permutation
 #' are not saved. Default: \code{NULL}.
+#'
+#' @param runObservedAnalysis a \code{logical}, when \code{runObservedAnalysis}
+#' = \code{TRUE}, a CpG analysis on the observed dataset is done. Default:
+#' \code{TRUE}.
 #'
 #' @param nbrPermutations, a positive \code{integer}, the total number of
 #' permutations that is going to be done. Default: \code{1000}.
@@ -240,6 +250,7 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 runPermutationUsingMethylKitInfo <- function(methylKitInfo,
                             type = c("both", "sites", "tiles"),
                             outputDir = NULL,
+                            runObservedAnalysis = TRUE,
                             nbrPermutations = 1000,
                             nbrCores = 1,
                             nbrCoresDiffMeth = 1,
@@ -255,7 +266,8 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
 
     ## Parameters validation
     validateRunPermutationUsingMethylKitInfo(methylKitInfo, type,
-                                outputDir, nbrPermutations,
+                                outputDir,
+                                runObservedAnalysis, nbrPermutations,
                                 nbrCores, nbrCoresDiffMeth,
                                 minReads, minMethDiff, qvalue, maxPercReads,
                                 destrand, minCovBasesForTiles, tileSize,

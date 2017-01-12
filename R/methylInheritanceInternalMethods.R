@@ -42,6 +42,9 @@ getSampleNameFromFileName <- function(fileName) {
 #' the results of the permutation. If the directory does not exist, it will
 #' be created.
 #'
+#' @param runObservedAnalysis a \code{logical}, when \code{runObservedAnalysis}
+#' = \code{TRUE}, a CpG analysis on the observed dataset is done.
+#'
 #' @param nbrPermutations, a positive \code{integer}, the total number of
 #' permutations that is going to be done.
 #'
@@ -126,7 +129,7 @@ getSampleNameFromFileName <- function(fileName) {
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
 validateRunPermutationUsingMethylKitInfo <- function(methylKitInfo,
-                                    type, outputDir,
+                                    type, outputDir, runObservedAnalysis,
                                     nbrPermutations, nbrCores,
                                     nbrCoresDiffMeth,
                                     minReads, minMethDiff, qvalue,

@@ -24,7 +24,7 @@ METHYL_OBJ <- readRDS(METHYL_OBJ_FILE)
 ## Test when methylKitInfo is a string
 test.validateRunPermutationUsingMethylKitInfo_methylKitInfo_string <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
-            methylKitInfo = "HI",  outputDir = NULL,
+            methylKitInfo = "HI",  outputDir = NULL, runObservedAnalysis = TRUE,
             nbrPermutations = 2, nbrCores = 1, nbrCoresDiffMeth = 1,
             minReads = 10, minMethDiff = 10, qvalue = 0.05,
             maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
@@ -36,7 +36,7 @@ test.validateRunPermutationUsingMethylKitInfo_methylKitInfo_string <- function()
             "related to one generation")
 
     message <- paste0(" test.validateRunPermutationUsingMethylKitInfo_methylKitInfo_string() ",
-                      "- Not valid methylKitInfo did not generated expected message.")
+                "- Not valid methylKitInfo did not generated expected message.")
 
     checkEquals(obs, exp, msg = message)
 }
@@ -45,6 +45,7 @@ test.validateRunPermutationUsingMethylKitInfo_methylKitInfo_string <- function()
 test.validateRunPermutationUsingMethylKitInfo_methylKitInfo_list_of_int <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = list(a=c(1,2), b=c(2,2)), type = "sites", outputDir = NULL,
+        runObservedAnalysis = TRUE,
         nbrPermutations = 2, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
@@ -65,6 +66,7 @@ test.validateRunPermutationUsingMethylKitInfo_methylKitInfo_list_of_int <- funct
 test.validateRunPermutationUsingMethylKitInfo_outputDir_as_number <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ, type = "sites", outputDir = 33,
+        runObservedAnalysis = TRUE,
         nbrPermutations = 2, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
@@ -83,6 +85,7 @@ test.validateRunPermutationUsingMethylKitInfo_outputDir_as_number <- function() 
 test.validateRunPermutationUsingMethylKitInfo_nbrPermutations_as_string <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  type = "sites", outputDir = NULL,
+        runObservedAnalysis = TRUE,
         nbrPermutations = "TOTO", nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
@@ -101,6 +104,7 @@ test.validateRunPermutationUsingMethylKitInfo_nbrPermutations_as_string <- funct
 test.validateRunPermutationUsingMethylKitInfo_nbrCores_zero <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ, type = "both", outputDir = NULL,
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 0, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
@@ -137,6 +141,7 @@ test.validateRunPermutationUsingMethylKitInfo_nbrCores_negative <- function() {
 test.validateRunPermutationUsingMethylKitInfo_nbrCoresDiffMeth_zero <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ, type = "both", outputDir = NULL,
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 0,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
@@ -155,6 +160,7 @@ test.validateRunPermutationUsingMethylKitInfo_nbrCoresDiffMeth_zero <- function(
 test.validateRunPermutationUsingMethylKitInfo_nbrCoresDiffMeth_negative <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ, type = "both", outputDir = NULL,
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = -1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
@@ -173,6 +179,7 @@ test.validateRunPermutationUsingMethylKitInfo_nbrCoresDiffMeth_negative <- funct
 test.validateRunPermutationUsingMethylKitInfo_minReads_zero <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ, type = "both", outputDir = NULL,
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 0, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
@@ -191,6 +198,7 @@ test.validateRunPermutationUsingMethylKitInfo_minReads_zero <- function() {
 test.validateRunPermutationUsingMethylKitInfo_minReads_negative <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ, type = "both", outputDir = NULL,
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = -1, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
@@ -209,6 +217,7 @@ test.validateRunPermutationUsingMethylKitInfo_minReads_negative <- function() {
 test.validateRunPermutationUsingMethylKitInfo_minMethDiff_negative <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ, type = "both", outputDir = NULL,
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff =-0.1, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
@@ -228,6 +237,7 @@ test.validateRunPermutationUsingMethylKitInfo_minMethDiff_negative <- function()
 test.validateRunPermutationUsingMethylKitInfo_minMethDiff_above_100 <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ, type = "both", outputDir = NULL,
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 100.1, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
@@ -264,6 +274,7 @@ test.validateRunPermutationUsingMethylKitInfo_qvalue_above_1 <- function() {
 test.validateRunPermutationUsingMethylKitInfo_qvalue_negative <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ, type = "both", outputDir = NULL,
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = -0.01,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
@@ -282,6 +293,7 @@ test.validateRunPermutationUsingMethylKitInfo_qvalue_negative <- function() {
 test.validateRunPermutationUsingMethylKitInfo_maxPercReads_not_number <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ, type = "both", outputDir = NULL,
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = "lala", destrand = TRUE, minCovBasesForTiles = 2,
@@ -299,7 +311,7 @@ test.validateRunPermutationUsingMethylKitInfo_maxPercReads_not_number <- functio
 ## Test when maxPercReads is above 100
 test.validateRunPermutationUsingMethylKitInfo_maxPercReads_above_100 <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
-        methylKitInfo = METHYL_OBJ,  outputDir = NULL,
+        methylKitInfo = METHYL_OBJ,  outputDir = NULL, runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 100.1, destrand = TRUE, minCovBasesForTiles = 2,
@@ -318,6 +330,7 @@ test.validateRunPermutationUsingMethylKitInfo_maxPercReads_above_100 <- function
 test.validateRunPermutationUsingMethylKitInfo_maxPercReads_negative <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ, type = "both", outputDir = NULL,
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = -0.1, destrand = TRUE, minCovBasesForTiles = 2,
@@ -337,6 +350,7 @@ test.validateRunPermutationUsingMethylKitInfo_maxPercReads_negative <- function(
 test.validateRunPermutationUsingMethylKitInfo_destrand_number <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ, type = "both", outputDir = NULL,
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = 20, minCovBasesForTiles = 2,
@@ -356,6 +370,7 @@ test.validateRunPermutationUsingMethylKitInfo_destrand_number <- function() {
 test.validateRunPermutationUsingMethylKitInfo_minCovBasesForTiles_string_type_both <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ, outputDir = NULL, type = "both",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = "ici",
@@ -374,6 +389,7 @@ test.validateRunPermutationUsingMethylKitInfo_minCovBasesForTiles_string_type_bo
 test.validateRunPermutationUsingMethylKitInfo_minCovBasesForTiles_negative_type_both <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "both",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = -1,
@@ -392,6 +408,7 @@ test.validateRunPermutationUsingMethylKitInfo_minCovBasesForTiles_negative_type_
 test.validateRunPermutationUsingMethylKitInfo_minCovBasesForTiles_string_type_tiles <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "tiles",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = "a",
@@ -410,6 +427,7 @@ test.validateRunPermutationUsingMethylKitInfo_minCovBasesForTiles_string_type_ti
 test.validateRunPermutationUsingMethylKitInfo_minCovBasesForTiles_negative_type_tiles <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "tiles",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = -1,
@@ -429,6 +447,7 @@ test.validateRunPermutationUsingMethylKitInfo_minCovBasesForTiles_negative_type_
 test.validateRunPermutationUsingMethylKitInfo_tileSize_string_type_both <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "both",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
@@ -447,6 +466,7 @@ test.validateRunPermutationUsingMethylKitInfo_tileSize_string_type_both <- funct
 test.validateRunPermutationUsingMethylKitInfo_tileSize_zero_type_both <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "both",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
@@ -465,6 +485,7 @@ test.validateRunPermutationUsingMethylKitInfo_tileSize_zero_type_both <- functio
 test.validateRunPermutationUsingMethylKitInfo_tileSize_negative_type_both <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "both",
+
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
@@ -483,6 +504,7 @@ test.validateRunPermutationUsingMethylKitInfo_tileSize_negative_type_both <- fun
 test.validateRunPermutationUsingMethylKitInfo_tileSize_string_type_tiles <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "tiles",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
@@ -502,6 +524,7 @@ test.validateRunPermutationUsingMethylKitInfo_tileSize_string_type_tiles <- func
 test.validateRunPermutationUsingMethylKitInfo_tileSize_zero_type_tiles <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "tiles",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
@@ -520,6 +543,7 @@ test.validateRunPermutationUsingMethylKitInfo_tileSize_zero_type_tiles <- functi
 test.validateRunPermutationUsingMethylKitInfo_tileSize_negative_type_tiles <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "tiles",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
@@ -538,6 +562,7 @@ test.validateRunPermutationUsingMethylKitInfo_tileSize_negative_type_tiles <- fu
 test.validateRunPermutationUsingMethylKitInfo_stepSize_string_type_tiles <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "tiles",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
@@ -556,6 +581,7 @@ test.validateRunPermutationUsingMethylKitInfo_stepSize_string_type_tiles <- func
 test.validateRunPermutationUsingMethylKitInfo_stepSizee_zero_type_tiles <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "tiles",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
@@ -574,6 +600,7 @@ test.validateRunPermutationUsingMethylKitInfo_stepSizee_zero_type_tiles <- funct
 test.validateRunPermutationUsingMethylKitInfo_stepSize_negative_type_tiles <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "tiles",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
@@ -592,6 +619,7 @@ test.validateRunPermutationUsingMethylKitInfo_stepSize_negative_type_tiles <- fu
 test.validateRunPermutationUsingMethylKitInfo_stepSize_string_type_both <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "both",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
@@ -610,6 +638,7 @@ test.validateRunPermutationUsingMethylKitInfo_stepSize_string_type_both <- funct
 test.validateRunPermutationUsingMethylKitInfo_stepSizee_zero_type_both <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "both",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
@@ -628,6 +657,7 @@ test.validateRunPermutationUsingMethylKitInfo_stepSizee_zero_type_both <- functi
 test.validateRunPermutationUsingMethylKitInfo_stepSize_negative_type_both <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "both",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
@@ -646,6 +676,7 @@ test.validateRunPermutationUsingMethylKitInfo_stepSize_negative_type_both <- fun
 test.validateRunPermutationUsingMethylKitInfo_vSeed_string <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "both",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
@@ -664,6 +695,7 @@ test.validateRunPermutationUsingMethylKitInfo_vSeed_string <- function() {
 test.validateRunPermutationUsingMethylKitInfo_vSeed_string <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "both",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
@@ -682,6 +714,7 @@ test.validateRunPermutationUsingMethylKitInfo_vSeed_string <- function() {
 test.validateRunPermutationUsingMethylKitInfo_all_valid_parameters_01 <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "sites",
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = -3,

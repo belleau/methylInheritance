@@ -6,8 +6,9 @@
 \code{\link{runPermutationUsingMethylKitInfo}} function}
 \usage{
 validateRunPermutationUsingMethylKitInfo(methylKitInfo, type, outputDir,
-  nbrPermutations, nbrCores, nbrCoresDiffMeth, minReads, minMethDiff, qvalue,
-  maxPercReads, destrand, minCovBasesForTiles, tileSize, stepSize, vSeed)
+  runObservedAnalysis, nbrPermutations, nbrCores, nbrCoresDiffMeth, minReads,
+  minMethDiff, qvalue, maxPercReads, destrand, minCovBasesForTiles, tileSize,
+  stepSize, vSeed)
 }
 \arguments{
 \item{methylKitInfo}{a \code{list} of \code{methylRawList} entries. Each
@@ -25,6 +26,9 @@ differentially methylated regions type="tiles". Default: "both".}
 \item{outputDir}{a string, the name of the directory that will contain
 the results of the permutation. If the directory does not exist, it will
 be created.}
+
+\item{runObservedAnalysis}{a \code{logical}, when \code{runObservedAnalysis}
+= \code{TRUE}, a CpG analysis on the observed dataset is done.}
 
 \item{nbrPermutations, }{a positive \code{integer}, the total number of
 permutations that is going to be done.}
