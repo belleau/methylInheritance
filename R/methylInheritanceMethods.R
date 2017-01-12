@@ -1068,41 +1068,50 @@ formatForGraph <- function(analysisandPermutationResults,
 plotGraph <- function(formatForGraphDataFrame) {
 
     # Basic graph using dataframe
-    # Columns names : TYPE (HYPER or HYPO), result (nbr conseved sites), SOURCE (OBSERVED or PERMUTATION)
+    # Columns names : TYPE (HYPER or HYPO), result (nbr conseved sites),
+    # SOURCE (OBSERVED or PERMUTATION)
     p <- ggplot(data=formatForGraphDataFrame, aes(formatForGraphDataFrame$result)) +
         geom_histogram(col="blue",
                        fill="lightblue",
                        binwidth=2,
                        alpha = .2) +
-        labs(title="") +
-        labs(x="Number of conserved differentially methylated sites", y="Frequency")
+        labs(title = "") +
+        labs(x = "Number of conserved differentially methylated sites",
+                y = "Frequency")
 
     # Split to have one section for HYPER and one for HYPO
     p <- p + facet_grid(.~TYPE)
 
     # Add vertical line corresponding to the number of conserved elements
     # in the observed results (real results)
-    interceptFrame <- subset(formatForGraphDataFrame, formatForGraphDataFrame$SOURCE == "OBSERVED")
+    interceptFrame <- subset(formatForGraphDataFrame,
+                                formatForGraphDataFrame$SOURCE == "OBSERVED")
     p <- p + geom_vline(aes(xintercept = interceptFrame$result, color="red"),
-                        data = interceptFrame, linetype="longdash", show.legend = NA)
+                        data = interceptFrame, linetype="longdash",
+                        show.legend = NA)
 
     # Calculate the significant level for HYPER AND HYPO
-    hypoDataSet <- subset(formatForGraphDataFrame, formatForGraphDataFrame$TYPE == "HYPO")
+    hypoDataSet <- subset(formatForGraphDataFrame,
+                            formatForGraphDataFrame$TYPE == "HYPO")
     hypoTotal <- nrow(hypoDataSet)
     hypoNumber <- interceptFrame[interceptFrame$TYPE == "HYPO",]$result
-    signifLevelHypo <- nrow(subset(hypoDataSet, hypoDataSet$result >= hypoNumber))/hypoTotal
+    signifLevelHypo <- nrow(subset(hypoDataSet,
+                                hypoDataSet$result >= hypoNumber))/hypoTotal
 
-    hyperDataSet <- subset(formatForGraphDataFrame, formatForGraphDataFrame$TYPE == "HYPER")
+    hyperDataSet <- subset(formatForGraphDataFrame,
+                            formatForGraphDataFrame$TYPE == "HYPER")
     hyperTotal <- nrow(hyperDataSet)
     hyperNumber <- interceptFrame[interceptFrame$TYPE == "HYPER",]$result
-    signifLevelHyper <- nrow(subset(hyperDataSet, hyperDataSet$result >= hyperNumber))/hyperTotal
+    signifLevelHyper <- nrow(subset(hyperDataSet,
+                                hyperDataSet$result >= hyperNumber))/hyperTotal
 
     # Add significant level value as annotated text
     ann_text <- data.frame(TYPE = c("HYPO", "HYPER"),
                                 lab = c(sprintf("%.6f", signifLevelHypo),
                                         sprintf("%.6f", signifLevelHyper)))
     p <- p + geom_text(data = ann_text,
-                        aes(x=100, y=100, label=ann_text$lab, size=15, color="red"),
+                        aes(x=100, y=100, label=ann_text$lab, size=15,
+                                color="red"),
                         inherit.aes=FALSE, parse=FALSE)
 
     # Add number of observed conserved elements as annotated text
@@ -1110,7 +1119,9 @@ plotGraph <- function(formatForGraphDataFrame) {
                            lab = c(sprintf("%d observed", hypoNumber),
                                     sprintf("%d observed", hyperNumber)))
     p <- p + geom_text(data = ann_text_2,  aes(x = 100, y = 300,
-                                               label=ann_text_2$lab, size=15, color="red"), inherit.aes=FALSE, parse=FALSE)
+                                                label=ann_text_2$lab, size=15,
+                                                color="red"),
+                        inherit.aes=FALSE, parse=FALSE)
 
     p <- p + theme(legend.position="none")
 
