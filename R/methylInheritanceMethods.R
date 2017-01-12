@@ -102,20 +102,20 @@
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
 runPermutationUsingRDSFile <- function(methylKitRDSFile,
-                                   type = c("both", "sites", "tiles"),
-                                   outputDir = NULL,
-                                   nbrPermutations = 1000,
-                                   nbrCores = 1,
-                                   nbrCoresDiffMeth = 1,
-                                   minReads = 10,
-                                   minMethDiff = 10,
-                                   qvalue = 0.01,
-                                   maxPercReads = 99.9,
-                                   destrand = FALSE,
-                                   minCovBasesForTiles = 0,
-                                   tileSize = 1000,
-                                   stepSize = 1000,
-                                   vSeed = -1) {
+                                    type = c("both", "sites", "tiles"),
+                                    outputDir = NULL,
+                                    nbrPermutations = 1000,
+                                    nbrCores = 1,
+                                    nbrCoresDiffMeth = 1,
+                                    minReads = 10,
+                                    minMethDiff = 10,
+                                    qvalue = 0.01,
+                                    maxPercReads = 99.9,
+                                    destrand = FALSE,
+                                    minCovBasesForTiles = 0,
+                                    tileSize = 1000,
+                                    stepSize = 1000,
+                                    vSeed = -1) {
 
     ## Validate that methylKitRDSFile is an existing file
     if (!file.exists(methylKitRDSFile)) {
@@ -603,20 +603,20 @@ runAnalysisUsingMethylKitInfo <- function(methylKitInfo,
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
 runAnalysisUsingRDSFile <- function(methylKitRDSFile,
-                                          type = c("both", "sites", "tiles"),
-                                          outputDir = NULL,
-                                          nbrPermutations = 0,
-                                          nbrCores = 1,
-                                          nbrCoresDiffMeth = 1,
-                                          minReads = 10,
-                                          minMethDiff = 10,
-                                          qvalue = 0.01,
-                                          maxPercReads = 99.9,
-                                          destrand = FALSE,
-                                          minCovBasesForTiles = 0,
-                                          tileSize = 1000,
-                                          stepSize = 1000,
-                                          vSeed = -1) {
+                                            type = c("both", "sites", "tiles"),
+                                            outputDir = NULL,
+                                            nbrPermutations = 0,
+                                            nbrCores = 1,
+                                            nbrCoresDiffMeth = 1,
+                                            minReads = 10,
+                                            minMethDiff = 10,
+                                            qvalue = 0.01,
+                                            maxPercReads = 99.9,
+                                            destrand = FALSE,
+                                            minCovBasesForTiles = 0,
+                                            tileSize = 1000,
+                                            stepSize = 1000,
+                                            vSeed = -1) {
 
     ## Validate that methylKitRDSFile is an existing file
     if (!file.exists(methylKitRDSFile)) {
@@ -751,20 +751,20 @@ runAnalysisUsingRDSFile <- function(methylKitRDSFile,
 #' @importFrom methods new
 #' @export
 runPermutationUsingRDSTEST <- function(methylKitRDSFile,
-                                   type = c("both", "sites", "tiles"),
-                                   outputDir = NULL,
-                                   nbrPermutations = 1000,
-                                   nbrCores = 1,
-                                   nbrCoresDiffMeth = 1,
-                                   minReads = 10,
-                                   minMethDiff = 10,
-                                   qvalue = 0.01,
-                                   maxPercReads = 99.9,
-                                   destrand = FALSE,
-                                   minCovBasesForTiles = 0,
-                                   tileSize = 1000,
-                                   stepSize = 1000,
-                                   vSeed = -1) {
+                                    type = c("both", "sites", "tiles"),
+                                    outputDir = NULL,
+                                    nbrPermutations = 1000,
+                                    nbrCores = 1,
+                                    nbrCoresDiffMeth = 1,
+                                    minReads = 10,
+                                    minMethDiff = 10,
+                                    qvalue = 0.01,
+                                    maxPercReads = 99.9,
+                                    destrand = FALSE,
+                                    minCovBasesForTiles = 0,
+                                    tileSize = 1000,
+                                    stepSize = 1000,
+                                    vSeed = -1) {
 
 
     ## Extract information from RDS file
@@ -772,11 +772,11 @@ runPermutationUsingRDSTEST <- function(methylKitRDSFile,
 
     ## Parameters validation
     validateRunPermutationUsingMethylKitInfo(methylInfo, type,
-                                   outputDir, nbrPermutations,
-                                   nbrCores, nbrCoresDiffMeth,
-                                   minReads, minMethDiff, qvalue, maxPercReads,
-                                   destrand, minCovBasesForTiles, tileSize,
-                                   stepSize, vSeed)
+                                    outputDir, nbrPermutations,
+                                    nbrCores, nbrCoresDiffMeth,
+                                    minReads, minMethDiff, qvalue, maxPercReads,
+                                    destrand, minCovBasesForTiles, tileSize,
+                                    stepSize, vSeed)
 
     ## Add last slash to path when absent
     if (substr(outputDir, nchar(outputDir), nchar(outputDir)) != "/") {
@@ -1099,16 +1099,18 @@ plotGraph <- function(formatForGraphDataFrame) {
 
     # Add significant level value as annotated text
     ann_text <- data.frame(TYPE = c("HYPO", "HYPER"),
-                           lab = c(sprintf("%.6f", signifLevelHypo),
-                                   sprintf("%.6f", signifLevelHyper)))
+                                lab = c(sprintf("%.6f", signifLevelHypo),
+                                        sprintf("%.6f", signifLevelHyper)))
     p <- p + geom_text(data = ann_text,
-                       aes(x=100, y=100, label=ann_text$lab, size=15, color="red"),
-                       inherit.aes=FALSE, parse=FALSE)
+                        aes(x=100, y=100, label=ann_text$lab, size=15, color="red"),
+                        inherit.aes=FALSE, parse=FALSE)
 
     # Add number of observed conserved elements as annotated text
     ann_text_2 <- data.frame(TYPE = c("HYPO", "HYPER"),
-                           lab = c(sprintf("%d observed", hypoNumber), sprintf("%d observed", hyperNumber)))
-    p <- p + geom_text(data = ann_text_2,  aes(x=100, y=300, label=ann_text_2$lab, size=15, color="red"), inherit.aes=FALSE, parse=FALSE)
+                           lab = c(sprintf("%d observed", hypoNumber),
+                                    sprintf("%d observed", hyperNumber)))
+    p <- p + geom_text(data = ann_text_2,  aes(x = 100, y = 300,
+                                               label=ann_text_2$lab, size=15, color="red"), inherit.aes=FALSE, parse=FALSE)
 
     p <- p + theme(legend.position="none")
 
