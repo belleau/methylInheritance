@@ -216,12 +216,13 @@ validateRunPermutationUsingMethylKitInfo <- function(methylKitInfo,
 #'
 #' @param minReads a positive \code{integer} Bases and regions having lower
 #' coverage than this count are discarded. The parameter
-#' correspond to the \code{lo.count} parameter in the  \code{methylKit} package.
+#' correspond to the \code{lo.count} parameter in the  \code{methylKit}
+#' package.
 #'
 #' @param minMethDiff a positive \code{double} betwwen [0,100], the absolute
 #' value of methylation percentage change between cases and controls. The
 #' parameter correspond to the \code{difference} parameter in
-#' the  \code{methylKit} package.
+#' the \code{methylKit} package.
 #'
 #' @param qvalue a positive \code{double} betwwen [0,1], the cutoff
 #' for qvalue of differential methylation statistic.
@@ -415,8 +416,8 @@ extractDataFromFile <- function(directory, elementType = c("SITES", "TILES")) {
     }
 
     ## Initialize variables
-    elements_per_generation <- list()
-    elements_per_generation[[elementType]] <- list()
+    result <- list()
+    result[[elementType]] <- list()
 
     ## List directories related to methyl diff files
     generationsDir <- list.files(path = paste0(directory, elementType, "/"),
@@ -460,7 +461,7 @@ extractDataFromFile <- function(directory, elementType = c("SITES", "TILES")) {
         for (groupTwo in groupsTwo) {
             generation_name <- paste0("Generation_", groupTwo[1], "_and_",
                                             groupTwo[2])
-            elements_per_generation[[elementType]][[generation_name]] <- list()
+            result[[elementType]][[generation_name]] <- list()
             for (j in id_final){
                 fileName01 <- paste0(directory, elementType, "/Generation_",
                                    groupTwo[1], "/", j, "_", type,
@@ -476,15 +477,16 @@ extractDataFromFile <- function(directory, elementType = c("SITES", "TILES")) {
                     sites02 <- read.table(fileName02,
                                             stringsAsFactors = FALSE)$V4
                     results <- intersect(sites01, sites02)
-                    elements_per_generation[[elementType]][[generation_name]][[type]][j] <- length(results)
+                    result[[elementType]][[generation_name]][[type]][j] <-
+                                                                length(results)
                 } else {
-                    elements_per_generation[[elementType]][[generation_name]][[type]][j] <- 0
+                    result[[elementType]][[generation_name]][[type]][j] <- 0
                 }
             }
         }
     }
 
-    return(elements_per_generation)
+    return(result)
 }
 
 #' @title TODO

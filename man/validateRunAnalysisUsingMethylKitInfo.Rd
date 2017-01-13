@@ -37,12 +37,13 @@ the \code{methylKit} package.}
 
 \item{minReads}{a positive \code{integer} Bases and regions having lower
 coverage than this count are discarded. The parameter
-correspond to the \code{lo.count} parameter in the  \code{methylKit} package.}
+correspond to the \code{lo.count} parameter in the  \code{methylKit}
+package.}
 
 \item{minMethDiff}{a positive \code{double} betwwen [0,100], the absolute
 value of methylation percentage change between cases and controls. The
 parameter correspond to the \code{difference} parameter in
-the  \code{methylKit} package.}
+the \code{methylKit} package.}
 
 \item{qvalue}{a positive \code{double} betwwen [0,1], the cutoff
 for qvalue of differential methylation statistic.}

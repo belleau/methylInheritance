@@ -15,9 +15,14 @@
 DIRECTORY <- system.file("extdata", package = "methylInheritance")
 
 METHYL_OBJ_FILE <- dir(system.file("extdata", package = "methylInheritance"),
-                       pattern = "methylObj_001.RDS", full.names = TRUE)
+                       pattern = "methylObj_002.RDS", full.names = TRUE)
 
 METHYL_OBJ <- readRDS(METHYL_OBJ_FILE)
+
+METHYL_OBJ_FILE_1 <- dir(system.file("extdata", package = "methylInheritance"),
+                       pattern = "methylObj_001.RDS", full.names = TRUE)
+
+METHYL_OBJ_1 <- readRDS(METHYL_OBJ_FILE_1)
 
 ###########################################################
 ## runOnePermutationOnAllGenerations() function
@@ -49,8 +54,8 @@ test.validateRunPermutationUsingMethylKitInfo_sites_good_01 <- function() {
     exp <- list()
     exp[["SITES"]] <- list()
     exp[["SITES"]][["i2"]] <- list()
-    exp[["SITES"]][["i2"]][["HYPER"]] <- list(8, 9)
-    exp[["SITES"]][["i2"]][["HYPO"]]  <- list(8, 6)
+    exp[["SITES"]][["i2"]][["HYPER"]] <- list(4, 6)
+    exp[["SITES"]][["i2"]][["HYPO"]]  <- list(3, 4)
     exp[["SITES"]][["iAll"]][["HYPER"]]  <- list(0)
     exp[["SITES"]][["iAll"]][["HYPO"]]   <- list(0)
 
@@ -64,7 +69,8 @@ test.validateRunPermutationUsingMethylKitInfo_sites_good_01 <- function() {
 test.validateRunPermutationUsingMethylKitInfo_tiles_good_01 <- function() {
     ## Extract information
     set.seed(112241)
-    allSamples <- sample(unlist(METHYL_OBJ, recursive = FALSE), 36, replace = F)
+    allSamples <- sample(unlist(METHYL_OBJ_1, recursive = FALSE), 36,
+                            replace = F)
     treatment <- c(0,0,0,0,0,0,1,1,1,1,1,1)
     sampleList01 <- new("methylRawList", allSamples[1:12],
                         treatment = treatment)
