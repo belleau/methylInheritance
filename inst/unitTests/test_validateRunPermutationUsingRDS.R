@@ -24,7 +24,7 @@ METHYL_OBJ <- readRDS(METHYL_OBJ_FILE)
 ## Test when methylKitInfo is a string
 test.validateRunPermutationUsingMethylKitInfo_methylKitInfo_string <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
-            methylKitInfo = "HI",  outputDir = NULL, runObservedAnalysis = TRUE,
+            methylKitInfo = "HI", outputDir = NULL, runObservedAnalysis = TRUE,
             nbrPermutations = 2, nbrCores = 1, nbrCoresDiffMeth = 1,
             minReads = 10, minMethDiff = 10, qvalue = 0.05,
             maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
