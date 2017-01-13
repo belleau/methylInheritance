@@ -860,7 +860,7 @@ runPermutationUsingRDSTEST <- function(methylKitRDSFile,
             end = start + nbSamplesByGeneration[j] - 1
             samplePos <- permutationSamples[i, start:end]
             newSampleList <- new("methylRawList", allSamples[samplePos],
-                                 treatment = methylInfo[[1]]@treatment)
+                                    treatment = methylInfo[[1]]@treatment)
             permutationList[[j]] <- newSampleList
             start <- end + 1
         }
@@ -870,17 +870,16 @@ runPermutationUsingRDSTEST <- function(methylKitRDSFile,
     rm(permutationSamples)
 
     result <- runOnePermutationOnAllGenerations(finalList[[1]],
-                                                type = type,
-                                                outputDir = outputDir,
-                                                nbrCoresDiffMeth = nbrCoresDiffMeth,
-                                                minReads = minReads,
-                                                minMethDiff = minMethDiff,
-                                                qvalue = qvalue,
-                                                maxPercReads = maxPercReads,
-                                                destrand = destrand,
-                                                minCovBasesForTiles = minCovBasesForTiles,
-                                                tileSize = tileSize,
-                                                stepSize = stepSize)
+                                    type = type, outputDir = outputDir,
+                                    nbrCoresDiffMeth = nbrCoresDiffMeth,
+                                    minReads = minReads,
+                                    minMethDiff = minMethDiff,
+                                    qvalue = qvalue,
+                                    maxPercReads = maxPercReads,
+                                    destrand = destrand,
+                                    minCovBasesForTiles = minCovBasesForTiles,
+                                    tileSize = tileSize,
+                                    stepSize = stepSize)
 }
 
 #' @title TODO
@@ -1027,7 +1026,8 @@ loadAllPermutationRDS <- function(analysisResultsDIR,
                                                     analysisResults)
         result[["OBSERVED"]][["TILES"]] <- analysisStruct
 
-        filesInDir <- list.files(path = paste0(permutationResultsDIR, "TILES/"),
+        filesInDir <- list.files(path = paste0(permutationResultsDIR,
+                                                            "TILES/"),
                                 pattern = "[[:digit:]].RDS", all.files = FALSE,
                                 full.names = TRUE, recursive = FALSE,
                                 ignore.case = FALSE, include.dirs = FALSE,
@@ -1121,9 +1121,9 @@ plotGraph <- function(formatForGraphDataFrame) {
     # SOURCE (OBSERVED or PERMUTATION)
     p <- ggplot(data=formatForGraphDataFrame, aes(formatForGraphDataFrame$result)) +
         geom_histogram(col="blue",
-                       fill="lightblue",
-                       binwidth=2,
-                       alpha = .2) +
+                        fill="lightblue",
+                        binwidth=2,
+                        alpha = .2) +
         labs(title = "") +
         labs(x = "Number of conserved differentially methylated sites",
                 y = "Frequency")
