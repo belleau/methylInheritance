@@ -112,7 +112,8 @@ getSampleNameFromFileName <- function(fileName) {
 #' ## The function returns 0 when all paramaters are valid
 #' methylInheritance:::validateRunPermutationUsingMethylKitInfo(
 #' methylKitInfo = samplesForTransgenerationalAnalysis, type = "sites",
-#' outputDir = NULL, nbrPermutations = 10000, nbrCores = 1,
+#' outputDir = NULL, runObservedAnalysis = TRUE,
+#' nbrPermutations = 10000, nbrCores = 1,
 #' nbrCoresDiffMeth = 1, minReads = 10, minMethDiff = 25, qvalue = 0.01,
 #' maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
 #' tileSize = 1000, stepSize = 500, vSeed = 12)
@@ -120,7 +121,7 @@ getSampleNameFromFileName <- function(fileName) {
 #' ## The function raises an error when at least one paramater is not valid
 #' \dontrun{methylInheritance:::validateRunPermutationUsingMethylKitInfo(
 #' methylKitInfo = "HI",type = "tiles", outputDir = NULL,
-#' nbrPermutations = 10000, nbrCores = 1,
+#' runObservedAnalysis = FALSE, nbrPermutations = 10000, nbrCores = 1,
 #' nbrCoresDiffMeth = 1, minReads = 10, minMethDiff = 25, qvalue = 0.01,
 #' maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
 #' tileSize = 1000, stepSize = 500, vSeed = 12)}
@@ -145,9 +146,20 @@ validateRunPermutationUsingMethylKitInfo <- function(methylKitInfo,
                     "all \"methylRaw\" objects related to one generation"))
     }
 
-    ## Validate that the output_dir is an not empty string
-    if (!is.null(outputDir) && !is.character(outputDir)) {
-        stop("output_dir must be a character string or NULL")
+    ## Validate that the runObservedAnalysis is a logical
+    if (!is.logical(runObservedAnalysis)) {
+        stop("runObservedAnalysis must be a logical")
+    }
+
+    ## Validate that nbrCores is an positive integer
+    if (!(isSingleInteger(nbrCores) || isSingleNumber(nbrCores)) ||
+        as.integer(nbrCores) < 1) {
+        stop("nbrCores must be a positive integer or numeric")
+    }
+
+    ## Validate that nbrCores is set to 1 on Windows system
+    if (Sys.info()["sysname"] == "Windows" && as.integer(nbrCores) != 1) {
+        stop("nbrCores must be 1 on a Windows system.")
     }
 
     ## Validate that nbrPermutations is an positive integer
@@ -155,6 +167,143 @@ validateRunPermutationUsingMethylKitInfo <- function(methylKitInfo,
           isSingleNumber(nbrPermutations)) ||
         as.integer(nbrPermutations) < 1) {
         stop("nbrPermutations must be a positive integer or numeric")
+    }
+
+    ## Validate all the other parameters
+    validateRunAnalysisUsingMethylKitInfo(methylKitInfo = methylKitInfo,
+                           type = type, outputDir = outputDir,
+                           nbrCores = nbrCores,
+                           nbrCoresDiffMeth = nbrCoresDiffMeth,
+                           minReads = minReads, minMethDiff = minMethDiff,
+                           qvalue = qvalue,
+                           maxPercReads = maxPercReads, destrand = destrand,
+                           minCovBasesForTiles = minCovBasesForTiles,
+                           tileSize = tileSize,
+                           stepSize = stepSize, vSeed = vSeed)
+}
+
+
+#' @title Validation of some parameters of the
+#' \code{\link{runAnalysisUsingMethylKitInfo}} function
+#'
+#' @description Validation of some parameters needed by the public
+#' \code{\link{runAnalysisUsingMethylKitInfo}} function.
+#'
+#' @param methylKitInfo a \code{list} of \code{methylRawList} entries. Each
+#' \code{methylRawList} contains all the \code{methylRaw} entries related to
+#' one generation. The number of generations must correspond to the number
+#' of entries in the \code{methylKitInfo}.At least 2 generations
+#' must be present to do a permutation analysis. More information can be found
+#' in the Bioconductor methylKit package.
+#'
+#' @param type One of the "sites","tiles" or "both" strings. Specifies the type
+#' of differentially methylated elements should be returned. For
+#' retrieving differentially methylated bases type="sites"; for
+#' differentially methylated regions type="tiles". Default: "both".
+#'
+#' @param outputDir a string, the name of the directory that will contain
+#' the results of the permutation. If the directory does not exist, it will
+#' be created.
+#'
+#' @param nbrCores a positive \code{integer}, the number of cores to use when
+#' processing the analysis.
+#'
+#' @param nbrCoresDiffMeth a positive \code{integer}, the number of cores
+#' to use for parallel differential methylation calculations.Parameter
+#' used for both sites and tiles analysis. The parameter
+#' corresponds to the \code{num.cores} parameter in
+#' the \code{methylKit} package.
+#'
+#' @param minReads a positive \code{integer} Bases and regions having lower
+#' coverage than this count are discarded. The parameter
+#' correspond to the \code{lo.count} parameter in the  \code{methylKit} package.
+#'
+#' @param minMethDiff a positive \code{double} betwwen [0,100], the absolute
+#' value of methylation percentage change between cases and controls. The
+#' parameter correspond to the \code{difference} parameter in
+#' the  \code{methylKit} package.
+#'
+#' @param qvalue a positive \code{double} betwwen [0,1], the cutoff
+#' for qvalue of differential methylation statistic.
+#'
+#' @param maxPercReads a \code{double} between [0,100], the percentile of read
+#' counts that is going to be used as upper cutoff. Bases ore regions
+#' having higher
+#' coverage than this percentile are discarded. Parameter used for both CpG
+#' sites and tiles analysis. The parameter
+#' correspond to the \code{hi.perc} parameter in the  \code{methylKit} package.
+#'
+#' @param destrand a \code{logical}, when \code{TRUE} will merge reads on both
+#' strands of a CpG dinucleotide to provide better coverage. Only advised
+#' when looking at CpG methylation. Parameter used for both CpG
+#' sites and tiles analysis.
+#'
+#' @param minCovBasesForTiles a non-negative \code{integer}, the minimum
+#' number of bases to be covered in a given tiling window. The parameter
+#' corresponds to the \code{cov.bases} parameter in the package
+#' \code{methylKit}. Only used when \code{doingTiles} =
+#' \code{TRUE}. Default: \code{0}.
+#'
+#' @param tileSize a positive \code{integer}, the size of the tiling window.
+#' The parameter corresponds to the \code{win.size} parameter in
+#' the  \code{methylKit} package. Only
+#' used when \code{doingTiles} = \code{TRUE}.
+#'
+#' @param stepSize a positive \code{integer}, the step size of tiling windows.
+#' The parameter corresponds to the \code{stepSize} parameter in
+#' the  \code{methylKit} package. Only
+#' used when \code{doingTiles} = \code{TRUE}.
+#'
+#' @param vSeed a \code{integer}, a seed used when reproducible results are
+#' needed. When a value inferior or equal to zero is given, a random integer
+#' is used.
+#'
+#' @return \code{0} indicating that all parameters validations have been
+#' successful.
+#'
+#' @examples
+#'
+#' ## Load dataset
+#' data(samplesForTransgenerationalAnalysis)
+#'
+#' ## The function returns 0 when all paramaters are valid
+#' methylInheritance:::validateRunAnalysisUsingMethylKitInfo(
+#' methylKitInfo = samplesForTransgenerationalAnalysis, type = "sites",
+#' outputDir = NULL, nbrCores = 1,
+#' nbrCoresDiffMeth = 1, minReads = 10, minMethDiff = 25, qvalue = 0.01,
+#' maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
+#' tileSize = 1000, stepSize = 500, vSeed = 12)
+#'
+#' ## The function raises an error when at least one paramater is not valid
+#' \dontrun{methylInheritance:::validateRunAnalysisUsingMethylKitInfo(
+#' methylKitInfo = samplesForTransgenerationalAnalysis,
+#' type = "tiles", outputDir = NULL, nbrCores = 1,
+#' nbrCoresDiffMeth = 1, minReads = "HI", minMethDiff = 25, qvalue = 0.01,
+#' maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
+#' tileSize = 1000, stepSize = 500, vSeed = 12)}
+#'
+#' @author Astrid Deschenes
+#' @importFrom S4Vectors isSingleInteger isSingleNumber
+#' @keywords internal
+validateRunAnalysisUsingMethylKitInfo <- function(methylKitInfo,
+                                    type, outputDir, nbrCores,
+                                    nbrCoresDiffMeth,
+                                    minReads, minMethDiff, qvalue,
+                                    maxPercReads, destrand,
+                                    minCovBasesForTiles, tileSize,
+                                    stepSize, vSeed) {
+
+    ## Validate that methylKitInfo is a list of methylRawList
+    if (class(methylKitInfo) != "list" ||
+        !all(sapply(methylKitInfo, class) == "methylRawList")) {
+        stop(paste0("methylKitInfo must be a list containing ",
+                    "\"methylRawList\" entries; each entry must contain ",
+                    "all \"methylRaw\" objects related to one generation"))
+    }
+
+    ## Validate that the output_dir is an not empty string
+    if (!is.null(outputDir) && !is.character(outputDir)) {
+        stop("output_dir must be a character string or NULL")
     }
 
     ## Validate that nbrCores is an positive integer
@@ -170,26 +319,26 @@ validateRunPermutationUsingMethylKitInfo <- function(methylKitInfo,
 
     ## Validate that nbrCoresDiffMeth is an positive integer
     if (!(isSingleInteger(nbrCoresDiffMeth) ||
-                isSingleNumber(nbrCoresDiffMeth)) ||
-                as.integer(nbrCoresDiffMeth) < 1) {
+          isSingleNumber(nbrCoresDiffMeth)) ||
+        as.integer(nbrCoresDiffMeth) < 1) {
         stop("nbrCoresDiffMeth must be a positive integer or numeric")
     }
 
     ## Validate that nbrCoresDiffMeth is set to 1 on Windows system
     if (Sys.info()["sysname"] == "Windows" &&
-            as.integer(nbrCoresDiffMeth) != 1) {
+        as.integer(nbrCoresDiffMeth) != 1) {
         stop("nbrCoresDiffMeth must be 1 on a Windows system.")
     }
 
     ## Validate that minReads is an positive integer
     if (!(isSingleInteger(minReads) || isSingleNumber(minReads)) ||
-            as.integer(minReads) < 1) {
+        as.integer(minReads) < 1) {
         stop("minReads must be a positive integer or numeric")
     }
 
     ## Validate that minMethDiff is an positive double between [0,100]
     if (!(isSingleNumber(minMethDiff)) ||
-            minMethDiff < 0.00 || minMethDiff > 100.00) {
+        minMethDiff < 0.00 || minMethDiff > 100.00) {
         stop("minMethDiff must be a positive double between [0,100]")
     }
 

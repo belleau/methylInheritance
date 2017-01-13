@@ -265,13 +265,18 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
                             vSeed = -1) {
 
     ## Parameters validation
-    validateRunPermutationUsingMethylKitInfo(methylKitInfo, type,
-                                outputDir,
-                                runObservedAnalysis, nbrPermutations,
-                                nbrCores, nbrCoresDiffMeth,
-                                minReads, minMethDiff, qvalue, maxPercReads,
-                                destrand, minCovBasesForTiles, tileSize,
-                                stepSize, vSeed)
+    validateRunPermutationUsingMethylKitInfo(methylKitInfo = methylKitInfo,
+                                type = type, outputDir = outputDir,
+                                runObservedAnalysis = runObservedAnalysis,
+                                nbrPermutations = nbrPermutations,
+                                nbrCores = nbrCores,
+                                nbrCoresDiffMeth = nbrCoresDiffMeth,
+                                minReads = minReads, minMethDiff = minMethDiff,
+                                qvalue = qvalue, maxPercReads = maxPercReads,
+                                destrand = destrand,
+                                minCovBasesForTiles = minCovBasesForTiles,
+                                tileSize = tileSize, stepSize = stepSize,
+                                vSeed = vSeed)
 
     ## Add last slash to path when absent
     if (!is.null(outputDir) &&
@@ -493,9 +498,17 @@ runAnalysisUsingMethylKitInfo <- function(methylKitInfo,
                                             stepSize = 1000,
                                             vSeed = -1) {
 
-
     ## Parameters validation
-    ## TODO
+    validateRunAnalysisUsingMethylKitInfo(methylKitInfo = methylKitInfo,
+                            type = type, outputDir = outputDir,
+                            nbrCores = nbrCores,
+                            nbrCoresDiffMeth = nbrCoresDiffMeth,
+                            minReads = minReads, minMethDiff = minMethDiff,
+                            qvalue = qvalue,
+                            maxPercReads = maxPercReads, destrand = destrand,
+                            minCovBasesForTiles = minCovBasesForTiles,
+                            tileSize = tileSize,
+                            stepSize = stepSize, vSeed = vSeed)
 
     ## Add last slash to path when absent
     if (!is.null(outputDir) &&

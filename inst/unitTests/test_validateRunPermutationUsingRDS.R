@@ -81,6 +81,24 @@ test.validateRunPermutationUsingMethylKitInfo_outputDir_as_number <- function() 
     checkEquals(obs, exp, msg = message)
 }
 
+## Test when runObservedAnalysis is a string
+test.validateRunPermutationUsingMethylKitInfo_runObservedAnalysis_string <- function() {
+    obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
+        methylKitInfo = METHYL_OBJ,  outputDir = NULL, runObservedAnalysis = "allo",
+        nbrPermutations = 2, nbrCores = 1, nbrCoresDiffMeth = 1,
+        minReads = 10, minMethDiff = 10, qvalue = 0.05,
+        maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
+        tileSize = 1000, stepSize = 100, vSeed = 222),
+        error=conditionMessage)
+
+    exp <- "runObservedAnalysis must be a logical"
+
+    message <- paste0(" test.validateRunPermutationUsingMethylKitInfo_runObservedAnalysis_string() ",
+                      "- Not valid runObservedAnalysis did not generated expected message.")
+
+    checkEquals(obs, exp, msg = message)
+}
+
 ## Test when nbrPermutations is a string
 test.validateRunPermutationUsingMethylKitInfo_nbrPermutations_as_string <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
@@ -123,6 +141,7 @@ test.validateRunPermutationUsingMethylKitInfo_nbrCores_zero <- function() {
 test.validateRunPermutationUsingMethylKitInfo_nbrCores_negative <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ, type = "both", outputDir = NULL,
+        runObservedAnalysis = FALSE,
         nbrPermutations = 3, nbrCores = -1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
@@ -133,6 +152,7 @@ test.validateRunPermutationUsingMethylKitInfo_nbrCores_negative <- function() {
 
     message <- paste0(" test.validateRunPermutationUsingMethylKitInfo_nbrCores_negative() ",
                       "- Not valid nbrCores did not generated expected message.")
+
 
     checkEquals(obs, exp, msg = message)
 }
@@ -256,6 +276,7 @@ test.validateRunPermutationUsingMethylKitInfo_minMethDiff_above_100 <- function(
 test.validateRunPermutationUsingMethylKitInfo_qvalue_above_1 <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  type = "both", outputDir = NULL,
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 1.01,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 2,
@@ -485,7 +506,7 @@ test.validateRunPermutationUsingMethylKitInfo_tileSize_zero_type_both <- functio
 test.validateRunPermutationUsingMethylKitInfo_tileSize_negative_type_both <- function() {
     obs <- tryCatch(methylInheritance:::validateRunPermutationUsingMethylKitInfo(
         methylKitInfo = METHYL_OBJ,  outputDir = NULL, type = "both",
-
+        runObservedAnalysis = TRUE,
         nbrPermutations = 3, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = TRUE, minCovBasesForTiles = 10,
