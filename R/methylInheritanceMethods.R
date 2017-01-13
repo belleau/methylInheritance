@@ -332,8 +332,27 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
         createOutputDir(outputDir, doingSites = doSites, doingTiles = doTiles)
     }
 
+    ## Call observation analysis
+    observedResults <- runAnalysisUsingMethylKitInfo(methylKitInfo =
+                                                            methylKitInfo,
+                                    type = type,
+                                    outputDir = outputDir,
+                                    nbrPermutations = nbrPermutations,
+                                    nbrCores = nbrCores,
+                                    nbrCoresDiffMeth = nbrCoresDiffMeth,
+                                    minReads = minReads,
+                                    minMethDiff = minMethDiff,
+                                    qvalue = qvalue,
+                                    maxPercReads = maxPercReads,
+                                    destrand = destrand,
+                                    minCovBasesForTiles = minCovBasesForTiles,
+                                    tileSize = tileSize,
+                                    stepSize = stepSize,
+                                    vSeed = vSeed)
+
     ## Call permutations in parallel mode
-    result <- bplapply(finalList, FUN = runOnePermutationOnAllGenerations,
+    permutationResults <- bplapply(finalList, FUN =
+                                        runOnePermutationOnAllGenerations,
                             type = type,
                             outputDir = outputDir,
                             nbrCoresDiffMeth = nbrCoresDiffMeth,
@@ -347,6 +366,11 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
                             stepSize = stepSize,
                         BPREDO = redoList,
                         BPPARAM = bpParam)
+
+    ## Create final returned list
+    result <- list()
+    result[["OBSERVATION"]] <- observedResults
+    result[["PERMUTATION"]] <- permutationResults
 
     return(result)
 }

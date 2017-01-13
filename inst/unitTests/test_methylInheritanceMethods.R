@@ -43,13 +43,14 @@ test.runPermutationUsingRDSFile_methylKitRDSFile_not_valid <- function() {
 test.runPermutationUsingRDSFile_good_001 <- function() {
     obs <- tryCatch(runPermutationUsingRDSFile(
         methylKitRDSFile = METHYL_OBJ_FILE,  outputDir = NULL,
+        runObservedAnalysis = TRUE,
         nbrPermutations = 2, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = FALSE, minCovBasesForTiles = 2,
         tileSize = 1000, stepSize = 100, vSeed = 222),
         error=conditionMessage)
 
-    cas_01<-list()
+    cas_01 <- list()
     cas_01[["SITES"]] <- list()
     cas_01[["SITES"]][["i2"]] <- list()
     cas_01[["SITES"]][["i2"]][["HYPER"]] <- list(12,19)
@@ -64,7 +65,7 @@ test.runPermutationUsingRDSFile_good_001 <- function() {
     cas_01[["TILES"]][["iAll"]] <- list()
     cas_01[["TILES"]][["iAll"]][["HYPER"]] <- list(0)
     cas_01[["TILES"]][["iAll"]][["HYPO"]] <- list(0)
-    cas_02<-list()
+    cas_02 <- list()
     cas_02[["SITES"]] <- list()
     cas_02[["SITES"]][["i2"]] <- list()
     cas_02[["SITES"]][["i2"]][["HYPER"]] <- list(15,15)
@@ -80,7 +81,27 @@ test.runPermutationUsingRDSFile_good_001 <- function() {
     cas_02[["TILES"]][["iAll"]][["HYPER"]] <- list(0)
     cas_02[["TILES"]][["iAll"]][["HYPO"]] <- list(0)
 
-    exp <- list(cas_01, cas_02)
+    permutated <- list(cas_01, cas_02)
+
+    observed <- list()
+    observed[["SITES"]] <- list()
+    observed[["SITES"]][["i2"]] <- list()
+    observed[["SITES"]][["i2"]][["HYPER"]] <- list(22,10)
+    observed[["SITES"]][["i2"]][["HYPO"]] <- list(15,13)
+    observed[["SITES"]][["iAll"]] <- list()
+    observed[["SITES"]][["iAll"]][["HYPER"]] <- list(1)
+    observed[["SITES"]][["iAll"]][["HYPO"]] <- list(3)
+    observed[["TILES"]]<-list()
+    observed[["TILES"]][["i2"]] <- list()
+    observed[["TILES"]][["i2"]][["HYPER"]] <- list(1100,0)
+    observed[["TILES"]][["i2"]][["HYPO"]] <- list(0,2700)
+    observed[["TILES"]][["iAll"]] <- list()
+    observed[["TILES"]][["iAll"]][["HYPER"]] <- list(0)
+    observed[["TILES"]][["iAll"]][["HYPO"]] <- list(0)
+
+    exp <- list()
+    exp[["OBSERVATION"]] <- observed
+    exp[["PERMUTATION"]] <- permutated
 
     message <- paste0(" test.runPermutationUsingRDSFile_good_001() ",
                       "- All valid parameters did not generated expected result.")
