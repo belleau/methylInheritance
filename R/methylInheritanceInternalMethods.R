@@ -1,25 +1,3 @@
-#' @title Extract sample name from file name
-#'
-#' @description Extract a sample name from the file name. The sample name
-#' corresponds to  the file name but without path information.
-#'
-#' @param fileName a string, the file name used to extract the sample name.
-#'
-#' @return A sample name extracted from the specified file name.
-#'
-#' @examples
-#'
-#' ## Extract sample name from file name
-#' methylInheritance:::getSampleNameFromFileName("./test/data001/file_J1.txt")
-#'
-#' @author Astrid Deschenes
-#' @keywords internal
-getSampleNameFromFileName <- function(fileName) {
-    results <- strsplit(fileName, split="/")[[1]]
-    return(results[length(results)])
-}
-
-
 #' @title Parameters validation for the
 #' \code{\link{runPermutationUsingMethylKitInfo}} function
 #'
