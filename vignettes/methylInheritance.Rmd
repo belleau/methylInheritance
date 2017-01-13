@@ -97,6 +97,8 @@ than the observed values.
 
 # Case study 
 
+A dataset containing data (6 cases and 6 controls) over three generations is
+available.
 
 ```{r caseStudy01, warning=FALSE, message=FALSE, collapse=TRUE}
 ## Load dataset containing information over three generations
