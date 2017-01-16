@@ -82,3 +82,40 @@ NULL
 #' vSeed = 2001)}
 #'
 NULL
+
+#' All observed and permutation results formatted in a methylInheritanceResults
+#' object.
+#'
+#' TODO
+#'
+#' @name analysisResults
+#'
+#' @docType data
+#'
+#' @aliases analysisResults
+#'
+#' @format A \code{list} TODO
+#'
+#' @return A \code{list} TODO
+#'
+#' @seealso
+#' \itemize{
+#'     \item \code{\link{formatForGraph}} {for TODO}
+#' }
+#'
+#' @usage data(analysisResults)
+#'
+#' @keywords datasets
+#'
+#' @examples
+#'
+#' ## Loading dataset containing all results
+#' data(analysisResults)
+#'
+#' ## Extract information for the intersection between conserved differentially
+#' ## methylated sites (type = sites) between the intersection of 2
+#' ## generations (inter = i2): F1 and F2 (position = 1)
+#' formatForGraph(analysisandPermutationResults = analysisResults,
+#' type = "sites", inter="i2", 1)
+#'
+NULL

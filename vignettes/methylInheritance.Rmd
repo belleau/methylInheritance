@@ -97,6 +97,8 @@ than the observed values.
 
 # Case study 
 
+A dataset containing data (6 cases and 6 controls) over three generations is
+available.
 
 ```{r caseStudy01, warning=FALSE, message=FALSE, collapse=TRUE}
 ## Load dataset containing information over three generations
@@ -124,9 +126,9 @@ head(samplesForTransgenerationalAnalysis[[2]][[1]])
 ## head(samplesForTransgenerationalAnalysis[[2]]@.Data[[1]]) 
 
 ## The treatment vector for each generation
-samplesForTransgenerationalAnalysis[[1]]@treatment
-samplesForTransgenerationalAnalysis[[2]]@treatment
-samplesForTransgenerationalAnalysis[[3]]@treatment
+slot(samplesForTransgenerationalAnalysis[[1]], "treatment")
+slot(samplesForTransgenerationalAnalysis[[2]], "treatment")
+slot(samplesForTransgenerationalAnalysis[[3]], "treatment")
 
 ```
 
