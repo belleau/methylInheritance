@@ -562,7 +562,8 @@ interGeneration <- function(resultAllGenGR){
         lInter$iAll[[i-2]] <- c(upM,downM)
         cur <- lInter$iAll[[i-2]]
     }
-    lInter
+
+    return(lInter)
 }
 
 
@@ -572,32 +573,38 @@ interGeneration <- function(resultAllGenGR){
 #' @description Create directories that will contained the results of the
 #' permutations in RDS format.
 #'
-#' @param output_dir a string of \code{character}, the name of the main
+#' @param outputDir a string of \code{character}, the name of the main
 #' directory to be created.
 #'
-#' @param doingSites a \code{logical}, TODO
+#' @param doingSites a \code{logical}, a directory consecrated to contain the
+#' results of the permutation analysis for sites is created when
+#' \code{doingSites} = \code{TRUE}. Default: \code{TRUE}.
 #'
-#' @param doingTiles a \code{logical}, TODO
+#' @param doingTiles a \code{logical}, a directory consecrated to contain the
+#' results of the permutation analysis for tiles is created when
+#' \code{doingTiles} = \code{TRUE}. Default: \code{FALSE}.
 #'
 #' @return \code{0} when all directories are created without problem.
 #'
 #' @examples
 #'
-#' ## TODO
+#' ## Create an output directory for SITES only
+#' \dontrun{createOutputDir(outputDir = "testSites", doingSites = TRUE,
+#' doingTiles = FALSE)}
 #'
 #' @author Astrid Deschenes
 #' @keywords internal
-createOutputDir <- function(output_dir, doingSites = TRUE,
+createOutputDir <- function(outputDir, doingSites = TRUE,
                                 doingTiles = FALSE) {
 
     # Create directories for output files
-    if (!dir.exists(output_dir)) {
-        dir.create(output_dir, showWarnings = TRUE)
+    if (!dir.exists(outputDir)) {
+        dir.create(outputDir, showWarnings = TRUE)
     }
 
     if (doingSites) {
         type <-  "SITES"
-        dirName <- paste0(output_dir, type)
+        dirName <- paste0(outputDir, type)
         if (!dir.exists(dirName)) {
             dir.create(dirName, showWarnings = TRUE)
         }
@@ -605,7 +612,7 @@ createOutputDir <- function(output_dir, doingSites = TRUE,
 
     if (doingTiles) {
         type <-  "TILES"
-        dirName <- paste0(output_dir, type)
+        dirName <- paste0(outputDir, type)
         if (!dir.exists(dirName)) {
             dir.create(dirName, showWarnings = TRUE)
         }
