@@ -20,7 +20,7 @@ loadAllPermutationRDS(analysisResultsDIR, permutationResultsDIR,
 an \code{list} of \code{class} "methylInheritanceAllResults"
 containing the following elements:
 \itemize{
-    \item \code{OBSERVED}, a \code{list} that contains one or two
+    \item \code{OBSERVATION}, a \code{list} that contains one or two
     \code{list} depending
     of the specified parameters. When \code{doingSites} = \code{TRUE}, a
     list of called "SITES" is present. When \code{doingTiles} = \code{TRUE},

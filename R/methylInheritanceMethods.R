@@ -1022,7 +1022,7 @@ extractData <- function(realAnalysis_output_dir, permutations_output_dir,
 #' @return an \code{list} of \code{class} "methylInheritanceAllResults"
 #' containing the following elements:
 #' \itemize{
-#'     \item \code{OBSERVED}, a \code{list} that contains one or two
+#'     \item \code{OBSERVATION}, a \code{list} that contains one or two
 #'     \code{list} depending
 #'     of the specified parameters. When \code{doingSites} = \code{TRUE}, a
 #'     list of called "SITES" is present. When \code{doingTiles} = \code{TRUE},
@@ -1067,11 +1067,12 @@ loadAllPermutationRDS <- function(analysisResultsDIR,
                                         "SITES/SITES_observed_results.RDS"))
         analysisStruct <- createDataStructure(interGenerationResult =
                                                     analysisResults)
-        result[["OBSERVED"]][["SITES"]] <- analysisStruct
+        result[["OBSERVATION"]][["SITES"]] <- analysisStruct
 
 
-        filesInDir <- list.files(path = paste0(permutationResultsDIR, "SITES/"),
-                                pattern = ".RDS", all.files = FALSE,
+        filesInDir <- list.files(path = paste0(permutationResultsDIR,
+                                                                "SITES/"),
+                                pattern = "[[:digit:]].RDS", all.files = FALSE,
                                 full.names = TRUE, recursive = FALSE,
                                 ignore.case = FALSE, include.dirs = FALSE,
                                 no.. = FALSE)
@@ -1090,7 +1091,7 @@ loadAllPermutationRDS <- function(analysisResultsDIR,
                                         "TILES/TILES_observed_results.RDS"))
         analysisStruct <- createDataStructure(interGenerationResult =
                                                     analysisResults)
-        result[["OBSERVED"]][["TILES"]] <- analysisStruct
+        result[["OBSERVATION"]][["TILES"]] <- analysisStruct
 
         filesInDir <- list.files(path = paste0(permutationResultsDIR,
                                                             "TILES/"),
