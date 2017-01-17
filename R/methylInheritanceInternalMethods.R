@@ -395,7 +395,7 @@ validateRunObservationUsingMethylKitInfo <- function(methylKitInfo,
 #' retrieving hyper-methylated tiles/sites \code{type} = \code{"hyper"}; for
 #' hypo-methylated \code{type} = \code{"hypo"}. Default: \code{"all"}.
 #'
-#' @return a \code{list} of \code{GRanges} objects,  each
+#' @return a \code{list} of \code{GRanges} objects, each
 #' entry of the \code{list} represents the differentially methylated results
 #' for one generation (first entry = first genertation, second entry =
 #' second generation, etc..). Each \code{GRanges} object holds statistics
@@ -437,17 +437,39 @@ getGRangesFromMethylDiff <- function(methDiff, pDiff, qvalue,
 }
 
 
-#' @title TODO
+#' @title Calculate the intersection of the differentially methylated
+#' results for two
+#' or more consercutive generations.
 #'
-#' @description TODO
+#' @description Calculate the intersection of the differentially methylated
+#' results for two
+#' or more consercutive generations using a \code{list} of \code{GRanges} where
+#' each entry represents the results for one generation.
 #'
-#' @param resultAllGenGR \code{GRanges} from \code{getGRangesFromMethylDiff}, TODO
+#' @param resultAllGenGR a \code{list} of \code{GRanges} as created by the
+#' \code{getGRangesFromMethylDiff} function. Each
+#' entry of the \code{list} represents the differentially methylated results
+#' for one generation (first entry = first genertation, second entry =
+#' second generation, etc..). Each \code{GRanges} object holds statistics
+#' for differentially methylated regions/bases.
 #'
-#' @return \code{list} with 2 elements
-#'         i2 list of intersection G1 and G2, G2 and G3, ...
-#'         iAll list of intersection G1 and G2 and G3,
-#'              G1 and G2 and G3 and G4, ...
-#'         TODO
+#' @return a \code{list} containing the following elements:
+#' \itemize{
+#' \item\code{i2} a \code{list} of \code{GRanges} Each
+#' \code{GRanges} represents the intersection of analysis results between two
+#' consecutive generations. The first element represents the intersection
+#' of the
+#' first and second generations; the second element, the intersection of
+#' the second and third generations; etc.. The number of entries depends
+#' of the number of generations.
+#' \item\code{iAll} a \code{list} of \code{GRanges}. Each \code{GRanges}
+#' represents the intersection fo the analysis results between three or more
+#' consecutive generations. The first element represents the
+#' intersection of the first
+#' three generations; the second element, the intersection of the first fourth
+#' generations; etc..The number of entries depends of the number
+#' of generations.
+#' }
 #'
 #' @examples
 #'
@@ -464,7 +486,7 @@ getGRangesFromMethylDiff <- function(methDiff, pDiff, qvalue,
 #' ## Extract inter generational conserved sites
 #' conservedSitesGR <- methylInheritance:::interGeneration(resultsGR)
 #'
-#' @author Pascal Belleau
+#' @author Pascal Belleau, Astrid Deschenes
 #' @importFrom GenomicRanges intersect GRanges
 #' @importFrom S4Vectors DataFrame values<- values
 #' @keywords internal
@@ -472,6 +494,7 @@ interGeneration <- function(resultAllGenGR){
 
     lInter <- list("i2" = list(), "iAll" = list())
 
+    # Calculate intersection of two consecutive generations
     lInter$i2 <- lapply(2:length(resultAllGenGR), FUN = function(i,b){
         upM <- intersect(b[[i-1]][b[[i-1]]$meth.diff > 0],
                             b[[i]][b[[i]]$meth.diff > 0])
@@ -484,6 +507,7 @@ interGeneration <- function(resultAllGenGR){
         c(upM,downM)
     }, b = resultAllGenGR)
 
+    # Calculate intersection of three or more consercutive generations
     cur <- lInter$i2[[1]]
     for(i in 3:length(resultAllGenGR)){
         upM <- intersect(cur[cur$typeDiff > 0],

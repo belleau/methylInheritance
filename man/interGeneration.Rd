@@ -2,22 +2,44 @@
 % Please edit documentation in R/methylInheritanceInternalMethods.R
 \name{interGeneration}
 \alias{interGeneration}
-\title{TODO}
+\title{Calculate the intersection of the differentially methylated
+results for two
+or more consercutive generations.}
 \usage{
 interGeneration(resultAllGenGR)
 }
 \arguments{
-\item{resultAllGenGR}{\code{GRanges} from \code{getGRangesFromMethylDiff}, TODO}
+\item{resultAllGenGR}{a \code{list} of \code{GRanges} as created by the
+\code{getGRangesFromMethylDiff} function. Each
+entry of the \code{list} represents the differentially methylated results
+for one generation (first entry = first genertation, second entry =
+second generation, etc..). Each \code{GRanges} object holds statistics
+for differentially methylated regions/bases.}
 }
 \value{
-\code{list} with 2 elements
-        i2 list of intersection G1 and G2, G2 and G3, ...
-        iAll list of intersection G1 and G2 and G3,
-             G1 and G2 and G3 and G4, ...
-        TODO
+a \code{list} containing the following elements:
+\itemize{
+\item\code{i2} a \code{list} of \code{GRanges} Each
+\code{GRanges} represents the intersection of analysis results between two
+consecutive generations. The first element represents the intersection
+of the
+first and second generations; the second element, the intersection of
+the second and third generations; etc.. The number of entries depends
+of the number of generations.
+\item\code{iAll} a \code{list} of \code{GRanges}. Each \code{GRanges}
+represents the intersection fo the analysis results between three or more
+consecutive generations. The first element represents the
+intersection of the first
+three generations; the second element, the intersection of the first fourth
+generations; etc..The number of entries depends of the number
+of generations.
+}
 }
 \description{
-TODO
+Calculate the intersection of the differentially methylated
+results for two
+or more consercutive generations using a \code{list} of \code{GRanges} where
+each entry represents the results for one generation.
 }
 \examples{
 
@@ -36,7 +58,7 @@ conservedSitesGR <- methylInheritance:::interGeneration(resultsGR)
 
 }
 \author{
-Pascal Belleau
+Pascal Belleau, Astrid Deschenes
 }
 \keyword{internal}
 

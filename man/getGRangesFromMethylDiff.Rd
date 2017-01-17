@@ -30,7 +30,7 @@ retrieving hyper-methylated tiles/sites \code{type} = \code{"hyper"}; for
 hypo-methylated \code{type} = \code{"hypo"}. Default: \code{"all"}.}
 }
 \value{
-a \code{list} of \code{GRanges} objects,  each
+a \code{list} of \code{GRanges} objects, each
 entry of the \code{list} represents the differentially methylated results
 for one generation (first entry = first genertation, second entry =
 second generation, etc..). Each \code{GRanges} object holds statistics
