@@ -2,7 +2,7 @@
 % Please edit documentation in R/methylInheritanceMethods.R
 \name{plotGraph}
 \alias{plotGraph}
-\title{TODO}
+\title{Generate a graph for a permutation analysis}
 \usage{
 plotGraph(formatForGraphDataFrame)
 }
