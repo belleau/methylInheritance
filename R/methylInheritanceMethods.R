@@ -949,62 +949,6 @@ runPermutationUsingRDSTEST <- function(methylKitRDSFile,
                                     stepSize = stepSize)
 }
 
-#' @title TODO
-#'
-#' @description TODO
-#'
-#' @param realAnalysis_output_dir a string, the name of the directory that
-#' will contain the results of the permutation. If the directory does not
-#' exist, it will be created.
-#'
-#' @param permutations_output_dir a string, the name of the directory that
-#' will contain the results of the permutation. If the directory does not
-#' exist, it will be created.
-#'
-#' @param doingSites a \code{logical}, TODO
-#'
-#' @param doingTiles a \code{logical}, TODO
-#'
-#' @return TODO
-#'
-#' @examples
-#'
-#' ##TODO
-#'
-#' @author Astrid Deschenes, Pascal Belleau
-#' @export
-extractData <- function(realAnalysis_output_dir, permutations_output_dir,
-                       doingSites = TRUE, doingTiles=FALSE) {
-
-    ## Add last slash to path when absent
-    if (substr(realAnalysis_output_dir, nchar(realAnalysis_output_dir),
-                nchar(realAnalysis_output_dir)) != "/") {
-        realAnalysis_output_dir <- paste0(realAnalysis_output_dir, "/")
-    }
-
-    ## Add last slash to path when absent
-    if (substr(permutations_output_dir, nchar(permutations_output_dir),
-                nchar(permutations_output_dir)) != "/") {
-        permutations_output_dir <- paste0(permutations_output_dir, "/")
-    }
-
-    nbr_sites_per_generation <- list()
-
-    ## SITES
-    if (doingSites) {
-        result <- extractDataFromFile(permutations_output_dir, "SITES")
-        nbr_sites_per_generation[["SITES"]] <- result[["SITES"]]
-    }
-
-    ## TILES
-    if (doingTiles) {
-        result <- extractDataFromFile(permutations_output_dir, "TILES")
-        nbr_sites_per_generation[["TILES"]] <- result[["TILES"]]
-    }
-
-    return(nbr_sites_per_generation)
-}
-
 
 #' @title Load all RDS files created by the permutation analysis
 #'
