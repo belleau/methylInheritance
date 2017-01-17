@@ -118,7 +118,7 @@ validateRunPermutationUsingMethylKitInfo <- function(methylKitInfo,
 
     ## Validate that methylKitInfo is a list of methylRawList
     if (class(methylKitInfo) != "list" ||
-        !all(sapply(methylKitInfo, class) == "methylRawList")) {
+            !all(sapply(methylKitInfo, class) == "methylRawList")) {
         stop(paste0("methylKitInfo must be a list containing ",
                     "\"methylRawList\" entries; each entry must contain ",
                     "all \"methylRaw\" objects related to one generation"))
@@ -131,7 +131,7 @@ validateRunPermutationUsingMethylKitInfo <- function(methylKitInfo,
 
     ## Validate that nbrCores is an positive integer
     if (!(isSingleInteger(nbrCores) || isSingleNumber(nbrCores)) ||
-        as.integer(nbrCores) < 1) {
+            as.integer(nbrCores) < 1) {
         stop("nbrCores must be a positive integer or numeric")
     }
 
@@ -142,22 +142,22 @@ validateRunPermutationUsingMethylKitInfo <- function(methylKitInfo,
 
     ## Validate that nbrPermutations is an positive integer
     if (!(isSingleInteger(nbrPermutations) ||
-          isSingleNumber(nbrPermutations)) ||
-        as.integer(nbrPermutations) < 1) {
+            isSingleNumber(nbrPermutations)) ||
+            as.integer(nbrPermutations) < 1) {
         stop("nbrPermutations must be a positive integer or numeric")
     }
 
     ## Validate all the other parameters
     validateRunAnalysisUsingMethylKitInfo(methylKitInfo = methylKitInfo,
-                           type = type, outputDir = outputDir,
-                           nbrCores = nbrCores,
-                           nbrCoresDiffMeth = nbrCoresDiffMeth,
-                           minReads = minReads, minMethDiff = minMethDiff,
-                           qvalue = qvalue,
-                           maxPercReads = maxPercReads, destrand = destrand,
-                           minCovBasesForTiles = minCovBasesForTiles,
-                           tileSize = tileSize,
-                           stepSize = stepSize, vSeed = vSeed)
+                            type = type, outputDir = outputDir,
+                            nbrCores = nbrCores,
+                            nbrCoresDiffMeth = nbrCoresDiffMeth,
+                            minReads = minReads, minMethDiff = minMethDiff,
+                            qvalue = qvalue,
+                            maxPercReads = maxPercReads, destrand = destrand,
+                            minCovBasesForTiles = minCovBasesForTiles,
+                            tileSize = tileSize,
+                            stepSize = stepSize, vSeed = vSeed)
 }
 
 
@@ -274,7 +274,7 @@ validateRunAnalysisUsingMethylKitInfo <- function(methylKitInfo,
 
     ## Validate that methylKitInfo is a list of methylRawList
     if (class(methylKitInfo) != "list" ||
-        !all(sapply(methylKitInfo, class) == "methylRawList")) {
+            !all(sapply(methylKitInfo, class) == "methylRawList")) {
         stop(paste0("methylKitInfo must be a list containing ",
                     "\"methylRawList\" entries; each entry must contain ",
                     "all \"methylRaw\" objects related to one generation"))
@@ -298,14 +298,14 @@ validateRunAnalysisUsingMethylKitInfo <- function(methylKitInfo,
 
     ## Validate that nbrCoresDiffMeth is an positive integer
     if (!(isSingleInteger(nbrCoresDiffMeth) ||
-          isSingleNumber(nbrCoresDiffMeth)) ||
+            isSingleNumber(nbrCoresDiffMeth)) ||
         as.integer(nbrCoresDiffMeth) < 1) {
         stop("nbrCoresDiffMeth must be a positive integer or numeric")
     }
 
     ## Validate that nbrCoresDiffMeth is set to 1 on Windows system
     if (Sys.info()["sysname"] == "Windows" &&
-        as.integer(nbrCoresDiffMeth) != 1) {
+            as.integer(nbrCoresDiffMeth) != 1) {
         stop("nbrCoresDiffMeth must be 1 on a Windows system.")
     }
 
@@ -317,19 +317,19 @@ validateRunAnalysisUsingMethylKitInfo <- function(methylKitInfo,
 
     ## Validate that minMethDiff is an positive double between [0,100]
     if (!(isSingleNumber(minMethDiff)) ||
-        minMethDiff < 0.00 || minMethDiff > 100.00) {
+            minMethDiff < 0.00 || minMethDiff > 100.00) {
         stop("minMethDiff must be a positive double between [0,100]")
     }
 
     ## Validate that qvalue is an positive double between [0,1]
     if (!(isSingleNumber(qvalue)) ||
-        qvalue < 0.00 || qvalue > 1.00) {
+            qvalue < 0.00 || qvalue > 1.00) {
         stop("qvalue must be a positive double between [0,1]")
     }
 
     ## Validate that maxPercReads is an positive double between [0,100]
     if (!(isSingleNumber(maxPercReads)) ||
-        maxPercReads < 0.00 || maxPercReads > 100.00) {
+            maxPercReads < 0.00 || maxPercReads > 100.00) {
         stop("maxPercReads must be a positive double between [0,100]")
     }
 
@@ -341,20 +341,20 @@ validateRunAnalysisUsingMethylKitInfo <- function(methylKitInfo,
     if (any(type %in% c("both", "tiles"))) {
         ## Validate that minCovBasesForTiles is an positive integer
         if (!(isSingleInteger(minCovBasesForTiles) ||
-              isSingleNumber(minCovBasesForTiles)) ||
-            as.integer(minCovBasesForTiles) < 0) {
+                isSingleNumber(minCovBasesForTiles)) ||
+                    as.integer(minCovBasesForTiles) < 0) {
             stop("minCovBasesForTiles must be a positive integer or numeric")
         }
 
         ## Validate that tileSize is an positive integer
         if (!(isSingleInteger(tileSize) || isSingleNumber(tileSize)) ||
-            as.integer(tileSize) < 1) {
+                as.integer(tileSize) < 1) {
             stop("tileSize must be a positive integer or numeric")
         }
 
         ## Validate that stepSize is an positive integer
         if (!(isSingleInteger(stepSize) || isSingleNumber(stepSize)) ||
-            as.integer(stepSize) < 1) {
+                as.integer(stepSize) < 1) {
             stop("stepSize must be a positive integer or numeric")
         }
 
