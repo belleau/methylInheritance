@@ -5,15 +5,19 @@
 \title{Create directories that will contained the results of the
 permutations in RDS format.}
 \usage{
-createOutputDir(output_dir, doingSites = TRUE, doingTiles = FALSE)
+createOutputDir(outputDir, doingSites = TRUE, doingTiles = FALSE)
 }
 \arguments{
-\item{output_dir}{a string of \code{character}, the name of the main
+\item{outputDir}{a string of \code{character}, the name of the main
 directory to be created.}
 
-\item{doingSites}{a \code{logical}, TODO}
+\item{doingSites}{a \code{logical}, a directory consecrated to contain the
+results of the permutation analysis for sites is created when
+\code{doingSites} = \code{TRUE}. Default: \code{TRUE}.}
 
-\item{doingTiles}{a \code{logical}, TODO}
+\item{doingTiles}{a \code{logical}, a directory consecrated to contain the
+results of the permutation analysis for tiles is created when
+\code{doingTiles} = \code{TRUE}. Default: \code{FALSE}.}
 }
 \value{
 \code{0} when all directories are created without problem.
@@ -24,7 +28,9 @@ permutations in RDS format.
 }
 \examples{
 
-## TODO
+## Create an output directory for SITES only
+\dontrun{createOutputDir(outputDir = "testSites", doingSites = TRUE,
+doingTiles = FALSE)}
 
 }
 \author{

@@ -27,6 +27,10 @@
 #' exist, it will be created. When \code{NULL}, the results of the permutation
 #' are not saved. Default: \code{NULL}.
 #'
+#' @param runObservedAnalysis a \code{logical}, when \code{runObservedAnalysis}
+#' = \code{TRUE}, a CpG analysis on the observed dataset is done. Default:
+#' \code{TRUE}.
+#'
 #' @param nbrPermutations, a positive \code{integer}, the total number of
 #' permutations that is going to be done. Default: \code{1000}.
 #'
@@ -96,26 +100,27 @@
 #' pattern = "methylObj_001.RDS", full.names = TRUE)
 #'
 #' ## Run a permutation analysis
-#' \dontrun{runPermutationUsingRDS(methylKitRDSFile = methylFile,
+#' \dontrun{runPermutationUsingRDSFile(methylKitRDSFile = methylFile,
 #' type = "sites", nbrPermutations = 10, vSeed = 2001)}
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
 runPermutationUsingRDSFile <- function(methylKitRDSFile,
-                                   type = c("both", "sites", "tiles"),
-                                   outputDir = NULL,
-                                   nbrPermutations = 1000,
-                                   nbrCores = 1,
-                                   nbrCoresDiffMeth = 1,
-                                   minReads = 10,
-                                   minMethDiff = 10,
-                                   qvalue = 0.01,
-                                   maxPercReads = 99.9,
-                                   destrand = FALSE,
-                                   minCovBasesForTiles = 0,
-                                   tileSize = 1000,
-                                   stepSize = 1000,
-                                   vSeed = -1) {
+                                    type = c("both", "sites", "tiles"),
+                                    outputDir = NULL,
+                                    runObservedAnalysis = TRUE,
+                                    nbrPermutations = 1000,
+                                    nbrCores = 1,
+                                    nbrCoresDiffMeth = 1,
+                                    minReads = 10,
+                                    minMethDiff = 10,
+                                    qvalue = 0.01,
+                                    maxPercReads = 99.9,
+                                    destrand = FALSE,
+                                    minCovBasesForTiles = 0,
+                                    tileSize = 1000,
+                                    stepSize = 1000,
+                                    vSeed = -1) {
 
     ## Validate that methylKitRDSFile is an existing file
     if (!file.exists(methylKitRDSFile)) {
@@ -127,6 +132,7 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 
     ## Call permutation analysis with the methylInfo object as an parameter
     runPermutationUsingMethylKitInfo(methylInfo, type, outputDir,
+                            runObservedAnalysis,
                             nbrPermutations, nbrCores, nbrCoresDiffMeth,
                             minReads, minMethDiff, qvalue, maxPercReads,
                             destrand, minCovBasesForTiles, tileSize, stepSize,
@@ -160,6 +166,10 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 #' the results of the permutation or \code{NULL}. If the directory does not
 #' exist, it will be created. When \code{NULL}, the results of the permutation
 #' are not saved. Default: \code{NULL}.
+#'
+#' @param runObservedAnalysis a \code{logical}, when \code{runObservedAnalysis}
+#' = \code{TRUE}, a CpG analysis on the observed dataset is done. Default:
+#' \code{TRUE}.
 #'
 #' @param nbrPermutations, a positive \code{integer}, the total number of
 #' permutations that is going to be done. Default: \code{1000}.
@@ -240,6 +250,7 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 runPermutationUsingMethylKitInfo <- function(methylKitInfo,
                             type = c("both", "sites", "tiles"),
                             outputDir = NULL,
+                            runObservedAnalysis = TRUE,
                             nbrPermutations = 1000,
                             nbrCores = 1,
                             nbrCoresDiffMeth = 1,
@@ -254,12 +265,18 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
                             vSeed = -1) {
 
     ## Parameters validation
-    validateRunPermutationUsingMethylKitInfo(methylKitInfo, type,
-                                outputDir, nbrPermutations,
-                                nbrCores, nbrCoresDiffMeth,
-                                minReads, minMethDiff, qvalue, maxPercReads,
-                                destrand, minCovBasesForTiles, tileSize,
-                                stepSize, vSeed)
+    validateRunPermutationUsingMethylKitInfo(methylKitInfo = methylKitInfo,
+                                type = type, outputDir = outputDir,
+                                runObservedAnalysis = runObservedAnalysis,
+                                nbrPermutations = nbrPermutations,
+                                nbrCores = nbrCores,
+                                nbrCoresDiffMeth = nbrCoresDiffMeth,
+                                minReads = minReads, minMethDiff = minMethDiff,
+                                qvalue = qvalue, maxPercReads = maxPercReads,
+                                destrand = destrand,
+                                minCovBasesForTiles = minCovBasesForTiles,
+                                tileSize = tileSize, stepSize = stepSize,
+                                vSeed = vSeed)
 
     ## Add last slash to path when absent
     if (!is.null(outputDir) &&
@@ -320,8 +337,27 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
         createOutputDir(outputDir, doingSites = doSites, doingTiles = doTiles)
     }
 
+    ## Call observation analysis
+    observedResults <- runAnalysisUsingMethylKitInfo(methylKitInfo =
+                                                            methylKitInfo,
+                                    type = type,
+                                    outputDir = outputDir,
+                                    nbrPermutations = nbrPermutations,
+                                    nbrCores = nbrCores,
+                                    nbrCoresDiffMeth = nbrCoresDiffMeth,
+                                    minReads = minReads,
+                                    minMethDiff = minMethDiff,
+                                    qvalue = qvalue,
+                                    maxPercReads = maxPercReads,
+                                    destrand = destrand,
+                                    minCovBasesForTiles = minCovBasesForTiles,
+                                    tileSize = tileSize,
+                                    stepSize = stepSize,
+                                    vSeed = vSeed)
+
     ## Call permutations in parallel mode
-    result <- bplapply(finalList, FUN = runOnePermutationOnAllGenerations,
+    permutationResults <- bplapply(finalList, FUN =
+                                        runOnePermutationOnAllGenerations,
                             type = type,
                             outputDir = outputDir,
                             nbrCoresDiffMeth = nbrCoresDiffMeth,
@@ -335,6 +371,11 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
                             stepSize = stepSize,
                         BPREDO = redoList,
                         BPPARAM = bpParam)
+
+    ## Create final returned list
+    result <- list()
+    result[["OBSERVATION"]] <- observedResults
+    result[["PERMUTATION"]] <- permutationResults
 
     return(result)
 }
@@ -427,7 +468,73 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
 #' needed. When a value inferior or equal to zero is given, a random integer
 #' is used. Default: \code{-1}.
 #'
-#' @return TODO
+#' @return a \code{list} containing the following elements:
+#' \itemize{
+#' \item \code{SITES} Only present when \code{type} = \code{"sites"} or
+#' \code{both}, a \code{list} containing:
+#' \itemize{
+#' \item\code{i2} a \code{list} containing:
+#' \itemize{
+#' \item \code{HYPER} a \code{list} of \code{integer}, the number of conserved
+#' hyper differentially methylated sites between two consecutive generations.
+#' The first element represents the intersection of the first and second
+#' generations; the second element, the intersection of the second and third
+#' generations; etc..
+#' \item \code{HYPO} a \code{list} of \code{integer}, the number of conserved
+#' hypo differentially methylated sites between two consecutive generations.The
+#' first element represents the intersection of the first and second
+#' generations; the second element, the intersection of the second and third
+#' generations; etc..
+#' }
+#' \item\code{iAll} a \code{list} containing:
+#' \itemize{
+#'\item \code{HYPER} a \code{list} of \code{integer}, the number of conserved
+#' hyper differentially methylated sites between three or more consecutive
+#' generations. The first element represents the intersection of the first
+#' three generations; the second element, the intersection of the first fourth
+#' generations; etc..The number of entries depends of the number
+#' of generations.
+#' \item \code{HYPO} a \code{list} of \code{integer}, the number of conserved
+#' hypo differentially methylated sites between three or more consecutive
+#' generations. The first element represents the intersection of the first
+#' three generations; the second element, the intersection of the first fourth
+#' generations; etc..The number of entries depends of the number of
+#' generations.
+#' }
+#' }
+#' \item \code{TILES} Only present when \code{type} = \code{"tiles"} or
+#' \code{both}, a \code{list} containing:
+#' itemize{
+#' \item\code{i2} a \code{list} containing:
+#' \itemize{
+#' \item \code{HYPER} a \code{list} of \code{integer}, the number of conserved
+#' hyper differentially methylated positions between two consecutive
+#' generations. The first element represents the intersection of the
+#' first and second generations; the second element, the intersection of
+#' the second and third generations; etc..
+#' \item \code{HYPO} a \code{list} of \code{integer}, the number of conserved
+#' hypo differentially methylated positions between two consecutive
+#' generations.The first element represents the intersection of the first and
+#' second generations; the second element, the intersection of the second
+#' and third generations; etc..
+#' }
+#' \item\code{iAll} a \code{list} containing:
+#' \itemize{
+#'\item \code{HYPER} a \code{list} of \code{integer}, the number of conserved
+#' hyper differentially methylated positions between three or more consecutive
+#' generations. The first element represents the intersection of the first
+#' three generations; the second element, the intersection of the first fourth
+#' generations; etc..The number of entries depends of the number
+#' of generations.
+#' \item \code{HYPO} a \code{list} of \code{integer}, the number of conserved
+#' hypo differentially methylated positions between three or more consecutive
+#' generations. The first element represents the intersection of the first
+#' three generations; the second element, the intersection of the first fourth
+#' generations; etc..The number of entries depends of the number of
+#' generations.
+#' }
+#' }
+#' }
 #'
 #' @examples
 #'
@@ -457,9 +564,17 @@ runAnalysisUsingMethylKitInfo <- function(methylKitInfo,
                                             stepSize = 1000,
                                             vSeed = -1) {
 
-
     ## Parameters validation
-    ## TODO
+    validateRunAnalysisUsingMethylKitInfo(methylKitInfo = methylKitInfo,
+                            type = type, outputDir = outputDir,
+                            nbrCores = nbrCores,
+                            nbrCoresDiffMeth = nbrCoresDiffMeth,
+                            minReads = minReads, minMethDiff = minMethDiff,
+                            qvalue = qvalue,
+                            maxPercReads = maxPercReads, destrand = destrand,
+                            minCovBasesForTiles = minCovBasesForTiles,
+                            tileSize = tileSize,
+                            stepSize = stepSize, vSeed = vSeed)
 
     ## Add last slash to path when absent
     if (!is.null(outputDir) &&
@@ -483,7 +598,8 @@ runAnalysisUsingMethylKitInfo <- function(methylKitInfo,
     }
 
     ## Extract information
-    result <- runOnePermutationOnAllGenerations(methylInfoForAllGenerations = methylInfo,
+    result <- runOnePermutationOnAllGenerations(methylInfoForAllGenerations =
+                                                        methylInfo,
                                     type = type, outputDir = outputDir,
                                     nbrCoresDiffMeth = nbrCoresDiffMeth,
                                     minReads = minReads,
@@ -602,20 +718,20 @@ runAnalysisUsingMethylKitInfo <- function(methylKitInfo,
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
 runAnalysisUsingRDSFile <- function(methylKitRDSFile,
-                                          type = c("both", "sites", "tiles"),
-                                          outputDir = NULL,
-                                          nbrPermutations = 0,
-                                          nbrCores = 1,
-                                          nbrCoresDiffMeth = 1,
-                                          minReads = 10,
-                                          minMethDiff = 10,
-                                          qvalue = 0.01,
-                                          maxPercReads = 99.9,
-                                          destrand = FALSE,
-                                          minCovBasesForTiles = 0,
-                                          tileSize = 1000,
-                                          stepSize = 1000,
-                                          vSeed = -1) {
+                                            type = c("both", "sites", "tiles"),
+                                            outputDir = NULL,
+                                            nbrPermutations = 0,
+                                            nbrCores = 1,
+                                            nbrCoresDiffMeth = 1,
+                                            minReads = 10,
+                                            minMethDiff = 10,
+                                            qvalue = 0.01,
+                                            maxPercReads = 99.9,
+                                            destrand = FALSE,
+                                            minCovBasesForTiles = 0,
+                                            tileSize = 1000,
+                                            stepSize = 1000,
+                                            vSeed = -1) {
 
     ## Validate that methylKitRDSFile is an existing file
     if (!file.exists(methylKitRDSFile)) {
@@ -750,20 +866,20 @@ runAnalysisUsingRDSFile <- function(methylKitRDSFile,
 #' @importFrom methods new
 #' @export
 runPermutationUsingRDSTEST <- function(methylKitRDSFile,
-                                   type = c("both", "sites", "tiles"),
-                                   outputDir = NULL,
-                                   nbrPermutations = 1000,
-                                   nbrCores = 1,
-                                   nbrCoresDiffMeth = 1,
-                                   minReads = 10,
-                                   minMethDiff = 10,
-                                   qvalue = 0.01,
-                                   maxPercReads = 99.9,
-                                   destrand = FALSE,
-                                   minCovBasesForTiles = 0,
-                                   tileSize = 1000,
-                                   stepSize = 1000,
-                                   vSeed = -1) {
+                                    type = c("both", "sites", "tiles"),
+                                    outputDir = NULL,
+                                    nbrPermutations = 1000,
+                                    nbrCores = 1,
+                                    nbrCoresDiffMeth = 1,
+                                    minReads = 10,
+                                    minMethDiff = 10,
+                                    qvalue = 0.01,
+                                    maxPercReads = 99.9,
+                                    destrand = FALSE,
+                                    minCovBasesForTiles = 0,
+                                    tileSize = 1000,
+                                    stepSize = 1000,
+                                    vSeed = -1) {
 
 
     ## Extract information from RDS file
@@ -771,11 +887,11 @@ runPermutationUsingRDSTEST <- function(methylKitRDSFile,
 
     ## Parameters validation
     validateRunPermutationUsingMethylKitInfo(methylInfo, type,
-                                   outputDir, nbrPermutations,
-                                   nbrCores, nbrCoresDiffMeth,
-                                   minReads, minMethDiff, qvalue, maxPercReads,
-                                   destrand, minCovBasesForTiles, tileSize,
-                                   stepSize, vSeed)
+                                    outputDir, nbrPermutations,
+                                    nbrCores, nbrCoresDiffMeth,
+                                    minReads, minMethDiff, qvalue, maxPercReads,
+                                    destrand, minCovBasesForTiles, tileSize,
+                                    stepSize, vSeed)
 
     ## Add last slash to path when absent
     if (substr(outputDir, nchar(outputDir), nchar(outputDir)) != "/") {
@@ -810,7 +926,7 @@ runPermutationUsingRDSTEST <- function(methylKitRDSFile,
             end = start + nbSamplesByGeneration[j] - 1
             samplePos <- permutationSamples[i, start:end]
             newSampleList <- new("methylRawList", allSamples[samplePos],
-                                 treatment = methylInfo[[1]]@treatment)
+                                    treatment = methylInfo[[1]]@treatment)
             permutationList[[j]] <- newSampleList
             start <- end + 1
         }
@@ -820,17 +936,16 @@ runPermutationUsingRDSTEST <- function(methylKitRDSFile,
     rm(permutationSamples)
 
     result <- runOnePermutationOnAllGenerations(finalList[[1]],
-                                                type = type,
-                                                outputDir = outputDir,
-                                                nbrCoresDiffMeth = nbrCoresDiffMeth,
-                                                minReads = minReads,
-                                                minMethDiff = minMethDiff,
-                                                qvalue = qvalue,
-                                                maxPercReads = maxPercReads,
-                                                destrand = destrand,
-                                                minCovBasesForTiles = minCovBasesForTiles,
-                                                tileSize = tileSize,
-                                                stepSize = stepSize)
+                                    type = type, outputDir = outputDir,
+                                    nbrCoresDiffMeth = nbrCoresDiffMeth,
+                                    minReads = minReads,
+                                    minMethDiff = minMethDiff,
+                                    qvalue = qvalue,
+                                    maxPercReads = maxPercReads,
+                                    destrand = destrand,
+                                    minCovBasesForTiles = minCovBasesForTiles,
+                                    tileSize = tileSize,
+                                    stepSize = stepSize)
 }
 
 #' @title TODO
@@ -890,9 +1005,11 @@ extractData <- function(realAnalysis_output_dir, permutations_output_dir,
 }
 
 
-#' @title TODO
+#' @title Load all RDS files created by the permutation analysis
 #'
-#' @description  TODO
+#' @description  Load all RDS files created by the permutation analysis and
+#' return an object of \code{class} "methylInheritanceAllResults" that holds
+#' all the pertinent information.
 #'
 #' @param analysisResultsDIR TODO
 #'
@@ -902,7 +1019,20 @@ extractData <- function(realAnalysis_output_dir, permutations_output_dir,
 #'
 #' @param doingTiles TODO
 #'
-#' @return TODO
+#' @return an \code{list} of \code{class} "methylInheritanceAllResults"
+#' containing the following elements:
+#' \itemize{
+#'     \item \code{OBSERVATION}, a \code{list} that contains one or two
+#'     \code{list} depending
+#'     of the specified parameters. When \code{doingSites} = \code{TRUE}, a
+#'     list of called "SITES" is present. When \code{doingTiles} = \code{TRUE},
+#'     a list of called "TILES" is present. TODO
+#'     \item \code{PERMUTATION}, a \code{list}  contains one or two \code{list}
+#'     depending of the specified parameters. When
+#'     \code{doingSites} = \code{TRUE}, a
+#'     list of called "SITES" is present. When \code{doingTiles} = \code{TRUE},
+#'     a list of called "TILES" is present. TODO
+#' }
 #'
 #' @examples
 #'
@@ -915,14 +1045,14 @@ loadAllPermutationRDS <- function(analysisResultsDIR,
                                     doingSites = TRUE,
                                     doingTiles = FALSE) {
 
-    ## Add last slash to path when absent
+    ## Add last slash to analysisResultsDIR when absent
     if (!is.null(analysisResultsDIR) &&
         (substr(analysisResultsDIR, nchar(analysisResultsDIR),
                     nchar(analysisResultsDIR)) != "/")) {
         analysisResultsDIR <- paste0(analysisResultsDIR, "/")
     }
 
-    ## Add last slash to path when absent
+    ## Add last slash to permutationResultsDIR when absent
     if (!is.null(permutationResultsDIR) &&
         (substr(permutationResultsDIR, nchar(permutationResultsDIR),
                     nchar(permutationResultsDIR)) != "/")) {
@@ -931,44 +1061,54 @@ loadAllPermutationRDS <- function(analysisResultsDIR,
 
     result<-list()
 
+    ## SITES
     if (doingSites) {
         analysisResults <- readRDS(file = paste0(analysisResultsDIR,
-                                             "SITES/SITES_permutation_0.RDS"))
-        analysisStruct <- createDataStructure(interGenerationResult = analysisResults)
-        result[["OBSERVED"]][["SITES"]] <- analysisStruct
+                                        "SITES/SITES_observed_results.RDS"))
+        analysisStruct <- createDataStructure(interGenerationResult =
+                                                    analysisResults)
+        result[["OBSERVATION"]][["SITES"]] <- analysisStruct
 
 
-        filesInDir <- list.files(path = paste0(permutationResultsDIR, "SITES/"),
-                             pattern = ".RDS", all.files = FALSE,
-                             full.names = TRUE, recursive = FALSE,
-                             ignore.case = FALSE, include.dirs = FALSE, no.. = FALSE)
+        filesInDir <- list.files(path = paste0(permutationResultsDIR,
+                                                                "SITES/"),
+                                pattern = "[[:digit:]].RDS", all.files = FALSE,
+                                full.names = TRUE, recursive = FALSE,
+                                ignore.case = FALSE, include.dirs = FALSE,
+                                no.. = FALSE)
 
         sitesPerm <- lapply(filesInDir, FUN = function(x) {readRDS(file = x)})
 
         t <- lapply(sitesPerm, FUN = function(x) {
-            createDataStructure(interGenerationResult = x)})
+                    createDataStructure(interGenerationResult = x)})
 
         result[["PERMUTATION"]][["SITES"]] <- t
     }
 
+    ## TILES
     if (doingTiles) {
         analysisResults <- readRDS(file = paste0(analysisResultsDIR,
-                                                 "TILES/TILES_permutation_0.RDS"))
-        analysisStruct <- createDataStructure(interGenerationResult = analysisResults)
-        result[["OBSERVED"]][["TILES"]] <- analysisStruct
+                                        "TILES/TILES_observed_results.RDS"))
+        analysisStruct <- createDataStructure(interGenerationResult =
+                                                    analysisResults)
+        result[["OBSERVATION"]][["TILES"]] <- analysisStruct
 
-        filesInDir <- list.files(path = paste0(permutationResultsDIR, "TILES/"),
-                                 pattern = ".RDS", all.files = FALSE,
-                                 full.names = TRUE, recursive = FALSE,
-                                 ignore.case = FALSE, include.dirs = FALSE, no.. = FALSE)
+        filesInDir <- list.files(path = paste0(permutationResultsDIR,
+                                                            "TILES/"),
+                                pattern = "[[:digit:]].RDS", all.files = FALSE,
+                                full.names = TRUE, recursive = FALSE,
+                                ignore.case = FALSE, include.dirs = FALSE,
+                                no.. = FALSE)
 
         tilesPerm <- lapply(filesInDir, FUN = function(x) {readRDS(file = x)})
 
         t <- lapply(tilesPerm, FUN = function(x) {
-            createDataStructure(interGenerationResult = x)})
+                    createDataStructure(interGenerationResult = x)})
 
         result[["PERMUTATION"]][["TILES"]] <- t
     }
+
+    class(result)<-"methylInheritanceAllResults"
 
     return(result)
 }
@@ -980,35 +1120,48 @@ loadAllPermutationRDS <- function(analysisResultsDIR,
 #'
 #' @param analysisandPermutationResults TODO
 #'
-#' @param type TODO
+#' @param type One of the "sites" or "tiles" strings. Specifies the type
+#' of differentially methylated elements should be returned. For
+#' retrieving differentially methylated bases type="sites"; for
+#' differentially methylated regions type="tiles". Default: "sites".
 #'
 #' @param inter TODO
 #'
 #' @param position TODO
 #'
-#' @return  TODO
+#' @return TODO
 #'
 #' @examples
 #'
-#' ## TODO
+#' ## Loading dataset containing all results
+#' data(analysisResults)
+#'
+#' ## Extract information for the intersection between conserved differentially
+#' ## methylated sites (type = sites) between the intersection of 2
+#' ## generations (inter = i2): F2 and F3 (position = 2)
+#' formatForGraph(analysisandPermutationResults = analysisResults,
+#' type = "sites", inter="i2", 2)
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
-formatForGraph <- function(analysisandPermutationResults, type = c("sites", "tiles"),
-                        inter=c("i2", "iAll"), position) {
+formatForGraph <- function(analysisandPermutationResults,
+                            type = c("sites", "tiles"),
+                            inter=c("i2", "iAll"), position) {
 
     type <- toupper(type)
 
     real <- analysisandPermutationResults[["OBSERVED"]][[type]][[inter]]
 
     dataConserved <- data.frame(TYPE=c("HYPO", "HYPER"),
-                                result=c(real[["HYPO"]][[position]], real[["HYPER"]][[position]]),
+                                result=c(real[["HYPO"]][[position]],
+                                            real[["HYPER"]][[position]]),
                                 SOURCE=c("OBSERVED", "OBSERVED"))
 
     for (i in 1:length(analysisandPermutationResults[["PERMUTATION"]][[type]])) {
         permutation <- analysisandPermutationResults[["PERMUTATION"]][[type]][[i]][[inter]]
         dataConserved <- rbind(dataConserved, data.frame(TYPE=c("HYPO", "HYPER"),
-                        result=c(permutation[["HYPO"]][[position]], permutation[["HYPER"]][[position]]),
+                        result=c(permutation[["HYPO"]][[position]],
+                                    permutation[["HYPER"]][[position]]),
                         SOURCE=c("PERMUTATION", "PERMUTATION")))
     }
 
@@ -1031,47 +1184,60 @@ formatForGraph <- function(analysisandPermutationResults, type = c("sites", "til
 plotGraph <- function(formatForGraphDataFrame) {
 
     # Basic graph using dataframe
-    # Columns names : TYPE (HYPER or HYPO), result (nbr conseved sites), SOURCE (OBSERVED or PERMUTATION)
+    # Columns names : TYPE (HYPER or HYPO), result (nbr conseved sites),
+    # SOURCE (OBSERVED or PERMUTATION)
     p <- ggplot(data=formatForGraphDataFrame, aes(formatForGraphDataFrame$result)) +
         geom_histogram(col="blue",
-                       fill="lightblue",
-                       binwidth=2,
-                       alpha = .2) +
-        labs(title="") +
-        labs(x="Number of conserved differentially methylated sites", y="Frequency")
+                        fill="lightblue",
+                        binwidth=2,
+                        alpha = .2) +
+        labs(title = "") +
+        labs(x = "Number of conserved differentially methylated sites",
+                y = "Frequency")
 
     # Split to have one section for HYPER and one for HYPO
     p <- p + facet_grid(.~TYPE)
 
     # Add vertical line corresponding to the number of conserved elements
     # in the observed results (real results)
-    interceptFrame <- subset(formatForGraphDataFrame, formatForGraphDataFrame$SOURCE == "OBSERVED")
+    interceptFrame <- subset(formatForGraphDataFrame,
+                                formatForGraphDataFrame$SOURCE == "OBSERVED")
     p <- p + geom_vline(aes(xintercept = interceptFrame$result, color="red"),
-                        data = interceptFrame, linetype="longdash", show.legend = NA)
+                        data = interceptFrame, linetype="longdash",
+                        show.legend = NA)
 
     # Calculate the significant level for HYPER AND HYPO
-    hypoDataSet <- subset(formatForGraphDataFrame, formatForGraphDataFrame$TYPE == "HYPO")
+    hypoDataSet <- subset(formatForGraphDataFrame,
+                            formatForGraphDataFrame$TYPE == "HYPO")
     hypoTotal <- nrow(hypoDataSet)
     hypoNumber <- interceptFrame[interceptFrame$TYPE == "HYPO",]$result
-    signifLevelHypo <- nrow(subset(hypoDataSet, hypoDataSet$result >= hypoNumber))/hypoTotal
+    signifLevelHypo <- nrow(subset(hypoDataSet,
+                                hypoDataSet$result >= hypoNumber))/hypoTotal
 
-    hyperDataSet <- subset(formatForGraphDataFrame, formatForGraphDataFrame$TYPE == "HYPER")
+    hyperDataSet <- subset(formatForGraphDataFrame,
+                            formatForGraphDataFrame$TYPE == "HYPER")
     hyperTotal <- nrow(hyperDataSet)
     hyperNumber <- interceptFrame[interceptFrame$TYPE == "HYPER",]$result
-    signifLevelHyper <- nrow(subset(hyperDataSet, hyperDataSet$result >= hyperNumber))/hyperTotal
+    signifLevelHyper <- nrow(subset(hyperDataSet,
+                                hyperDataSet$result >= hyperNumber))/hyperTotal
 
     # Add significant level value as annotated text
     ann_text <- data.frame(TYPE = c("HYPO", "HYPER"),
-                           lab = c(sprintf("%.6f", signifLevelHypo),
-                                   sprintf("%.6f", signifLevelHyper)))
+                                lab = c(sprintf("%.6f", signifLevelHypo),
+                                        sprintf("%.6f", signifLevelHyper)))
     p <- p + geom_text(data = ann_text,
-                       aes(x=100, y=100, label=ann_text$lab, size=15, color="red"),
-                       inherit.aes=FALSE, parse=FALSE)
+                        aes(x=100, y=100, label=ann_text$lab, size=15,
+                                color="red"),
+                        inherit.aes=FALSE, parse=FALSE)
 
     # Add number of observed conserved elements as annotated text
     ann_text_2 <- data.frame(TYPE = c("HYPO", "HYPER"),
-                           lab = c(sprintf("%d observed", hypoNumber), sprintf("%d observed", hyperNumber)))
-    p <- p + geom_text(data = ann_text_2,  aes(x=100, y=300, label=ann_text_2$lab, size=15, color="red"), inherit.aes=FALSE, parse=FALSE)
+                           lab = c(sprintf("%d observed", hypoNumber),
+                                    sprintf("%d observed", hyperNumber)))
+    p <- p + geom_text(data = ann_text_2,  aes(x = 100, y = 300,
+                                                label=ann_text_2$lab, size=15,
+                                                color="red"),
+                        inherit.aes=FALSE, parse=FALSE)
 
     p <- p + theme(legend.position="none")
 
