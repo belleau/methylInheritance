@@ -338,7 +338,7 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
     }
 
     ## Call observation analysis
-    observedResults <- runAnalysisUsingMethylKitInfo(methylKitInfo =
+    observedResults <- runObservationUsingMethylKitInfo(methylKitInfo =
                                                             methylKitInfo,
                                     type = type,
                                     outputDir = outputDir,
@@ -542,13 +542,13 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
 #' data(samplesForTransgenerationalAnalysis)
 #'
 #' ## Run a permutation analysis
-#' \dontrun{runAnalysisUsingMethylKitInfo(methylKitInfo =
+#' \dontrun{runObservationUsingMethylKitInfo(methylKitInfo =
 #' samplesForTransgenerationalAnalysis, type = "sites",
 #' nbrPermutations = 0, vSeed = 221)}
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
-runAnalysisUsingMethylKitInfo <- function(methylKitInfo,
+runObservationUsingMethylKitInfo <- function(methylKitInfo,
                                             type = c("both", "sites", "tiles"),
                                             outputDir = NULL,
                                             nbrPermutations = 0,
@@ -565,7 +565,7 @@ runAnalysisUsingMethylKitInfo <- function(methylKitInfo,
                                             vSeed = -1) {
 
     ## Parameters validation
-    validateRunAnalysisUsingMethylKitInfo(methylKitInfo = methylKitInfo,
+    validateRunObservationUsingMethylKitInfo(methylKitInfo = methylKitInfo,
                             type = type, outputDir = outputDir,
                             nbrCores = nbrCores,
                             nbrCoresDiffMeth = nbrCoresDiffMeth,
@@ -743,7 +743,7 @@ runObservationUsingRDSFile <- function(methylKitRDSFile,
     methylInfo <- readRDS(methylKitRDSFile)
 
     ## Call permutation analysis with the methylInfo object as an parameter
-    result <- runAnalysisUsingMethylKitInfo(methylKitInfo = methylInfo,
+    result <- runObservationUsingMethylKitInfo(methylKitInfo = methylInfo,
                                     type = type,
                                     outputDir = outputDir,
                                     nbrPermutations = nbrPermutations,

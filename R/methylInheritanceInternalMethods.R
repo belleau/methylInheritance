@@ -148,7 +148,7 @@ validateRunPermutationUsingMethylKitInfo <- function(methylKitInfo,
     }
 
     ## Validate all the other parameters
-    validateRunAnalysisUsingMethylKitInfo(methylKitInfo = methylKitInfo,
+    validateRunObservationUsingMethylKitInfo(methylKitInfo = methylKitInfo,
                             type = type, outputDir = outputDir,
                             nbrCores = nbrCores,
                             nbrCoresDiffMeth = nbrCoresDiffMeth,
@@ -162,10 +162,10 @@ validateRunPermutationUsingMethylKitInfo <- function(methylKitInfo,
 
 
 #' @title Validation of some parameters of the
-#' \code{\link{runAnalysisUsingMethylKitInfo}} function
+#' \code{\link{runObservationUsingMethylKitInfo}} function
 #'
 #' @description Validation of some parameters needed by the public
-#' \code{\link{runAnalysisUsingMethylKitInfo}} function.
+#' \code{\link{runObservationUsingMethylKitInfo}} function.
 #'
 #' @param methylKitInfo a \code{list} of \code{methylRawList} entries. Each
 #' \code{methylRawList} contains all the \code{methylRaw} entries related to
@@ -246,7 +246,7 @@ validateRunPermutationUsingMethylKitInfo <- function(methylKitInfo,
 #' data(samplesForTransgenerationalAnalysis)
 #'
 #' ## The function returns 0 when all paramaters are valid
-#' methylInheritance:::validateRunAnalysisUsingMethylKitInfo(
+#' methylInheritance:::validateRunObservationUsingMethylKitInfo(
 #' methylKitInfo = samplesForTransgenerationalAnalysis, type = "sites",
 #' outputDir = NULL, nbrCores = 1,
 #' nbrCoresDiffMeth = 1, minReads = 10, minMethDiff = 25, qvalue = 0.01,
@@ -254,7 +254,7 @@ validateRunPermutationUsingMethylKitInfo <- function(methylKitInfo,
 #' tileSize = 1000, stepSize = 500, vSeed = 12)
 #'
 #' ## The function raises an error when at least one paramater is not valid
-#' \dontrun{methylInheritance:::validateRunAnalysisUsingMethylKitInfo(
+#' \dontrun{methylInheritance:::validateRunObservationUsingMethylKitInfo(
 #' methylKitInfo = samplesForTransgenerationalAnalysis,
 #' type = "tiles", outputDir = NULL, nbrCores = 1,
 #' nbrCoresDiffMeth = 1, minReads = "HI", minMethDiff = 25, qvalue = 0.01,
@@ -264,7 +264,7 @@ validateRunPermutationUsingMethylKitInfo <- function(methylKitInfo,
 #' @author Astrid Deschenes
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
-validateRunAnalysisUsingMethylKitInfo <- function(methylKitInfo,
+validateRunObservationUsingMethylKitInfo <- function(methylKitInfo,
                                     type, outputDir, nbrCores,
                                     nbrCoresDiffMeth,
                                     minReads, minMethDiff, qvalue,

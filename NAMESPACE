@@ -3,7 +3,7 @@
 export(formatForGraph)
 export(loadAllRDSResults)
 export(plotGraph)
-export(runAnalysisUsingMethylKitInfo)
+export(runObservationUsingMethylKitInfo)
 export(runObservationUsingRDSFile)
 export(runPermutationUsingMethylKitInfo)
 export(runPermutationUsingRDSFile)
