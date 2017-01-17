@@ -372,21 +372,36 @@ validateRunAnalysisUsingMethylKitInfo <- function(methylKitInfo,
 #'
 #' @description TODO
 #'
-#' @param methDiff TODO
+#' @param methDiff a S4 \code{methylDiff} class object, a
+#' object that holds statistics and locations
+#' for differentially methylated regions/bases.
+#'
+#' @param pDiff a positive \code{double} between \code{0} and \code{100},
+#' the cutoff for absolute value of methylation percentage change
+#' between test and control.
 #'
 #' @param qvalue a positive \code{double} inferior to \code{1}, the cutoff
 #' for qvalue of differential methylation statistic.
 #'
-#' @param type One of the "hyper","hypo" or "all" strings, the string pecifies
-#' what type of differentially methylated bases/tiles should be returned. For
-#' retrieving hyper-methylated tiles/bases type="hyper"; for
-#' hypo-methylated type="hypo". Default: "all".
+#' @param type One of the \code{"hyper"},\code{"hypo"} or \code{"all"} strings,
+#' the string specifies what type of differentially methylated bases/tiles
+#' should be treated  For
+#' retrieving hyper-methylated tiles/sites \code{type} = \code{"hyper"}; for
+#' hypo-methylated \code{type} = \code{"hypo"}. Default: \code{"all"}.
 #'
 #' @return TODO
 #'
 #' @examples
 #'
-#' ## TODO
+#' ## Load permutation results on sites
+#' permutationResultsFile <- dir(system.file("extdata",
+#' package = "methylInheritance"), pattern = "permutationResultsForSites.RDS",
+#' full.names = TRUE)
+#' permutationResults <- readRDS(permutationResultsFile)
+#'
+#' ## Transform result to GRanges
+#' resultsGR <- methylInheritance:::getGRangesFromMethylDiff(methDiff =
+#' permutationResults, pDiff = 10, qvalue = 0.01, type = "hyper")
 #'
 #' @author Pascal Belleau
 #' @importFrom methylKit getMethylDiff
@@ -394,12 +409,12 @@ validateRunAnalysisUsingMethylKitInfo <- function(methylKitInfo,
 #' @importFrom IRanges IRanges
 #' @keywords internal
 getGRangesFromMethylDiff <- function(methDiff, pDiff, qvalue,
-                                        type = c("all", "hyper", "hypo")){
+                                        type = c("all", "hyper", "hypo")) {
 
     methDiffK <- lapply(1:length(methDiff), FUN = function(i, methDiff,
                                                     pDiff, qCut, typeD){
         methK <- getMethylDiff(methDiff[[i]], difference = pDiff,
-                               qvalue = qCut, type = typeD)
+                                qvalue = qCut, type = typeD)
         GRanges(seqnames = methK$chr, ranges = IRanges(start = methK$start,
                                                         end = methK$end),
                 strand = methK$strand, pvalue = methK$pvalue,
@@ -423,8 +438,19 @@ getGRangesFromMethylDiff <- function(methDiff, pDiff, qvalue,
 #'         TODO
 #'
 #' @examples
-#' ## sum(width(res))
-#' ## TODO
+#'
+#' ## Load permutation results on sites
+#' permutationResultsFile <- dir(system.file("extdata",
+#' package = "methylInheritance"), pattern = "permutationResultsForSites.RDS",
+#' full.names = TRUE)
+#' permutationResults <- readRDS(permutationResultsFile)
+#'
+#' ## Transform result to GRanges
+#' resultsGR <- methylInheritance:::getGRangesFromMethylDiff(methDiff =
+#' permutationResults, pDiff = 10, qvalue = 0.01, type = "hyper")
+#'
+#' ## Extract inter generational conserved sites
+#' conservedSitesGR <- interGeneration(resultsGR)
 #'
 #' @author Pascal Belleau
 #' @importFrom GenomicRanges intersect GRanges
@@ -855,25 +881,29 @@ runOnePermutationOnAllGenerations <- function(methylInfoForAllGenerations,
 #' permutation results have the permutation identifiant in their name.
 #'
 #' @param outputDir a string, the name of the directory that will contain
-#' the results of the permutation. The name should end with a slash.
+#' the results of the permutation. The name should end with a slash. The
+#' directory should already exists.
 #'
-#' @param type One of the "sites" or "tiles" strings. Specifies the type
+#' @param type One of the \code{"sites"} or \code{"tiles"} strings. Specifies
+#' the type
 #' of differentially methylated elements should be returned. For
-#' retrieving differentially methylated bases type="sites"; for
-#' differentially methylated regions type="tiles". Default: "both".
+#' retrieving differentially methylated bases \code{type} =\code{"sites"}; for
+#' differentially methylated regions \code{type} = \code{"tiles"}. Default:
+#' \code{"both"}.
 #'
-#' @param permutationID an integer, the identifiant of the permutation. When
-#' the \code{permutationID} = \code{0}, the results are considered as the
+#' @param permutationID an \code{integer}, the identifiant of the permutation.
+#' When the \code{permutationID} = \code{0}, the results are considered as the
 #' observed results and are saved in a file with the "_observed_results.RDS"
 #' extension. When the \code{permutationID} != \code{0}, the results are
 #' considered as permutation results and are saved in a file with the
 #' "_permutation_{permutationID}.RDS" extension.
 #'
-#' @param type One of the "sites" or "tiles" strings. Specifies the type
-#' of differentially methylated elements should be saved. Default: "sites".
+#' @param type One of the \code{"sites"} or \code{"tiles"} strings. Specifies
+#' the type of differentially methylated elements should be saved.
+#' Default: \code{"sites"}.
 #'
-#' @param result a \code{list} that corresponds to the output of the
-#' \code{interGeneration} function, the result of on CpG site or tile
+#' @param interGenerationResult a \code{list} that corresponds to the output
+#' of the \code{interGeneration} function, the result of on CpG site or tile
 #' analysis on all generations.
 #'
 #' @return \code{0} indicating that all parameters validations have been
@@ -881,26 +911,38 @@ runOnePermutationOnAllGenerations <- function(methylInfoForAllGenerations,
 #'
 #' @examples
 #'
-#' ##TODO
+#' ## Load a dataset
+#' interGenerationResultFile <- dir(system.file("extdata",
+#' package = "methylInheritance"), pattern = "interGenerationResult",
+#' full.names = TRUE)
+#' interGenerationResult <- readRDS(interGenerationResultFile)
+#'
+#' ## Save dataset
+#' \dontrun{methylInheritance:::saveInterGenerationResults(
+#' outputDir = "TEST", permutationID=100, type = "sites",
+#' interGenerationResult = interGenerationResult)}
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @keywords internal
 saveInterGenerationResults <- function(outputDir, permutationID,
                                         type = c("sites", "tiles"),
-                                        result) {
+                                        interGenerationResult) {
 
     if (permutationID != 0) {
         ## Save the permutation results
-        saveRDS(object = result, file = paste0(outputDir, toupper(type), "/",
+        saveRDS(object = interGenerationResult,
+                file = paste0(outputDir,  toupper(type), "/",
                         toupper(type), "_permutation_", permutationID, ".RDS"))
     } else {
         ## Save the observed results
-        saveRDS(object = result, file = paste0(outputDir, toupper(type), "/",
+        saveRDS(object = interGenerationResult,
+                    file = paste0(outputDir, toupper(type), "/",
                         toupper(type), "_observed_results.RDS"))
     }
-    return(0)
 
+    return(0)
 }
+
 
 #' @title TODO
 #'

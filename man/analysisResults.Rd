@@ -3,7 +3,8 @@
 \docType{data}
 \name{analysisResults}
 \alias{analysisResults}
-\title{All observed and permutation results formatted in a methylInheritanceResults
+\title{All observed and permutation results formatted in a
+\code{methylInheritanceResults} class
 object.}
 \format{A \code{list} TODO}
 \usage{

@@ -8,15 +8,22 @@ getGRangesFromMethylDiff(methDiff, pDiff, qvalue, type = c("all", "hyper",
   "hypo"))
 }
 \arguments{
-\item{methDiff}{TODO}
+\item{methDiff}{a S4 \code{methylDiff} class object, a
+object that holds statistics and locations
+for differentially methylated regions/bases.}
+
+\item{pDiff}{a positive \code{double} between \code{0} and \code{100},
+the cutoff for absolute value of methylation percentage change
+between test and control.}
 
 \item{qvalue}{a positive \code{double} inferior to \code{1}, the cutoff
 for qvalue of differential methylation statistic.}
 
-\item{type}{One of the "hyper","hypo" or "all" strings, the string pecifies
-what type of differentially methylated bases/tiles should be returned. For
-retrieving hyper-methylated tiles/bases type="hyper"; for
-hypo-methylated type="hypo". Default: "all".}
+\item{type}{One of the \code{"hyper"},\code{"hypo"} or \code{"all"} strings,
+the string specifies what type of differentially methylated bases/tiles
+should be treated  For
+retrieving hyper-methylated tiles/sites \code{type} = \code{"hyper"}; for
+hypo-methylated \code{type} = \code{"hypo"}. Default: \code{"all"}.}
 }
 \value{
 TODO
@@ -26,7 +33,15 @@ TODO
 }
 \examples{
 
-## TODO
+## Load permutation results on sites
+permutationResultsFile <- dir(system.file("extdata",
+package = "methylInheritance"), pattern = "permutationResultsForSites.RDS",
+full.names = TRUE)
+permutationResults <- readRDS(permutationResultsFile)
+
+## Transform result to GRanges
+resultsGR <- methylInheritance:::getGRangesFromMethylDiff(methDiff =
+permutationResults, pDiff = 10, qvalue = 0.01, type = "hyper")
 
 }
 \author{

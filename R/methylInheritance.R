@@ -83,7 +83,8 @@ NULL
 #'
 NULL
 
-#' All observed and permutation results formatted in a methylInheritanceResults
+#' All observed and permutation results formatted in a
+#' \code{methylInheritanceResults} class
 #' object.
 #'
 #' TODO
