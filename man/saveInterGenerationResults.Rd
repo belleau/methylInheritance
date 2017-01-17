@@ -49,13 +49,20 @@ permutation results have the permutation identifiant in their name.
 }
 \examples{
 
-## Load a dataset
-interGenerationResultFile <- dir(system.file("extdata",
-package = "methylInheritance"), pattern = "interGenerationResult",
+## Load permutation results on sites
+permutationResultsFile <- dir(system.file("extdata",
+package = "methylInheritance"), pattern = "permutationResultsForSites.RDS",
 full.names = TRUE)
-interGenerationResult <- readRDS(interGenerationResultFile)
+permutationResults <- readRDS(permutationResultsFile)
 
-## Save dataset
+## Transform result to GRanges
+resultsGR <- methylInheritance:::getGRangesFromMethylDiff(methDiff =
+permutationResults, pDiff = 10, qvalue = 0.01, type = "hyper")
+
+## Extract inter-generationally conserved sites
+interGenerationResult <- methylInheritance:::interGeneration(resultsGR)
+
+## Save results
 \dontrun{methylInheritance:::saveInterGenerationResults(
 outputDir = "TEST", permutationID=100, type = "sites",
 interGenerationResult = interGenerationResult)}

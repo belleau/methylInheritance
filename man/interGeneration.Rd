@@ -20,8 +20,19 @@ interGeneration(resultAllGenGR)
 TODO
 }
 \examples{
-## sum(width(res))
-## TODO
+
+## Load permutation results on sites
+permutationResultsFile <- dir(system.file("extdata",
+package = "methylInheritance"), pattern = "permutationResultsForSites.RDS",
+full.names = TRUE)
+permutationResults <- readRDS(permutationResultsFile)
+
+## Transform result to GRanges
+resultsGR <- methylInheritance:::getGRangesFromMethylDiff(methDiff =
+permutationResults, pDiff = 10, qvalue = 0.01, type = "hyper")
+
+## Extract inter generational conserved sites
+conservedSitesGR <- methylInheritance:::interGeneration(resultsGR)
 
 }
 \author{

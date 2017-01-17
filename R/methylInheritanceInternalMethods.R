@@ -368,12 +368,18 @@ validateRunAnalysisUsingMethylKitInfo <- function(methylKitInfo,
 }
 
 
-#' @title TODO
+#' @title Transform results from a CpG site or region analysis done on mutliple
+#' generations into a \code{list} of \code{GRanges} objects.
 #'
-#' @description TODO
+#' @description Transform a \code{list} of \code{methylDiff} objects into
+#' a \code{list} of \code{GRanges} objects. Each \code{methylDiff} object
+#' represent a CpG site or region analysis done on one generation.
 #'
-#' @param methDiff a S4 \code{methylDiff} class object, a
-#' object that holds statistics and locations
+#' @param methDiff a \code{list} of S4 \code{methylDiff} class objects, each
+#' entry of the \code{list} represents the differentially methylated results
+#' for one generation (first entry = first genertation, second entry =
+#' second generation, etc..). Each \code{methylDiff} object holds statistics
+#' and locations
 #' for differentially methylated regions/bases.
 #'
 #' @param pDiff a positive \code{double} between \code{0} and \code{100},
@@ -389,7 +395,11 @@ validateRunAnalysisUsingMethylKitInfo <- function(methylKitInfo,
 #' retrieving hyper-methylated tiles/sites \code{type} = \code{"hyper"}; for
 #' hypo-methylated \code{type} = \code{"hypo"}. Default: \code{"all"}.
 #'
-#' @return TODO
+#' @return a \code{list} of \code{GRanges} objects,  each
+#' entry of the \code{list} represents the differentially methylated results
+#' for one generation (first entry = first genertation, second entry =
+#' second generation, etc..). Each \code{GRanges} object holds statistics
+#' for differentially methylated regions/bases.
 #'
 #' @examples
 #'
@@ -411,6 +421,8 @@ validateRunAnalysisUsingMethylKitInfo <- function(methylKitInfo,
 getGRangesFromMethylDiff <- function(methDiff, pDiff, qvalue,
                                         type = c("all", "hyper", "hypo")) {
 
+    ## Transform each methylDiff object present in the list to a
+    ## GRanges object
     methDiffK <- lapply(1:length(methDiff), FUN = function(i, methDiff,
                                                     pDiff, qCut, typeD){
         methK <- getMethylDiff(methDiff[[i]], difference = pDiff,
@@ -450,7 +462,7 @@ getGRangesFromMethylDiff <- function(methDiff, pDiff, qvalue,
 #' permutationResults, pDiff = 10, qvalue = 0.01, type = "hyper")
 #'
 #' ## Extract inter generational conserved sites
-#' conservedSitesGR <- interGeneration(resultsGR)
+#' conservedSitesGR <- methylInheritance:::interGeneration(resultsGR)
 #'
 #' @author Pascal Belleau
 #' @importFrom GenomicRanges intersect GRanges
@@ -805,21 +817,26 @@ runOnePermutationOnAllGenerations <- function(methylInfoForAllGenerations,
 
     ## Calculate the number of SITES in the intersection
     if (doSites) {
+
+        ## Transform initial results to GRanges
+        resultGR <- getGRangesFromMethylDiff(permutationList[["SITES"]],
+                                        minMethDiff, qvalue, type = "all")
+
+        ## Extract inter generational conserved sites
+        result <- interGeneration(resultGR)
+
+        ## Save results in RDS file when specified
+        if (!is.null(outputDir)) {
+            saveInterGenerationResults(outputDir, id, type = "sites", result)
+        }
+
+        ## Create list that will contain final results
         permutationFinal[["SITES"]] <- list()
         permutationFinal[["SITES"]][["i2"]] <- list()
         permutationFinal[["SITES"]][["i2"]][["HYPER"]] <- list()
         permutationFinal[["SITES"]][["i2"]][["HYPO"]]  <- list()
         permutationFinal[["SITES"]][["iAll"]][["HYPER"]]  <- list()
         permutationFinal[["SITES"]][["iAll"]][["HYPO"]]   <- list()
-
-        resultGR <- getGRangesFromMethylDiff(permutationList[["SITES"]],
-                                        minMethDiff, qvalue, type = "all")
-
-        result <- interGeneration(resultGR)
-
-        if (!is.null(outputDir)) {
-            saveInterGenerationResults(outputDir, id, type = "sites", result)
-        }
 
         permutationFinal[["SITES"]][["i2"]][["HYPER"]] <- lapply(result$i2,
                         FUN = function(x) {sum(width(x[x$typeDiff > 0]))})
@@ -837,21 +854,26 @@ runOnePermutationOnAllGenerations <- function(methylInfoForAllGenerations,
 
     ## Calculate the number of TILES in the intersection
     if (doTiles) {
+
+        ## Transform initial results to GRanges
+        resultGR <- getGRangesFromMethylDiff(permutationList[["TILES"]],
+                                minMethDiff, qvalue, type = "all")
+
+        ## Extract inter generational conserved tiles
+        result <- interGeneration(resultGR)
+
+        ## Save results in RDS file when specified
+        if (!is.null(outputDir)) {
+            saveInterGenerationResults(outputDir, id, type = "tiles", result)
+        }
+
+        ## Create list that will contain final results
         permutationFinal[["TILES"]] <- list()
         permutationFinal[["TILES"]][["i2"]] <- list()
         permutationFinal[["TILES"]][["i2"]][["HYPER"]] <- list()
         permutationFinal[["TILES"]][["i2"]][["HYPO"]]  <- list()
         permutationFinal[["TILES"]][["iAll"]][["HYPER"]]  <- list()
         permutationFinal[["TILES"]][["iAll"]][["HYPO"]]   <- list()
-
-        resultGR <- getGRangesFromMethylDiff(permutationList[["TILES"]],
-                                minMethDiff, qvalue, type = "all")
-
-        result <- interGeneration(resultGR)
-
-        if (!is.null(outputDir)) {
-            saveInterGenerationResults(outputDir, id, type = "tiles", result)
-        }
 
         permutationFinal[["TILES"]][["i2"]][["HYPER"]] <- lapply(result$i2,
                             FUN = function(x) {sum(width(x[x$typeDiff > 0]))})
@@ -911,13 +933,20 @@ runOnePermutationOnAllGenerations <- function(methylInfoForAllGenerations,
 #'
 #' @examples
 #'
-#' ## Load a dataset
-#' interGenerationResultFile <- dir(system.file("extdata",
-#' package = "methylInheritance"), pattern = "interGenerationResult",
+#' ## Load permutation results on sites
+#' permutationResultsFile <- dir(system.file("extdata",
+#' package = "methylInheritance"), pattern = "permutationResultsForSites.RDS",
 #' full.names = TRUE)
-#' interGenerationResult <- readRDS(interGenerationResultFile)
+#' permutationResults <- readRDS(permutationResultsFile)
 #'
-#' ## Save dataset
+#' ## Transform result to GRanges
+#' resultsGR <- methylInheritance:::getGRangesFromMethylDiff(methDiff =
+#' permutationResults, pDiff = 10, qvalue = 0.01, type = "hyper")
+#'
+#' ## Extract inter-generationally conserved sites
+#' interGenerationResult <- methylInheritance:::interGeneration(resultsGR)
+#'
+#' ## Save results
 #' \dontrun{methylInheritance:::saveInterGenerationResults(
 #' outputDir = "TEST", permutationID=100, type = "sites",
 #' interGenerationResult = interGenerationResult)}

@@ -2,14 +2,18 @@
 % Please edit documentation in R/methylInheritanceInternalMethods.R
 \name{getGRangesFromMethylDiff}
 \alias{getGRangesFromMethylDiff}
-\title{TODO}
+\title{Transform results from a CpG site or region analysis done on mutliple
+generations into a \code{list} of \code{GRanges} objects.}
 \usage{
 getGRangesFromMethylDiff(methDiff, pDiff, qvalue, type = c("all", "hyper",
   "hypo"))
 }
 \arguments{
-\item{methDiff}{a S4 \code{methylDiff} class object, a
-object that holds statistics and locations
+\item{methDiff}{a \code{list} of S4 \code{methylDiff} class objects, each
+entry of the \code{list} represents the differentially methylated results
+for one generation (first entry = first genertation, second entry =
+second generation, etc..). Each \code{methylDiff} object holds statistics
+and locations
 for differentially methylated regions/bases.}
 
 \item{pDiff}{a positive \code{double} between \code{0} and \code{100},
@@ -26,10 +30,16 @@ retrieving hyper-methylated tiles/sites \code{type} = \code{"hyper"}; for
 hypo-methylated \code{type} = \code{"hypo"}. Default: \code{"all"}.}
 }
 \value{
-TODO
+a \code{list} of \code{GRanges} objects,  each
+entry of the \code{list} represents the differentially methylated results
+for one generation (first entry = first genertation, second entry =
+second generation, etc..). Each \code{GRanges} object holds statistics
+for differentially methylated regions/bases.
 }
 \description{
-TODO
+Transform a \code{list} of \code{methylDiff} objects into
+a \code{list} of \code{GRanges} objects. Each \code{methylDiff} object
+represent a CpG site or region analysis done on one generation.
 }
 \examples{
 
