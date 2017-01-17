@@ -950,19 +950,29 @@ runPermutationUsingRDSTEST <- function(methylKitRDSFile,
 }
 
 
-#' @title Load all RDS files created by the permutation analysis
+#' @title Load all RDS files created by the permutation  and observation
+#' analysis
 #'
-#' @description  Load all RDS files created by the permutation analysis and
-#' return an object of \code{class} "methylInheritanceAllResults" that holds
+#' @description  Load all RDS files created by the permutation and
+#' observation analysis. The function
+#' returns an object of \code{class} "methylInheritanceAllResults" that holds
 #' all the pertinent information.
 #'
-#' @param analysisResultsDIR TODO
+#' @param analysisResultsDir a \code{character} string, the path to the
+#' directory that contains the analysis results. The path can be the same that
+#' for the \code{permutatioNResultsDir} parameter.
 #'
-#' @param permutationResultsDIR TODO
+#' @param permutationResultsDir a \code{character} string, the path to the
+#' directory that contains the permutation results. The path can be the same
+#' that for the \code{analysisResultsDir} parameter.
 #'
-#' @param doingSites TODO
+#' @param doingSites a \code{logical}, the data related to differentially
+#' methylated sites are loaded when
+#' \code{doingSites} = \code{TRUE}. Default: \code{TRUE}.
 #'
-#' @param doingTiles TODO
+#' @param doingTiles a \code{logical}, the data related to differentially
+#' methylated tiles are loaded when
+#' \code{doingTiles} = \code{TRUE}. Default: \code{TRUE}.
 #'
 #' @return an \code{list} of \code{class} "methylInheritanceAllResults"
 #' containing the following elements:
@@ -981,41 +991,46 @@ runPermutationUsingRDSTEST <- function(methylKitRDSFile,
 #'
 #' @examples
 #'
-#' ## TODO
+#' ## Get the name of the directory where files are stored
+#' filesDir <- dir(system.file("extdata", package = "methylInheritance"),
+#' pattern = "TEST", full.names = TRUE)
+#'
+#' ## Load information from files
+#' results <- loadAllRDSResults(analysisResultsDir = filesDir,
+#' permutationResultsDir = filesDir, doingSites = TRUE, doingTiles = TRUE)
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
-loadAllPermutationRDS <- function(analysisResultsDIR,
-                                    permutationResultsDIR,
-                                    doingSites = TRUE,
-                                    doingTiles = FALSE) {
+loadAllRDSResults <- function(analysisResultsDir,
+                                    permutationResultsDir,
+                                    doingSites = TRUE, doingTiles = FALSE) {
 
     ## Add last slash to analysisResultsDIR when absent
-    if (!is.null(analysisResultsDIR) &&
-        (substr(analysisResultsDIR, nchar(analysisResultsDIR),
-                    nchar(analysisResultsDIR)) != "/")) {
-        analysisResultsDIR <- paste0(analysisResultsDIR, "/")
+    if (!is.null(analysisResultsDir) &&
+        (substr(analysisResultsDir, nchar(analysisResultsDir),
+                    nchar(analysisResultsDir)) != "/")) {
+        analysisResultsDir <- paste0(analysisResultsDir, "/")
     }
 
     ## Add last slash to permutationResultsDIR when absent
-    if (!is.null(permutationResultsDIR) &&
-        (substr(permutationResultsDIR, nchar(permutationResultsDIR),
-                    nchar(permutationResultsDIR)) != "/")) {
-        permutationResultsDIR <- paste0(permutationResultsDIR, "/")
+    if (!is.null(permutationResultsDir) &&
+        (substr(permutationResultsDir, nchar(permutationResultsDir),
+                    nchar(permutationResultsDir)) != "/")) {
+        permutationResultsDir <- paste0(permutationResultsDir, "/")
     }
 
     result<-list()
 
     ## SITES
     if (doingSites) {
-        analysisResults <- readRDS(file = paste0(analysisResultsDIR,
+        analysisResults <- readRDS(file = paste0(analysisResultsDir,
                                         "SITES/SITES_observed_results.RDS"))
         analysisStruct <- createDataStructure(interGenerationResult =
                                                     analysisResults)
         result[["OBSERVATION"]][["SITES"]] <- analysisStruct
 
 
-        filesInDir <- list.files(path = paste0(permutationResultsDIR,
+        filesInDir <- list.files(path = paste0(analysisResultsDir,
                                                                 "SITES/"),
                                 pattern = "[[:digit:]].RDS", all.files = FALSE,
                                 full.names = TRUE, recursive = FALSE,
@@ -1032,13 +1047,13 @@ loadAllPermutationRDS <- function(analysisResultsDIR,
 
     ## TILES
     if (doingTiles) {
-        analysisResults <- readRDS(file = paste0(analysisResultsDIR,
+        analysisResults <- readRDS(file = paste0(permutationResultsDir,
                                         "TILES/TILES_observed_results.RDS"))
         analysisStruct <- createDataStructure(interGenerationResult =
                                                     analysisResults)
         result[["OBSERVATION"]][["TILES"]] <- analysisStruct
 
-        filesInDir <- list.files(path = paste0(permutationResultsDIR,
+        filesInDir <- list.files(path = paste0(permutationResultsDir,
                                                             "TILES/"),
                                 pattern = "[[:digit:]].RDS", all.files = FALSE,
                                 full.names = TRUE, recursive = FALSE,

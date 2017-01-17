@@ -159,16 +159,15 @@ test.formatForGraph_good_01 <- function() {
 }
 
 
-
 ###########################################################
-## loadAllPermutationRDS() function
+## loadAllRDSResults() function
 ###########################################################
 
 ## Test result when all parameters are good
-test.loadAllPermutationRDS_good_01 <- function() {
+test.loadAllRDSResults_good_01 <- function() {
 
-    obs <- tryCatch(loadAllPermutationRDS(analysisResultsDIR = TEST_DIR,
-                        permutationResultsDIR = TEST_DIR, doingSites = TRUE,
+    obs <- tryCatch(loadAllRDSResults(analysisResultsDir = TEST_DIR,
+                        permutationResultsDir = TEST_DIR, doingSites = TRUE,
                         doingTiles = TRUE),
                     error=conditionMessage)
 
@@ -208,8 +207,8 @@ test.loadAllPermutationRDS_good_01 <- function() {
 
     class(exp) <- "methylInheritanceAllResults"
 
-    message <- paste0(" test.loadAllPermutationRDS_good_01() ",
-                        "- Valid parameters for loadAllPermutationRDS() ",
+    message <- paste0(" test.loadAllRDSResults_good_01() ",
+                        "- Valid parameters for loadAllRDSResults() ",
                         "did not generated expected results.")
 
     checkEquals(obs, exp, msg = message)
