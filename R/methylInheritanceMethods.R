@@ -712,13 +712,13 @@ runAnalysisUsingMethylKitInfo <- function(methylKitInfo,
 #' pattern = "methylObj_002.RDS", full.names = TRUE)
 #'
 #' ## Run a permutation analysis
-#' \dontrun{runAnalysisUsingRDSFile(methylKitRDSFile = methylFile,
+#' \dontrun{runObservationUsingRDSFile(methylKitRDSFile = methylFile,
 #' type = "sites", nbrPermutations = 0, minReads = 8, minMethDiff = 5,
 #' vSeed = 2001)}
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
-runAnalysisUsingRDSFile <- function(methylKitRDSFile,
+runObservationUsingRDSFile <- function(methylKitRDSFile,
                                             type = c("both", "sites", "tiles"),
                                             outputDir = NULL,
                                             nbrPermutations = 0,
