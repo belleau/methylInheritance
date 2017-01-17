@@ -13,7 +13,7 @@
 DIRECTORY <- system.file("extdata", package = "methylInheritance")
 
 METHYL_OBJ_FILE <- dir(system.file("extdata", package = "methylInheritance"),
-                pattern = "methylObj_001.RDS", full.names = TRUE)
+                pattern = "methylObj_002.RDS", full.names = TRUE)
 
 METHYL_OBJ <- readRDS(METHYL_OBJ_FILE)
 
@@ -190,7 +190,7 @@ test.validateRunPermutationUsingMethylKitInfo_nbrCoresDiffMeth_negative <- funct
     exp <- "nbrCoresDiffMeth must be a positive integer or numeric"
 
     message <- paste0(" test.validateRunPermutationUsingMethylKitInfo_nbrCoresDiffMeth_negative() ",
-                      "- Not valid nbrCoresDiffMeth did not generated expected message.")
+                    "- Not valid nbrCoresDiffMeth did not generated expected message.")
 
     checkEquals(obs, exp, msg = message)
 }
@@ -209,7 +209,7 @@ test.validateRunPermutationUsingMethylKitInfo_minReads_zero <- function() {
     exp <- "minReads must be a positive integer or numeric"
 
     message <- paste0(" test.validateRunPermutationUsingMethylKitInfo_minReads_zero() ",
-                      "- Not valid minReads did not generated expected message.")
+                    "- Not valid minReads did not generated expected message.")
 
     checkEquals(obs, exp, msg = message)
 }
@@ -228,7 +228,7 @@ test.validateRunPermutationUsingMethylKitInfo_minReads_negative <- function() {
     exp <- "minReads must be a positive integer or numeric"
 
     message <- paste0(" test.validateRunPermutationUsingMethylKitInfo_minReads_negative() ",
-                      "- Not valid minReads did not generated expected message.")
+                    "- Not valid minReads did not generated expected message.")
 
     checkEquals(obs, exp, msg = message)
 }

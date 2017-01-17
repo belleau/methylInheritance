@@ -1,15 +1,10 @@
 ###################################################
-
 # Created by Astrid Deschenes
-
 # 2017-01-09
-
 ###################################################
 
 ###################################################
-
 ## Test the methylInheritanceInternalMethods functions
-
 ###################################################
 
 DIRECTORY <- system.file("extdata", package = "methylInheritance")
@@ -18,11 +13,6 @@ METHYL_OBJ_FILE <- dir(system.file("extdata", package = "methylInheritance"),
                        pattern = "methylObj_002.RDS", full.names = TRUE)
 
 METHYL_OBJ <- readRDS(METHYL_OBJ_FILE)
-
-METHYL_OBJ_FILE_1 <- dir(system.file("extdata", package = "methylInheritance"),
-                       pattern = "methylObj_001.RDS", full.names = TRUE)
-
-METHYL_OBJ_1 <- readRDS(METHYL_OBJ_FILE_1)
 
 ###########################################################
 ## runOnePermutationOnAllGenerations() function
@@ -35,13 +25,13 @@ test.validateRunPermutationUsingMethylKitInfo_sites_good_01 <- function() {
     allSamples <- sample(unlist(METHYL_OBJ, recursive = FALSE), 36, replace = F)
     treatment <- c(0,0,0,0,0,0,1,1,1,1,1,1)
     sampleList01 <- new("methylRawList", allSamples[1:12],
-                         treatment = treatment)
+                        treatment = treatment)
     sampleList02 <- new("methylRawList", allSamples[13:24],
                         treatment = treatment)
     sampleList03 <- new("methylRawList", allSamples[25:36],
                         treatment = treatment)
     input <- list(sample = list(sampleList01, sampleList02, sampleList03),
-                  id = 1)
+                        id = 1)
 
     obs <- tryCatch(methylInheritance:::runOnePermutationOnAllGenerations(
         methylInfoForAllGenerations = input, outputDir = NULL, type = "sites",
@@ -60,7 +50,7 @@ test.validateRunPermutationUsingMethylKitInfo_sites_good_01 <- function() {
     exp[["SITES"]][["iAll"]][["HYPO"]]   <- list(0)
 
     message <- paste0(" test.validateRunPermutationUsingMethylKitInfo_sites_good_01() ",
-                      "- Valid paramters did not generated expected results.")
+                    "- Valid paramters did not generated expected results.")
 
     checkEquals(obs, exp, msg = message)
 }
@@ -68,23 +58,23 @@ test.validateRunPermutationUsingMethylKitInfo_sites_good_01 <- function() {
 ## Test tiles when all parameters are valid
 test.validateRunPermutationUsingMethylKitInfo_tiles_good_01 <- function() {
     ## Extract information
-    set.seed(112241)
-    allSamples <- sample(unlist(METHYL_OBJ_1, recursive = FALSE), 36,
+    set.seed(11)
+    allSamples <- sample(unlist(METHYL_OBJ, recursive = FALSE), 36,
                             replace = F)
     treatment <- c(0,0,0,0,0,0,1,1,1,1,1,1)
     sampleList01 <- new("methylRawList", allSamples[1:12],
-                        treatment = treatment)
+                            treatment = treatment)
     sampleList02 <- new("methylRawList", allSamples[13:24],
-                        treatment = treatment)
+                            treatment = treatment)
     sampleList03 <- new("methylRawList", allSamples[25:36],
-                        treatment = treatment)
+                            treatment = treatment)
     input <- list(sample = list(sampleList01, sampleList02, sampleList03),
-                  id = 1)
+                            id = 1)
 
     obs <- tryCatch(methylInheritance:::runOnePermutationOnAllGenerations(
         methylInfoForAllGenerations = input, outputDir = NULL, type = "tiles",
         nbrCoresDiffMeth = 1,
-        minReads = 10, minMethDiff = 10, qvalue = 0.05,
+        minReads = 5, minMethDiff = 5, qvalue = 0.05,
         maxPercReads = 99.9, destrand = FALSE, minCovBasesForTiles = 2,
         tileSize = 1000, stepSize = 100),
         error=conditionMessage)
@@ -92,13 +82,13 @@ test.validateRunPermutationUsingMethylKitInfo_tiles_good_01 <- function() {
     exp <- list()
     exp[["TILES"]] <- list()
     exp[["TILES"]][["i2"]] <- list()
-    exp[["TILES"]][["i2"]][["HYPER"]] <- list(1700, 0)
-    exp[["TILES"]][["i2"]][["HYPO"]]  <- list(0, 0)
+    exp[["TILES"]][["i2"]][["HYPER"]] <- list(3800, 2900)
+    exp[["TILES"]][["i2"]][["HYPO"]]  <- list(2800, 3700)
     exp[["TILES"]][["iAll"]][["HYPER"]]  <- list(0)
     exp[["TILES"]][["iAll"]][["HYPO"]]   <- list(0)
 
     message <- paste0(" test.validateRunPermutationUsingMethylKitInfo_tiles_good_01() ",
-                      "- Valid paramters did not generated expected results.")
+                "- Valid paramters did not generated expected results.")
 
     checkEquals(obs, exp, msg = message)
 }

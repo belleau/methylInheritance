@@ -495,10 +495,8 @@ extractDataFromFile <- function(directory, elementType = c("SITES", "TILES")) {
 getGRangesFromMethylDiff <- function(methDiff, pDiff, qvalue,
                                         type = c("all", "hyper", "hypo")){
 
-    methDiffK <- lapply(1:length(methDiff), FUN = function(i,
-                                                           methDiff,
-                                                           pDiff,
-                                                           qCut, typeD){
+    methDiffK <- lapply(1:length(methDiff), FUN = function(i, methDiff,
+                                                    pDiff, qCut, typeD){
         methK <- getMethylDiff(methDiff[[i]], difference = pDiff,
                                qvalue = qCut, type = typeD)
         GRanges(seqnames = methK$chr, ranges = IRanges(start = methK$start,

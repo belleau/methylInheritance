@@ -111,7 +111,7 @@ and that stochastic effect can be dismissed.
 
 ## Path to a methylKit RDS file
 methylFile <- dir(system.file("extdata", package = "methylInheritance"),
-pattern = "methylObj_001.RDS", full.names = TRUE)
+pattern = "methylObj_002.RDS", full.names = TRUE)
 
 ## Run a permutation analysis
 \dontrun{runPermutationUsingRDSFile(methylKitRDSFile = methylFile,
