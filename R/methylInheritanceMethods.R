@@ -886,22 +886,32 @@ loadAllRDSResults <- function(analysisResultsDir,
 }
 
 
-#' @title TODO
+#' @title Extract the information specific to a subsection of the permutation
+#' analysis.
 #'
 #' @description  TODO
 #'
-#' @param analysisandPermutationResults TODO
+#' @param allResults TODO
 #'
-#' @param type One of the "sites" or "tiles" strings. Specifies the type
+#' @param type One of the \code{"sites"} or \code{"tiles"} strings.
+#' Specifies the type
 #' of differentially methylated elements should be returned. For
-#' retrieving differentially methylated bases type="sites"; for
-#' differentially methylated regions type="tiles". Default: "sites".
+#' retrieving differentially methylated bases \code{type} = \code{"sites"}; for
+#' differentially methylated regions \code{type} = \code{"tiles"}.
+#' Default: \code{"sites"}.
 #'
-#' @param inter TODO
+#' @param inter One of the \code{"i2"} or \code{"iAll"} strings. Specifies the
+#' type of intersection should be returned. For
+#' retrieving intersection results between two consecutive generations
+#' \code{inter} = \code{"i2"}; for intersection results between three
+#' generations or more \code{inter} = \code{"iAll"}.
+#' Default: \code{"i2"}.
 #'
 #' @param position TODO
 #'
-#' @return TODO
+#' @return a \code{data.frame} containing the observation results (using real
+#' data) and the permutation results (using permutated data). Both hyper and
+#' hypo differentially conserved methylation results are present.
 #'
 #' @examples
 #'
@@ -911,27 +921,26 @@ loadAllRDSResults <- function(analysisResultsDir,
 #' ## Extract information for the intersection between conserved differentially
 #' ## methylated sites (type = sites) between the intersection of 2
 #' ## generations (inter = i2): F2 and F3 (position = 2)
-#' formatForGraph(analysisandPermutationResults = analysisResults,
-#' type = "sites", inter="i2", 2)
+#' formatForGraph(allResults = analysisResults, type = "sites", inter="i2", 2)
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
-formatForGraph <- function(analysisandPermutationResults,
-                            type = c("sites", "tiles"),
+formatForGraph <- function(allResults, type = c("sites", "tiles"),
                             inter=c("i2", "iAll"), position) {
 
     type <- toupper(type)
 
-    real <- analysisandPermutationResults[["OBSERVED"]][[type]][[inter]]
+    real <- allResults[["OBSERVED"]][[type]][[inter]]
 
     dataConserved <- data.frame(TYPE=c("HYPO", "HYPER"),
                                 result=c(real[["HYPO"]][[position]],
                                             real[["HYPER"]][[position]]),
                                 SOURCE=c("OBSERVED", "OBSERVED"))
 
-    for (i in 1:length(analysisandPermutationResults[["PERMUTATION"]][[type]])) {
-        permutation <- analysisandPermutationResults[["PERMUTATION"]][[type]][[i]][[inter]]
-        dataConserved <- rbind(dataConserved, data.frame(TYPE=c("HYPO", "HYPER"),
+    for (i in 1:length(allResults[["PERMUTATION"]][[type]])) {
+        permutation <- allResults[["PERMUTATION"]][[type]][[i]][[inter]]
+        dataConserved <- rbind(dataConserved,
+                                data.frame(TYPE=c("HYPO", "HYPER"),
                         result=c(permutation[["HYPO"]][[position]],
                                     permutation[["HYPER"]][[position]]),
                         SOURCE=c("PERMUTATION", "PERMUTATION")))

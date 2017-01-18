@@ -24,8 +24,7 @@ data(analysisResults)
 ## Extract information for the intersection between conserved differentially
 ## methylated sites (type = sites) between the intersection of 2
 ## generations (inter = i2): F1 and F2 (position = 1)
-formatForGraph(analysisandPermutationResults = analysisResults,
-type = "sites", inter="i2", 1)
+formatForGraph(allResults = analysisResults, type = "sites", inter="i2", 1)
 
 }
 \seealso{

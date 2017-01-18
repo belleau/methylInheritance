@@ -167,7 +167,7 @@ test.runObservationUsingRDSFile_good_001 <- function() {
 
 ## Test result when all parameters are good
 test.formatForGraph_good_01 <- function() {
-    obs <- tryCatch(formatForGraph(analysisandPermutationResults =
+    obs <- tryCatch(formatForGraph(allResults =
                     analysisResults, type = "sites", inter="i2", 1),
                     error=conditionMessage)
 

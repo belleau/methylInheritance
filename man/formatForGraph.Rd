@@ -2,25 +2,35 @@
 % Please edit documentation in R/methylInheritanceMethods.R
 \name{formatForGraph}
 \alias{formatForGraph}
-\title{TODO}
+\title{Extract the information specific to a subsection of the permutation
+analysis.}
 \usage{
-formatForGraph(analysisandPermutationResults, type = c("sites", "tiles"),
-  inter = c("i2", "iAll"), position)
+formatForGraph(allResults, type = c("sites", "tiles"), inter = c("i2",
+  "iAll"), position)
 }
 \arguments{
-\item{analysisandPermutationResults}{TODO}
+\item{allResults}{TODO}
 
-\item{type}{One of the "sites" or "tiles" strings. Specifies the type
+\item{type}{One of the \code{"sites"} or \code{"tiles"} strings.
+Specifies the type
 of differentially methylated elements should be returned. For
-retrieving differentially methylated bases type="sites"; for
-differentially methylated regions type="tiles". Default: "sites".}
+retrieving differentially methylated bases \code{type} = \code{"sites"}; for
+differentially methylated regions \code{type} = \code{"tiles"}.
+Default: \code{"sites"}.}
 
-\item{inter}{TODO}
+\item{inter}{One of the \code{"i2"} or \code{"iAll"} strings. Specifies the
+type of intersection should be returned. For
+retrieving intersection results between two consecutive generations
+\code{inter} = \code{"i2"}; for intersection results between three
+generations or more \code{inter} = \code{"iAll"}.
+Default: \code{"i2"}.}
 
 \item{position}{TODO}
 }
 \value{
-TODO
+a \code{data.frame} containing the observation results (using real
+data) and the permutation results (using permutated data). Both hyper and
+hypo differentially conserved methylation results are present.
 }
 \description{
 TODO
@@ -33,8 +43,7 @@ data(analysisResults)
 ## Extract information for the intersection between conserved differentially
 ## methylated sites (type = sites) between the intersection of 2
 ## generations (inter = i2): F2 and F3 (position = 2)
-formatForGraph(analysisandPermutationResults = analysisResults,
-type = "sites", inter="i2", 2)
+formatForGraph(allResults = analysisResults, type = "sites", inter="i2", 2)
 
 }
 \author{
