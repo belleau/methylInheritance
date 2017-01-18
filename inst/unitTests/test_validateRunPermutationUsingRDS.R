@@ -13,7 +13,7 @@
 DIRECTORY <- system.file("extdata", package = "methylInheritance")
 
 METHYL_OBJ_FILE <- dir(system.file("extdata", package = "methylInheritance"),
-                pattern = "methylObj_002.RDS", full.names = TRUE)
+                pattern = "methylObj_001.RDS", full.names = TRUE)
 
 METHYL_OBJ <- readRDS(METHYL_OBJ_FILE)
 

@@ -367,7 +367,7 @@ NULL
 #'     information specific to a subsection of the permutation analysis}
 #' }
 #'
-#' @usage data(analysisResults)
+#' @usage data(methylInheritanceResults)
 #'
 #' @keywords datasets
 #'

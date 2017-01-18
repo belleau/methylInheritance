@@ -10,7 +10,7 @@
 DIRECTORY <- system.file("extdata", package = "methylInheritance")
 
 METHYL_OBJ_FILE <- dir(system.file("extdata", package = "methylInheritance"),
-                       pattern = "methylObj_002.RDS", full.names = TRUE)
+                       pattern = "methylObj_001.RDS", full.names = TRUE)
 
 METHYL_OBJ <- readRDS(METHYL_OBJ_FILE)
 
@@ -44,8 +44,8 @@ test.validateRunPermutationUsingMethylKitInfo_sites_good_01 <- function() {
     exp <- list()
     exp[["SITES"]] <- list()
     exp[["SITES"]][["i2"]] <- list()
-    exp[["SITES"]][["i2"]][["HYPER"]] <- list(4, 6)
-    exp[["SITES"]][["i2"]][["HYPO"]]  <- list(3, 4)
+    exp[["SITES"]][["i2"]][["HYPER"]] <- list(0,5)
+    exp[["SITES"]][["i2"]][["HYPO"]]  <- list(0,1)
     exp[["SITES"]][["iAll"]][["HYPER"]]  <- list(0)
     exp[["SITES"]][["iAll"]][["HYPO"]]   <- list(0)
 
@@ -82,8 +82,8 @@ test.validateRunPermutationUsingMethylKitInfo_tiles_good_01 <- function() {
     exp <- list()
     exp[["TILES"]] <- list()
     exp[["TILES"]][["i2"]] <- list()
-    exp[["TILES"]][["i2"]][["HYPER"]] <- list(3800, 2900)
-    exp[["TILES"]][["i2"]][["HYPO"]]  <- list(2800, 3700)
+    exp[["TILES"]][["i2"]][["HYPER"]] <- list(1300, 0)
+    exp[["TILES"]][["i2"]][["HYPO"]]  <- list(0, 0)
     exp[["TILES"]][["iAll"]][["HYPER"]]  <- list(0)
     exp[["TILES"]][["iAll"]][["HYPO"]]   <- list(0)
 

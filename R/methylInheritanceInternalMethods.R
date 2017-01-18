@@ -421,7 +421,7 @@ validateExtractInfo <- function(allResults, type, inter, position) {
         stop("position must be a positive integer")
     }
 
-    if (!"methylInheritanceAllResults" %in% class(methylInheritanceResults)) {
+    if (!"methylInheritanceAllResults" %in% class(allResults)) {
         stop("allResults must be of class \"methylInheritanceAllResults\"")
     }
 

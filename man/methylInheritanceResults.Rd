@@ -133,7 +133,7 @@ generations.
 }
 }}
 \usage{
-data(analysisResults)
+data(methylInheritanceResults)
 }
 \value{
 a \code{list} of class \code{methylInheritanceAllResults}
