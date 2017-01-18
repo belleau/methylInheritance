@@ -3,7 +3,7 @@
 \name{getGRangesFromMethylDiff}
 \alias{getGRangesFromMethylDiff}
 \title{Transform results from a CpG site or region analysis done on mutliple
-generations into a \code{list} of \code{GRanges} objects.}
+generations into a \code{list} of \code{GRanges} objects}
 \usage{
 getGRangesFromMethylDiff(methDiff, pDiff, qvalue, type = c("all", "hyper",
   "hypo"))

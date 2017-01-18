@@ -10,7 +10,8 @@ saveInterGenerationResults(outputDir, permutationID, type = c("sites",
   "tiles"), interGenerationResult)
 }
 \arguments{
-\item{outputDir}{a string, the name of the directory that will contain
+\item{outputDir}{a string of \code{character}, the name of the directory
+that will contain
 the results of the permutation. The name should end with a slash. The
 directory should already exists.}
 
@@ -42,10 +43,9 @@ successful.
 }
 \description{
 Save the result of on CpG site or tile analysis on all
-generations. The results are saved in a RDS file. The anaysis can come
-from observed or permutated dataset.
-Each case is saved with a different extension. The files containing the
-permutation results have the permutation identifiant in their name.
+generations. The results are saved in a RDS file. The anaysis can have been
+done on the observed or permutated dataset.
+Each permutation is saved using its identifiant in the file name.
 }
 \examples{
 

@@ -2,9 +2,8 @@
 % Please edit documentation in R/methylInheritanceInternalMethods.R
 \name{runOnePermutationOnAllGenerations}
 \alias{runOnePermutationOnAllGenerations}
-\title{Run the analysis on one permutation dataset using
-\code{methylKit} package. One permutation dataset
-includes data for all generations.}
+\title{Run the analysis on one permutation dataset, including all
+generations, using \code{methylKit} package}
 \usage{
 runOnePermutationOnAllGenerations(methylInfoForAllGenerations,
   type = c("both", "sites", "tiles"), outputDir = NULL,

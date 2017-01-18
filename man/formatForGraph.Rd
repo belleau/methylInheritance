@@ -3,7 +3,7 @@
 \name{formatForGraph}
 \alias{formatForGraph}
 \title{Extract the information specific to a subsection of the permutation
-analysis.}
+analysis}
 \usage{
 formatForGraph(allResults, type = c("sites", "tiles"), inter = c("i2",
   "iAll"), position)

@@ -369,7 +369,7 @@ validateRunObservationUsingMethylKitInfo <- function(methylKitInfo,
 
 
 #' @title Transform results from a CpG site or region analysis done on mutliple
-#' generations into a \code{list} of \code{GRanges} objects.
+#' generations into a \code{list} of \code{GRanges} objects
 #'
 #' @description Transform a \code{list} of \code{methylDiff} objects into
 #' a \code{list} of \code{GRanges} objects. Each \code{methylDiff} object
@@ -439,7 +439,7 @@ getGRangesFromMethylDiff <- function(methDiff, pDiff, qvalue,
 
 #' @title Calculate the intersection of the differentially methylated
 #' results for two
-#' or more consercutive generations.
+#' or more consercutive generations
 #'
 #' @description Calculate the intersection of the differentially methylated
 #' results for two
@@ -529,7 +529,7 @@ interGeneration <- function(resultAllGenGR){
 
 
 #' @title Create directories that will contained the results of the
-#' permutations in RDS format.
+#' permutations in RDS format
 #'
 #' @description Create directories that will contained the results of the
 #' permutations in RDS format.
@@ -583,9 +583,8 @@ createOutputDir <- function(outputDir, doingSites = TRUE,
 }
 
 
-#' @title Run the analysis on one permutation dataset using
-#' \code{methylKit} package. One permutation dataset
-#' includes data for all generations.
+#' @title Run the analysis on one permutation dataset, including all
+#' generations, using \code{methylKit} package
 #'
 #' @description Run CpG site or region analysis using the \code{methylKit}
 #' package for each generation present in the dataset. The intersection of
@@ -921,12 +920,12 @@ runOnePermutationOnAllGenerations <- function(methylInfoForAllGenerations,
 #' saved with a different extension.
 #'
 #' @description Save the result of on CpG site or tile analysis on all
-#' generations. The results are saved in a RDS file. The anaysis can come
-#' from observed or permutated dataset.
-#' Each case is saved with a different extension. The files containing the
-#' permutation results have the permutation identifiant in their name.
+#' generations. The results are saved in a RDS file. The anaysis can have been
+#' done on the observed or permutated dataset.
+#' Each permutation is saved using its identifiant in the file name.
 #'
-#' @param outputDir a string, the name of the directory that will contain
+#' @param outputDir a string of \code{character}, the name of the directory
+#' that will contain
 #' the results of the permutation. The name should end with a slash. The
 #' directory should already exists.
 #'

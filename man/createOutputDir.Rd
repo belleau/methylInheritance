@@ -3,7 +3,7 @@
 \name{createOutputDir}
 \alias{createOutputDir}
 \title{Create directories that will contained the results of the
-permutations in RDS format.}
+permutations in RDS format}
 \usage{
 createOutputDir(outputDir, doingSites = TRUE, doingTiles = FALSE)
 }

@@ -3,7 +3,7 @@
 \name{runObservationUsingRDSFile}
 \alias{runObservationUsingRDSFile}
 \title{Run a differentially methylation analysis on each generation
-present in a dataset.}
+present in a dataset}
 \usage{
 runObservationUsingRDSFile(methylKitRDSFile, type = c("both", "sites",
   "tiles"), outputDir = NULL, nbrPermutations = 0, nbrCores = 1,

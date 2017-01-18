@@ -4,7 +4,7 @@
 \alias{interGeneration}
 \title{Calculate the intersection of the differentially methylated
 results for two
-or more consercutive generations.}
+or more consercutive generations}
 \usage{
 interGeneration(resultAllGenGR)
 }

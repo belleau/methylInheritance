@@ -3,7 +3,7 @@
 \name{runPermutationUsingMethylKitInfo}
 \alias{runPermutationUsingMethylKitInfo}
 \title{Run all permutations on the specified multi-generational dataset in
-RDS format.}
+RDS format}
 \usage{
 runPermutationUsingMethylKitInfo(methylKitInfo, type = c("both", "sites",
   "tiles"), outputDir = NULL, runObservedAnalysis = TRUE,

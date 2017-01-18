@@ -3,7 +3,7 @@
 \name{runObservationUsingMethylKitInfo}
 \alias{runObservationUsingMethylKitInfo}
 \title{Run a differentially methylation analysis on each generation
-present in a dataset.}
+present in a dataset}
 \usage{
 runObservationUsingMethylKitInfo(methylKitInfo, type = c("both", "sites",
   "tiles"), outputDir = NULL, nbrPermutations = 0, nbrCores = 1,
