@@ -17,7 +17,7 @@ METHYL_OBJ_02 <- readRDS(METHYL_OBJ_FILE_02)
 TEST_DIR <- dir(system.file("extdata", package = "methylInheritance"),
                         pattern = "TEST", full.names = TRUE)
 
-data(analysisResults)
+data("methylInheritanceResults")
 
 ###########################################################
 ## runPermutationUsingRDSFile() function
@@ -163,22 +163,22 @@ test.runObservationUsingRDSFile_good_001 <- function() {
 
 
 ###########################################################
-# formatForGraph() function
+# extractInfo() function
 ###########################################################
 
 ## Test result when all parameters are good
-test.formatForGraph_good_01 <- function() {
-    obs <- tryCatch(formatForGraph(allResults =
-                    analysisResults, type = "sites", inter="i2", 1),
+test.extractInfo_good_01 <- function() {
+    obs <- tryCatch(extractInfo(allResults = methylInheritanceResults,
+                    type = "sites", inter="i2", 1),
                     error=conditionMessage)
 
     exp <- data.frame(TYPE = rep(c("HYPO","HYPER"), 21),
-                      result = c(2,4,2,4,4,3,1,5,3,3,4,2,0,0,0,1,1,0,6,2,2,5,1,
-                                 3,2,4,222,67,6,4,183,53,1,6,34,102,2,2,4,3,2,2),
-                      SOURCE = c("OBSERVED", "OBSERVED",
+                      RESULT = c(2,4,2,4,4,3,1,5,3,3,4,2,0,0,0,1,1,0,6,2,2,5,1,
+                            3,2,4,222,67,6,4,183,53,1,6,34,102,2,2,4,3,2,2),
+                      SOURCE = c("OBSERVATION", "OBSERVATION",
                                     rep("PERMUTATION", 40)))
 
-    message <- paste0(" test.formatForGraph_good_01() ",
+    message <- paste0(" test.extractInfo_good_01() ",
                       "- Valid parameters for formatForGraph did not generated expected results.")
 
     checkEquals(obs, exp, msg = message)

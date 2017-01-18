@@ -1,4 +1,6 @@
-#' methylInheritance: Permutation
+#' methylInheritance: Permutation-Based Analysis associating Conserved
+#' Differentially Methylated Elements from One Generation to the Next to
+#' a Treatment Effect
 #'
 #' This package does a permutation analysis, based on Monte Carlo sampling,
 #' for testing the hypothesis that the number of conserved differentially
@@ -26,6 +28,11 @@
 #'     RDS format}
 #'     \item \code{\link{runPermutationUsingMethylKitInfo}} {for running a
 #'     permutation analysis using a methylKit info object as input}
+#'     \item \code{\link{runObservationUsingRDSFile}} { for running a
+#'     observation analysis on the specified multi-generational dataset in
+#'     RDS format}
+#'     \item \code{\link{runObservationUsingMethylKitInfo}} {for running a
+#'     observation analysis using a methylKit info object as input}
 #' }
 #'
 #' @keywords package
@@ -84,24 +91,280 @@ NULL
 NULL
 
 #' All observed and permutation results formatted in a
-#' \code{methylInheritanceResults} class
-#' object.
+#' \code{methylInheritanceResults} class object (for demo purpose).
 #'
-#' TODO
+#' The object is a \code{list} with 2 entries: "OBSERVATION" and
+#' "PERMUTATION".
 #'
-#' @name analysisResults
+#' This dataset can be
+#' used to test the \code{extractInfo} function.
+#'
+#' @name methylInheritanceResults
 #'
 #' @docType data
 #'
-#' @aliases analysisResults
+#' @aliases methylInheritanceResults
 #'
-#' @format A \code{list} TODO
+#' @format a \code{list} of class \code{methylInheritanceAllResults}
+#' containing the following elements:
+#' \itemize{
+#' \item \code{OBSERVATION} a \code{list} containing:
+#' \itemize{
+#' \item \code{SITES} a \code{list} containing:
+#' \itemize{
+#' \item\code{i2} a \code{list} containing:
+#' \itemize{
+#' \item \code{HYPER} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hyper differentially methylated sites between two consecutive generations.
+#' The first element represents the intersection of the first and second
+#' generations; the second element, the intersection of the second and third
+#' generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hypo differentially methylated sites between two consecutive generations.
+#' The first element represents the intersection of the first and second
+#' generations; the second element, the intersection of the second and third
+#' generations.
+#' }
+#' \item\code{iAll} a \code{list} containing:
+#' \itemize{
+#'\item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
+#'the number of conserved
+#' hyper differentially methylated sites between the three consecutive
+#' generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 1 entry, the number
+#' of conserved hypo differentially methylated sites between the three
+#' consecutive generations.
+#' }
+#' }
+#' \item \code{TILES} a \code{list} containing:
+#' \itemize{
+#' \item\code{i2} a \code{list} containing:
+#' \itemize{
+#' \item \code{HYPER} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hyper differentially methylated positions between two consecutive
+#' generations. The first element represents the intersection of the
+#' first and second generations; the second element, the intersection of
+#' the second and third generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hypo differentially methylated positions between two consecutive
+#' generations.The first element represents the intersection of the first and
+#' second generations; the second element, the intersection of the second
+#' and third generations.
+#' }
+#' \item\code{iAll} a \code{list} containing:
+#' \itemize{
+#'\item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
+#' the number of conserved
+#' hyper differentially methylated positions between the three consecutive
+#' generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 1 entry,
+#' the number of conserved
+#' hypo differentially methylated positions between the three consecutive
+#' generations.
+#' }
+#' }
+#' }
+#' \item \code{PERMUTATION} a \code{list}
+#' containing \code{nbrPermutations} entries. Each entry is
+#' a \code{list} containing:
+#' \itemize{
+#' \item \code{SITES} a \code{list} containing:
+#' \itemize{
+#' \item\code{i2} a \code{list} containing:
+#' \itemize{
+#' \item \code{HYPER} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hyper differentially methylated sites between two consecutive generations.
+#' The first element represents the intersection of the first and second
+#' generations; the second element, the intersection of the second and third
+#' generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hypo differentially methylated sites between two consecutive generations.The
+#' first element represents the intersection of the first and second
+#' generations; the second element, the intersection of the second and third
+#' generations.
+#' }
+#' \item\code{iAll} a \code{list} containing:
+#' \itemize{
+#'\item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
+#' the number of conserved
+#' hyper differentially methylated sites between the three consecutive
+#' generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 1 entry,
+#' the number of conserved
+#' hypo differentially methylated sites between the three consecutive
+#' generations.
+#' }
+#' }
+#' \item \code{TILES} a \code{list} containing:
+#' \itemize{
+#' \item\code{i2} a \code{list} containing:
+#' \itemize{
+#' \item \code{HYPER} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hyper differentially methylated positions between two consecutive
+#' generations. The first element represents the intersection of the
+#' first and second generations; the second element, the intersection of
+#' the second and third generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hypo differentially methylated positions between two consecutive
+#' generations.The first element represents the intersection of the first and
+#' second generations; the second element, the intersection of the second
+#' and third generations.
+#' }
+#' \item\code{iAll} a \code{list} containing:
+#' \itemize{
+#'\item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
+#' the number of conserved
+#' hyper differentially methylated positions between the three consecutive
+#' generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 1 entry,
+#' the number of conserved
+#' hypo differentially methylated positions between the three consecutive
+#' generations.
+#' }
+#' }
+#' }
+#' }
 #'
-#' @return A \code{list} TODO
+#' @return a \code{list} of class \code{methylInheritanceAllResults}
+#' containing the following elements:
+#' \itemize{
+#' \item \code{OBSERVATION} a \code{list} containing:
+#' \itemize{
+#' \item \code{SITES} a \code{list} containing:
+#' \itemize{
+#' \item\code{i2} a \code{list} containing:
+#' \itemize{
+#' \item \code{HYPER} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hyper differentially methylated sites between two consecutive generations.
+#' The first element represents the intersection of the first and second
+#' generations; the second element, the intersection of the second and third
+#' generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hypo differentially methylated sites between two consecutive generations.
+#' The first element represents the intersection of the first and second
+#' generations; the second element, the intersection of the second and third
+#' generations.
+#' }
+#' \item\code{iAll} a \code{list} containing:
+#' \itemize{
+#'\item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
+#'the number of conserved
+#' hyper differentially methylated sites between the three consecutive
+#' generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 1 entry, the number
+#' of conserved hypo differentially methylated sites between the three
+#' consecutive generations.
+#' }
+#' }
+#' \item \code{TILES} a \code{list} containing:
+#' \itemize{
+#' \item\code{i2} a \code{list} containing:
+#' \itemize{
+#' \item \code{HYPER} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hyper differentially methylated positions between two consecutive
+#' generations. The first element represents the intersection of the
+#' first and second generations; the second element, the intersection of
+#' the second and third generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hypo differentially methylated positions between two consecutive
+#' generations.The first element represents the intersection of the first and
+#' second generations; the second element, the intersection of the second
+#' and third generations.
+#' }
+#' \item\code{iAll} a \code{list} containing:
+#' \itemize{
+#'\item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
+#' the number of conserved
+#' hyper differentially methylated positions between the three consecutive
+#' generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 1 entry,
+#' the number of conserved
+#' hypo differentially methylated positions between the three consecutive
+#' generations.
+#' }
+#' }
+#' }
+#' \item \code{PERMUTATION} a \code{list}
+#' containing \code{nbrPermutations} entries. Each entry is
+#' a \code{list} containing:
+#' \itemize{
+#' \item \code{SITES} a \code{list} containing:
+#' \itemize{
+#' \item\code{i2} a \code{list} containing:
+#' \itemize{
+#' \item \code{HYPER} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hyper differentially methylated sites between two consecutive generations.
+#' The first element represents the intersection of the first and second
+#' generations; the second element, the intersection of the second and third
+#' generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hypo differentially methylated sites between two consecutive generations.The
+#' first element represents the intersection of the first and second
+#' generations; the second element, the intersection of the second and third
+#' generations.
+#' }
+#' \item\code{iAll} a \code{list} containing:
+#' \itemize{
+#'\item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
+#' the number of conserved
+#' hyper differentially methylated sites between the three consecutive
+#' generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 1 entry,
+#' the number of conserved
+#' hypo differentially methylated sites between the three consecutive
+#' generations.
+#' }
+#' }
+#' \item \code{TILES} a \code{list} containing:
+#' \itemize{
+#' \item\code{i2} a \code{list} containing:
+#' \itemize{
+#' \item \code{HYPER} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hyper differentially methylated positions between two consecutive
+#' generations. The first element represents the intersection of the
+#' first and second generations; the second element, the intersection of
+#' the second and third generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 2 entries,
+#' the number of conserved
+#' hypo differentially methylated positions between two consecutive
+#' generations.The first element represents the intersection of the first and
+#' second generations; the second element, the intersection of the second
+#' and third generations.
+#' }
+#' \item\code{iAll} a \code{list} containing:
+#' \itemize{
+#'\item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
+#' the number of conserved
+#' hyper differentially methylated positions between the three consecutive
+#' generations.
+#' \item \code{HYPO} a \code{list} of \code{integer} with 1 entry,
+#' the number of conserved
+#' hypo differentially methylated positions between the three consecutive
+#' generations.
+#' }
+#' }
+#' }
+#' }
 #'
 #' @seealso
 #' \itemize{
-#'     \item \code{\link{formatForGraph}} {for TODO}
+#'     \item \code{\link{methylInheritanceResults}} {for extracting the
+#'     information specific to a subsection of the permutation analysis}
 #' }
 #'
 #' @usage data(analysisResults)
@@ -111,11 +374,12 @@ NULL
 #' @examples
 #'
 #' ## Loading dataset containing all results
-#' data(analysisResults)
+#' data(methylInheritanceResults)
 #'
 #' ## Extract information for the intersection between conserved differentially
 #' ## methylated sites (type = sites) between the intersection of 2
 #' ## generations (inter = i2): F1 and F2 (position = 1)
-#' formatForGraph(allResults = analysisResults, type = "sites", inter="i2", 1)
+#' extractInfo(allResults = methylInheritanceResults,
+#' type = "sites", inter="i2", 1)
 #'
 NULL

@@ -368,6 +368,112 @@ validateRunObservationUsingMethylKitInfo <- function(methylKitInfo,
 }
 
 
+#' @title Validation of some parameters of the
+#' \code{\link{extractInfo}} function
+#'
+#' @description Validation of some parameters needed by the public
+#' \code{\link{extractInfo}} function.
+#'
+#' @param allResults a \code{list} as created by the
+#' \code{runPermutationUsingMethylKitInfo}, the
+#' \code{runPermutationUsingRDSFile} or the \code{loadAllRDSResults} functions.
+#'
+#' @param type One of the \code{"sites"} or \code{"tiles"} strings.
+#' Specifies the type
+#' of differentially methylated elements should be returned. For
+#' retrieving differentially methylated bases \code{type} = \code{"sites"}; for
+#' differentially methylated regions \code{type} = \code{"tiles"}.
+#'
+#' @param inter One of the \code{"i2"} or \code{"iAll"} strings. Specifies the
+#' type of intersection should be returned. For
+#' retrieving intersection results between two consecutive generations
+#' \code{inter} = \code{"i2"}; for intersection results between three
+#' generations or more \code{inter} = \code{"iAll"}.
+#'
+#' @param position a positive \code{integer}, the position in the \code{list}
+#' where the information will be extracted. The position must be an existing
+#' position inside \code{allResults}
+#'
+#' @return \code{0} indicating that all parameters validations have been
+#' successful.
+#'
+#' @examples
+#'
+#' ## Load dataset
+#' data(methylInheritanceResults)
+#'
+#' ## The function returns 0 when all paramaters are valid
+#' methylInheritance:::validateExtractInfo(
+#' allResults = methylInheritanceResults, type = "sites",
+#' inter = "i2", 2)
+#'
+#' ## The function raises an error when at least one paramater is not valid
+#' \dontrun{methylInheritance:::validateExtractInfo(
+#' allResults = methylInheritanceResults, type = "sites",
+#' inter = "i2", 12)}
+#'
+#' @author Astrid Deschenes
+#' @importFrom S4Vectors isSingleInteger isSingleNumber
+#' @keywords internal
+validateExtractInfo <- function(allResults, type, inter, position) {
+
+    if (position < 1) {
+        stop("position must be a positive integer")
+    }
+
+    if (!"methylInheritanceAllResults" %in% class(methylInheritanceResults)) {
+        stop("allResults must be of class \"methylInheritanceAllResults\"")
+    }
+
+    if (!is.list(allResults)) {
+        stop("allResults must be a list")
+    }
+
+    if (is.null(allResults$OBSERVATION)) {
+        stop("allResults must have an element called \"OBSERVATION\"")
+    }
+
+    if (is.null(allResults$OBSERVATION[[toupper(type)]])) {
+        stop("allResults must have an element called \"", toupper(type),
+                "\" in its \"OBSERVATION\" list")
+    }
+
+    if (is.null(allResults$OBSERVATION[[toupper(type)]][[inter]])) {
+        stop("allResults must have an element called \"", inter,
+                "\" in the \"", toupper(type),
+             "\" list present in its \"OBSERVATION\" list")
+    }
+
+    if (position > length(allResults$OBSERVATION[[toupper(type)]][[inter]])) {
+        stop(paste0("position must correspond to a valid entry in the \"",
+             "allResults$OBSERVATION[[", toupper(type), "]][[", inter, "]]"))
+    }
+
+    if (is.null(allResults$PERMUTATION)) {
+        stop("allResults must have an element called \"PERMUTATION\"")
+
+    }
+
+    if (is.null(allResults$PERMUTATION[[toupper(type)]])) {
+        stop("allResults must have an element called \"", toupper(type),
+             "\" in its \"PERMUTATION\" list")
+    }
+#
+#     if (is.null(allResults$PERMUTATION[[toupper(type)]][[inter]])) {
+#         stop("allResults must have an element called \"", inter,
+#              "\" in the \"", toupper(type),
+#              "\" list present in its \"PERMUTATION\" list")
+#     }
+#
+#     if (position > length(allResults$PERMUTATION[[toupper(type)]][[inter]])) {
+#         stop(paste0("position must correspond to a valid entry in the \"",
+#             "allResults$PERMUTATION[[", toupper(type), "]][[", inter, "]]"))
+#     }
+
+    return(0)
+}
+
+
 #' @title Transform results from a CpG site or region analysis done on mutliple
 #' generations into a \code{list} of \code{GRanges} objects
 #'

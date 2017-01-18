@@ -371,7 +371,146 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 #' needed. When a value inferior or equal to zero is given, a random integer
 #' is used. Default: \code{-1}.
 #'
-#' @return TODO
+#' @return a \code{list} containing the following elements:
+#' \itemize{
+#' \item \code{OBSERVATION} Only present when \code{runObservationAnalysis} =
+#' \code{TRUE}, a \code{list} containing:
+#' \itemize{
+#' \item \code{SITES} Only present when \code{type} = \code{"sites"} or
+#' \code{"both"}, a \code{list} containing:
+#' \itemize{
+#' \item\code{i2} a \code{list} containing:
+#' \itemize{
+#' \item \code{HYPER} a \code{list} of \code{integer}, the number of conserved
+#' hyper differentially methylated sites between two consecutive generations.
+#' The first element represents the intersection of the first and second
+#' generations; the second element, the intersection of the second and third
+#' generations; etc..
+#' \item \code{HYPO} a \code{list} of \code{integer}, the number of conserved
+#' hypo differentially methylated sites between two consecutive generations.The
+#' first element represents the intersection of the first and second
+#' generations; the second element, the intersection of the second and third
+#' generations; etc..
+#' }
+#' \item\code{iAll} a \code{list} containing:
+#' \itemize{
+#'\item \code{HYPER} a \code{list} of \code{integer}, the number of conserved
+#' hyper differentially methylated sites between three or more consecutive
+#' generations. The first element represents the intersection of the first
+#' three generations; the second element, the intersection of the first fourth
+#' generations; etc..The number of entries depends of the number
+#' of generations.
+#' \item \code{HYPO} a \code{list} of \code{integer}, the number of conserved
+#' hypo differentially methylated sites between three or more consecutive
+#' generations. The first element represents the intersection of the first
+#' three generations; the second element, the intersection of the first fourth
+#' generations; etc..The number of entries depends of the number of
+#' generations.
+#' }
+#' }
+#' \item \code{TILES} Only present when \code{type} = \code{"tiles"} or
+#' \code{"both"}, a \code{list} containing:
+#' \itemize{
+#' \item\code{i2} a \code{list} containing:
+#' \itemize{
+#' \item \code{HYPER} a \code{list} of \code{integer}, the number of conserved
+#' hyper differentially methylated positions between two consecutive
+#' generations. The first element represents the intersection of the
+#' first and second generations; the second element, the intersection of
+#' the second and third generations; etc..
+#' \item \code{HYPO} a \code{list} of \code{integer}, the number of conserved
+#' hypo differentially methylated positions between two consecutive
+#' generations.The first element represents the intersection of the first and
+#' second generations; the second element, the intersection of the second
+#' and third generations; etc..
+#' }
+#' \item\code{iAll} a \code{list} containing:
+#' \itemize{
+#'\item \code{HYPER} a \code{list} of \code{integer}, the number of conserved
+#' hyper differentially methylated positions between three or more consecutive
+#' generations. The first element represents the intersection of the first
+#' three generations; the second element, the intersection of the first fourth
+#' generations; etc..The number of entries depends of the number
+#' of generations.
+#' \item \code{HYPO} a \code{list} of \code{integer}, the number of conserved
+#' hypo differentially methylated positions between three or more consecutive
+#' generations. The first element represents the intersection of the first
+#' three generations; the second element, the intersection of the first fourth
+#' generations; etc..The number of entries depends of the number of
+#' generations.
+#' }
+#' }
+#' }
+#' \item \code{PERMUTATION} a \code{list}
+#' containing \code{nbrPermutations} entries. Each entry is
+#' a \code{list} containing:
+#' \itemize{
+#' \item \code{SITES} Only present when \code{type} = \code{"sites"} or
+#' \code{"both"}, a \code{list} containing:
+#' \itemize{
+#' \item\code{i2} a \code{list} containing:
+#' \itemize{
+#' \item \code{HYPER} a \code{list} of \code{integer}, the number of conserved
+#' hyper differentially methylated sites between two consecutive generations.
+#' The first element represents the intersection of the first and second
+#' generations; the second element, the intersection of the second and third
+#' generations; etc..
+#' \item \code{HYPO} a \code{list} of \code{integer}, the number of conserved
+#' hypo differentially methylated sites between two consecutive generations.The
+#' first element represents the intersection of the first and second
+#' generations; the second element, the intersection of the second and third
+#' generations; etc..
+#' }
+#' \item\code{iAll} a \code{list} containing:
+#' \itemize{
+#'\item \code{HYPER} a \code{list} of \code{integer}, the number of conserved
+#' hyper differentially methylated sites between three or more consecutive
+#' generations. The first element represents the intersection of the first
+#' three generations; the second element, the intersection of the first fourth
+#' generations; etc..The number of entries depends of the number
+#' of generations.
+#' \item \code{HYPO} a \code{list} of \code{integer}, the number of conserved
+#' hypo differentially methylated sites between three or more consecutive
+#' generations. The first element represents the intersection of the first
+#' three generations; the second element, the intersection of the first fourth
+#' generations; etc..The number of entries depends of the number of
+#' generations.
+#' }
+#' }
+#' \item \code{TILES} Only present when \code{type} = \code{"tiles"} or
+#' \code{"both"}, a \code{list} containing:
+#' \itemize{
+#' \item\code{i2} a \code{list} containing:
+#' \itemize{
+#' \item \code{HYPER} a \code{list} of \code{integer}, the number of conserved
+#' hyper differentially methylated positions between two consecutive
+#' generations. The first element represents the intersection of the
+#' first and second generations; the second element, the intersection of
+#' the second and third generations; etc..
+#' \item \code{HYPO} a \code{list} of \code{integer}, the number of conserved
+#' hypo differentially methylated positions between two consecutive
+#' generations.The first element represents the intersection of the first and
+#' second generations; the second element, the intersection of the second
+#' and third generations; etc..
+#' }
+#' \item\code{iAll} a \code{list} containing:
+#' \itemize{
+#'\item \code{HYPER} a \code{list} of \code{integer}, the number of conserved
+#' hyper differentially methylated positions between three or more consecutive
+#' generations. The first element represents the intersection of the first
+#' three generations; the second element, the intersection of the first fourth
+#' generations; etc..The number of entries depends of the number
+#' of generations.
+#' \item \code{HYPO} a \code{list} of \code{integer}, the number of conserved
+#' hypo differentially methylated positions between three or more consecutive
+#' generations. The first element represents the intersection of the first
+#' three generations; the second element, the intersection of the first fourth
+#' generations; etc..The number of entries depends of the number of
+#' generations.
+#' }
+#' }
+#' }
+#' }
 #'
 #' @examples
 #'
@@ -1102,9 +1241,15 @@ loadAllRDSResults <- function(analysisResultsDir,
 #' @title Extract the information specific to a subsection of the permutation
 #' analysis
 #'
-#' @description  TODO
+#' @description  Extract the information specific to a subsection of the
+#' permutation analysis. The extracted information will be specific to one
+#' type of differentially methylation analysis (tiles or sites), to one type
+#' of intersection (two consecutive generation or more) and to one specific
+#' group of generations.
 #'
-#' @param allResults TODO
+#' @param allResults a \code{list} as created by the
+#' \code{runPermutationUsingMethylKitInfo} or the
+#' \code{runPermutationUsingRDSFile} functions.
 #'
 #' @param type One of the \code{"sites"} or \code{"tiles"} strings.
 #' Specifies the type
@@ -1120,7 +1265,8 @@ loadAllRDSResults <- function(analysisResultsDir,
 #' generations or more \code{inter} = \code{"iAll"}.
 #' Default: \code{"i2"}.
 #'
-#' @param position TODO
+#' @param position a positive \code{integer}, the position in the \code{list}
+#' where the information will be extracted.
 #'
 #' @return a \code{data.frame} containing the observation results (using real
 #' data) and the permutation results (using permutated data). Both hyper and
@@ -1129,32 +1275,35 @@ loadAllRDSResults <- function(analysisResultsDir,
 #' @examples
 #'
 #' ## Loading dataset containing all results
-#' data(analysisResults)
+#' data(methylInheritanceResults)
 #'
 #' ## Extract information for the intersection between conserved differentially
 #' ## methylated sites (type = sites) between the intersection of 2
 #' ## generations (inter = i2): F2 and F3 (position = 2)
-#' formatForGraph(allResults = analysisResults, type = "sites", inter="i2", 2)
+#' extractInfo(allResults = methylInheritanceResults,
+#' type = "sites", inter="i2", 2)
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
-formatForGraph <- function(allResults, type = c("sites", "tiles"),
+extractInfo <- function(allResults, type = c("sites", "tiles"),
                             inter=c("i2", "iAll"), position) {
+
+    validateExtractInfo(allResults = allResults, type, inter, position)
 
     type <- toupper(type)
 
-    real <- allResults[["OBSERVED"]][[type]][[inter]]
+    real <- allResults[["OBSERVATION"]][[type]][[inter]]
 
     dataConserved <- data.frame(TYPE=c("HYPO", "HYPER"),
-                                result=c(real[["HYPO"]][[position]],
+                                RESULT=c(real[["HYPO"]][[position]],
                                             real[["HYPER"]][[position]]),
-                                SOURCE=c("OBSERVED", "OBSERVED"))
+                                SOURCE=c("OBSERVATION", "OBSERVATION"))
 
     for (i in 1:length(allResults[["PERMUTATION"]][[type]])) {
         permutation <- allResults[["PERMUTATION"]][[type]][[i]][[inter]]
         dataConserved <- rbind(dataConserved,
                                 data.frame(TYPE=c("HYPO", "HYPER"),
-                        result=c(permutation[["HYPO"]][[position]],
+                        RESULT=c(permutation[["HYPO"]][[position]],
                                     permutation[["HYPER"]][[position]]),
                         SOURCE=c("PERMUTATION", "PERMUTATION")))
     }
@@ -1166,11 +1315,19 @@ formatForGraph <- function(allResults, type = c("sites", "tiles"),
 
 #' @title Generate a graph for a permutation analysis
 #'
-#' @description  TODO
+#' @description  Generate a graph for a permutation analysis using observed
+#' and permutated results.
 #'
-#' @param formatForGraphDataFrame TODO
+#' @param formatForGraphDataFrame a \code{data.frame} containing the
+#' observation results (using real
+#' data) and the permutation results (using permutated data). Both hyper and
+#' hypo differentially conserved methylation results must be present. The
+#' \code{data.frame} must have 3 columns : "TYPE", "RESULT" and "SOURCE".
+#' The "TYPE" can be either "HYPER" or "HYPO". The "RESULT" is the number
+#' of conserved differentially elements. The "SOURCE" can be either
+#' "OBSERVATION" or "PERMUTATION".
 #'
-#' @return TODO
+#' @return a graph showing the permutation analysis results
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @importFrom ggplot2 ggplot geom_text facet_grid theme geom_vline geom_histogram labs aes

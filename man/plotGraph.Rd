@@ -7,13 +7,21 @@
 plotGraph(formatForGraphDataFrame)
 }
 \arguments{
-\item{formatForGraphDataFrame}{TODO}
+\item{formatForGraphDataFrame}{a \code{data.frame} containing the
+observation results (using real
+data) and the permutation results (using permutated data). Both hyper and
+hypo differentially conserved methylation results must be present. The
+\code{data.frame} must have 3 columns : "TYPE", "RESULT" and "SOURCE".
+The "TYPE" can be either "HYPER" or "HYPO". The "RESULT" is the number
+of conserved differentially elements. The "SOURCE" can be either
+"OBSERVATION" or "PERMUTATION".}
 }
 \value{
-TODO
+a graph showing the permutation analysis results
 }
 \description{
-TODO
+Generate a graph for a permutation analysis using observed
+and permutated results.
 }
 \author{
 Astrid Deschenes, Pascal Belleau

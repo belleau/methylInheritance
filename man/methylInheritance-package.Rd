@@ -4,7 +4,9 @@
 \name{methylInheritance-package}
 \alias{methylInheritance}
 \alias{methylInheritance-package}
-\title{methylInheritance: Permutation}
+\title{methylInheritance: Permutation-Based Analysis associating Conserved
+Differentially Methylated Elements from One Generation to the Next to
+a Treatment Effect}
 \description{
 This package does a permutation analysis, based on Monte Carlo sampling,
 for testing the hypothesis that the number of conserved differentially
@@ -27,6 +29,11 @@ Astrid Deschenes <astrid-louise.deschenes@crchudequebec.ulaval.ca>
     RDS format}
     \item \code{\link{runPermutationUsingMethylKitInfo}} {for running a
     permutation analysis using a methylKit info object as input}
+    \item \code{\link{runObservationUsingRDSFile}} { for running a
+    observation analysis on the specified multi-generational dataset in
+    RDS format}
+    \item \code{\link{runObservationUsingMethylKitInfo}} {for running a
+    observation analysis using a methylKit info object as input}
 }
 }
 \keyword{package}
