@@ -6,7 +6,7 @@
 RDS format}
 \usage{
 runPermutationUsingMethylKitInfo(methylKitInfo, type = c("both", "sites",
-  "tiles"), outputDir = NULL, runObservedAnalysis = TRUE,
+  "tiles"), outputDir = NULL, runObservationAnalysis = TRUE,
   nbrPermutations = 1000, nbrCores = 1, nbrCoresDiffMeth = 1,
   minReads = 10, minMethDiff = 10, qvalue = 0.01, maxPercReads = 99.9,
   destrand = FALSE, minCovBasesForTiles = 0, tileSize = 1000,
@@ -31,9 +31,9 @@ the results of the permutation or \code{NULL}. If the directory does not
 exist, it will be created. When \code{NULL}, the results of the permutation
 are not saved. Default: \code{NULL}.}
 
-\item{runObservedAnalysis}{a \code{logical}, when \code{runObservedAnalysis}
-= \code{TRUE}, a CpG analysis on the observed dataset is done. Default:
-\code{TRUE}.}
+\item{runObservationAnalysis}{a \code{logical}, when
+\code{runObservationAnalysis} = \code{TRUE}, a CpG analysis on the
+observed dataset is done. Default: \code{TRUE}.}
 
 \item{nbrPermutations, }{a positive \code{integer}, the total number of
 permutations that is going to be done. Default: \code{1000}.}

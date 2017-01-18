@@ -6,7 +6,7 @@
 RDS format}
 \usage{
 runPermutationUsingRDSFile(methylKitRDSFile, type = c("both", "sites",
-  "tiles"), outputDir = NULL, runObservedAnalysis = TRUE,
+  "tiles"), outputDir = NULL, runObservationAnalysis = TRUE,
   nbrPermutations = 1000, nbrCores = 1, nbrCoresDiffMeth = 1,
   minReads = 10, minMethDiff = 10, qvalue = 0.01, maxPercReads = 99.9,
   destrand = FALSE, minCovBasesForTiles = 0, tileSize = 1000,
@@ -33,7 +33,8 @@ the results of the permutation or \code{NULL}. If the directory does not
 exist, it will be created. When \code{NULL}, the results of the permutation
 are not saved. Default: \code{NULL}.}
 
-\item{runObservedAnalysis}{a \code{logical}, when \code{runObservedAnalysis}
+\item{runObservationAnalysis}{a \code{logical}, when
+\code{runObservationAnalysis}
 = \code{TRUE}, a CpG analysis on the observed dataset is done. Default:
 \code{TRUE}.}
 
@@ -100,7 +101,7 @@ is used. Default: \code{-1}.}
 \value{
 a \code{list} containing the following elements:
 \itemize{
-\item \code{OBSERVATION} Only present when \code{runObservedAnalysis} =
+\item \code{OBSERVATION} Only present when \code{runObservationAnalysis} =
 \code{TRUE}, a \code{list} containing:
 \itemize{
 \item \code{SITES} Only present when \code{type} = \code{"sites"} or

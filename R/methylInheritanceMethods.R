@@ -27,7 +27,8 @@
 #' exist, it will be created. When \code{NULL}, the results of the permutation
 #' are not saved. Default: \code{NULL}.
 #'
-#' @param runObservedAnalysis a \code{logical}, when \code{runObservedAnalysis}
+#' @param runObservationAnalysis a \code{logical}, when
+#' \code{runObservationAnalysis}
 #' = \code{TRUE}, a CpG analysis on the observed dataset is done. Default:
 #' \code{TRUE}.
 #'
@@ -93,7 +94,7 @@
 #'
 #' @return a \code{list} containing the following elements:
 #' \itemize{
-#' \item \code{OBSERVATION} Only present when \code{runObservedAnalysis} =
+#' \item \code{OBSERVATION} Only present when \code{runObservationAnalysis} =
 #' \code{TRUE}, a \code{list} containing:
 #' \itemize{
 #' \item \code{SITES} Only present when \code{type} = \code{"sites"} or
@@ -247,7 +248,7 @@
 runPermutationUsingRDSFile <- function(methylKitRDSFile,
                                     type = c("both", "sites", "tiles"),
                                     outputDir = NULL,
-                                    runObservedAnalysis = TRUE,
+                                    runObservationAnalysis = TRUE,
                                     nbrPermutations = 1000,
                                     nbrCores = 1,
                                     nbrCoresDiffMeth = 1,
@@ -271,7 +272,7 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 
     ## Call permutation analysis with the methylInfo object as an parameter
     runPermutationUsingMethylKitInfo(methylInfo, type, outputDir,
-                            runObservedAnalysis,
+                            runObservationAnalysis,
                             nbrPermutations, nbrCores, nbrCoresDiffMeth,
                             minReads, minMethDiff, qvalue, maxPercReads,
                             destrand, minCovBasesForTiles, tileSize, stepSize,
@@ -306,9 +307,9 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 #' exist, it will be created. When \code{NULL}, the results of the permutation
 #' are not saved. Default: \code{NULL}.
 #'
-#' @param runObservedAnalysis a \code{logical}, when \code{runObservedAnalysis}
-#' = \code{TRUE}, a CpG analysis on the observed dataset is done. Default:
-#' \code{TRUE}.
+#' @param runObservationAnalysis a \code{logical}, when
+#' \code{runObservationAnalysis} = \code{TRUE}, a CpG analysis on the
+#' observed dataset is done. Default: \code{TRUE}.
 #'
 #' @param nbrPermutations, a positive \code{integer}, the total number of
 #' permutations that is going to be done. Default: \code{1000}.
@@ -389,7 +390,7 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 runPermutationUsingMethylKitInfo <- function(methylKitInfo,
                             type = c("both", "sites", "tiles"),
                             outputDir = NULL,
-                            runObservedAnalysis = TRUE,
+                            runObservationAnalysis = TRUE,
                             nbrPermutations = 1000,
                             nbrCores = 1,
                             nbrCoresDiffMeth = 1,
@@ -406,7 +407,7 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
     ## Parameters validation
     validateRunPermutationUsingMethylKitInfo(methylKitInfo = methylKitInfo,
                                 type = type, outputDir = outputDir,
-                                runObservedAnalysis = runObservedAnalysis,
+                                runObservedAnalysis = runObservationAnalysis,
                                 nbrPermutations = nbrPermutations,
                                 nbrCores = nbrCores,
                                 nbrCoresDiffMeth = nbrCoresDiffMeth,
@@ -477,7 +478,8 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
     }
 
     ## Call observation analysis
-    observedResults <- runObservationUsingMethylKitInfo(methylKitInfo =
+    if (runObservationAnalysis) {
+        observedResults <- runObservationUsingMethylKitInfo(methylKitInfo =
                                                             methylKitInfo,
                                     type = type,
                                     outputDir = outputDir,
@@ -493,6 +495,7 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
                                     tileSize = tileSize,
                                     stepSize = stepSize,
                                     vSeed = vSeed)
+    }
 
     ## Call permutations in parallel mode
     permutationResults <- bplapply(finalList, FUN =
@@ -513,7 +516,9 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
 
     ## Create final returned list
     result <- list()
-    result[["OBSERVATION"]] <- observedResults
+    if (runObservationAnalysis) {
+        result[["OBSERVATION"]] <- observedResults
+    }
     result[["PERMUTATION"]] <- permutationResults
 
     return(result)

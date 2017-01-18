@@ -45,7 +45,7 @@ test.runPermutationUsingRDSFile_methylKitRDSFile_not_valid <- function() {
 test.runPermutationUsingRDSFile_good_001 <- function() {
     obs <- tryCatch(runPermutationUsingRDSFile(
         methylKitRDSFile = METHYL_OBJ_FILE_02, outputDir = NULL,
-        runObservedAnalysis = TRUE,
+        runObservationAnalysis = TRUE,
         nbrPermutations = 2, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = FALSE, minCovBasesForTiles = 2,
