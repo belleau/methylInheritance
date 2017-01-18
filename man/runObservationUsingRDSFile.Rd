@@ -129,7 +129,7 @@ generations.
 }
 \item \code{TILES} Only present when \code{type} = \code{"tiles"} or
 \code{"both"}, a \code{list} containing:
-itemize{
+\itemize{
 \item\code{i2} a \code{list} containing:
 \itemize{
 \item \code{HYPER} a \code{list} of \code{integer}, the number of conserved
