@@ -25,8 +25,8 @@ in the methylKit package}
 
 \item{type}{One of the "sites","tiles" or "both" strings. Specifies the type
 of differentially methylated elements should be returned. For
-retrieving differentially methylated bases type="sites"; for
-differentially methylated regions type="tiles". Default: "both".}
+retrieving differentially methylated bases \code{type} = \code{"sites"};
+for differentially methylated regions type="tiles". Default: "both".}
 
 \item{outputDir}{a string, the name of the directory that will contain
 the results of the permutation or \code{NULL}. If the directory does not

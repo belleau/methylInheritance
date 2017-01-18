@@ -670,7 +670,7 @@ createOutputDir <- function(outputDir, doingSites = TRUE,
 #' @return a \code{list} containing the following elements:
 #' \itemize{
 #' \item \code{SITES} Only present when \code{type} = \code{"sites"} or
-#' \code{both}, a \code{list} containing:
+#' \code{"both"}, a \code{list} containing:
 #' \itemize{
 #' \item\code{i2} a \code{list} containing:
 #' \itemize{
@@ -702,7 +702,7 @@ createOutputDir <- function(outputDir, doingSites = TRUE,
 #' }
 #' }
 #' \item \code{TILES} Only present when \code{type} = \code{"tiles"} or
-#' \code{both}, a \code{list} containing:
+#' \code{"both"}, a \code{list} containing:
 #' itemize{
 #' \item\code{i2} a \code{list} containing:
 #' \itemize{
@@ -1006,7 +1006,7 @@ saveInterGenerationResults <- function(outputDir, permutationID,
 #' The hypo and hyper differentially methylated elements are counted
 #' separatly.
 #'
-#' @param interGenerationResult a \code{list} that contains the information for
+#' @param interGenerationGR a \code{list} that contains the information for
 #' all differentially methylated analysis done on each generation present in
 #' the initial dataset. The \code{list} must contain the following elements:
 #' \itemize{
@@ -1025,13 +1025,6 @@ saveInterGenerationResults <- function(outputDir, permutationID,
 #' generations; etc..The number of entries depends of the number
 #' of generations.
 #' }
-#'
-#' @param type One of the "sites" or "tiles" strings. Specifies the type
-#' of elements that should be returned. For
-#' retrieving differentially methylated bases type="sites"; for
-#' differentially methylated regions type="tiles". Default: "sites".
-#'
-#' @param result TODO
 #'
 #' @return a \code{list} containing the following elements:
 #' \itemize{
@@ -1080,7 +1073,7 @@ saveInterGenerationResults <- function(outputDir, permutationID,
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @keywords internal
-createDataStructure <- function(interGenerationResult) {
+createDataStructure <- function(interGenerationGR) {
 
     result <- list()
     result[["i2"]] <- list()
@@ -1088,13 +1081,13 @@ createDataStructure <- function(interGenerationResult) {
     result[["i2"]][["HYPO"]]  <- list()
     result[["iAll"]][["HYPER"]]  <- list()
     result[["iAll"]][["HYPO"]]   <- list()
-    result[["i2"]][["HYPER"]] <- lapply(interGenerationResult$i2,
+    result[["i2"]][["HYPER"]] <- lapply(interGenerationGR$i2,
                         FUN = function(x) {sum(width(x[x$typeDiff > 0]))})
-    result[["i2"]][["HYPO"]]  <- lapply(interGenerationResult$i2,
+    result[["i2"]][["HYPO"]]  <- lapply(interGenerationGR$i2,
                         FUN = function(x) {sum(width(x[x$typeDiff < 0]))})
-    result[["iAll"]][["HYPER"]] <- lapply(interGenerationResult$iAll,
+    result[["iAll"]][["HYPER"]] <- lapply(interGenerationGR$iAll,
                         FUN = function(x) {sum(width(x[x$typeDiff > 0]))})
-    result[["iAll"]][["HYPO"]]  <- lapply(interGenerationResult$iAll,
+    result[["iAll"]][["HYPO"]]  <- lapply(interGenerationGR$iAll,
                         FUN = function(x) {sum(width(x[x$typeDiff < 0]))})
 
     return(result)

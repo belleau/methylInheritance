@@ -19,8 +19,8 @@
 #'
 #' @param type One of the "sites","tiles" or "both" strings. Specifies the type
 #' of differentially methylated elements should be returned. For
-#' retrieving differentially methylated bases type="sites"; for
-#' differentially methylated regions type="tiles". Default: "both".
+#' retrieving differentially methylated bases \code{type} = \code{"sites"};
+#' for differentially methylated regions type="tiles". Default: "both".
 #'
 #' @param outputDir a string, the name of the directory that will contain
 #' the results of the permutation or \code{NULL}. If the directory does not
@@ -479,7 +479,7 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
 
     ## Call observation analysis
     if (runObservationAnalysis) {
-        observedResults <- runObservationUsingMethylKitInfo(methylKitInfo =
+        result <- runObservationUsingMethylKitInfo(methylKitInfo =
                                                             methylKitInfo,
                                     type = type,
                                     outputDir = outputDir,
@@ -495,6 +495,8 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
                                     tileSize = tileSize,
                                     stepSize = stepSize,
                                     vSeed = vSeed)
+    } else {
+        result <- list()
     }
 
     ## Call permutations in parallel mode
@@ -514,11 +516,6 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
                         BPREDO = redoList,
                         BPPARAM = bpParam)
 
-    ## Create final returned list
-    result <- list()
-    if (runObservationAnalysis) {
-        result[["OBSERVATION"]] <- observedResults
-    }
     result[["PERMUTATION"]] <- permutationResults
 
     return(result)
@@ -614,8 +611,10 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
 #'
 #' @return a \code{list} containing the following elements:
 #' \itemize{
+#' \item \code{OBSERVATION} a \code{list} containing the following elements:
+#' \itemize{
 #' \item \code{SITES} Only present when \code{type} = \code{"sites"} or
-#' \code{both}, a \code{list} containing:
+#' \code{"both"}, a \code{list} containing:
 #' \itemize{
 #' \item\code{i2} a \code{list} containing:
 #' \itemize{
@@ -647,7 +646,7 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
 #' }
 #' }
 #' \item \code{TILES} Only present when \code{type} = \code{"tiles"} or
-#' \code{both}, a \code{list} containing:
+#' \code{"both"}, a \code{list} containing:
 #' itemize{
 #' \item\code{i2} a \code{list} containing:
 #' \itemize{
@@ -676,6 +675,7 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
 #' three generations; the second element, the intersection of the first fourth
 #' generations; etc..The number of entries depends of the number of
 #' generations.
+#' }
 #' }
 #' }
 #' }
@@ -742,7 +742,7 @@ runObservationUsingMethylKitInfo <- function(methylKitInfo,
     }
 
     ## Extract information
-    result <- runOnePermutationOnAllGenerations(methylInfoForAllGenerations =
+    observed <- runOnePermutationOnAllGenerations(methylInfoForAllGenerations =
                                                         methylInfo,
                                     type = type, outputDir = outputDir,
                                     nbrCoresDiffMeth = nbrCoresDiffMeth,
@@ -754,6 +754,10 @@ runObservationUsingMethylKitInfo <- function(methylKitInfo,
                                     minCovBasesForTiles = minCovBasesForTiles,
                                     tileSize = tileSize,
                                     stepSize = stepSize)
+
+    ## Create final returned list
+    result <- list()
+    result[["OBSERVATION"]] <- observed
 
     return(result)
 }
@@ -850,7 +854,7 @@ runObservationUsingMethylKitInfo <- function(methylKitInfo,
 #' @return @return a \code{list} containing the following elements:
 #' \itemize{
 #' \item \code{SITES} Only present when \code{type} = \code{"sites"} or
-#' \code{both}, a \code{list} containing:
+#' \code{"both"}, a \code{list} containing:
 #' \itemize{
 #' \item\code{i2} a \code{list} containing:
 #' \itemize{
@@ -882,7 +886,7 @@ runObservationUsingMethylKitInfo <- function(methylKitInfo,
 #' }
 #' }
 #' \item \code{TILES} Only present when \code{type} = \code{"tiles"} or
-#' \code{both}, a \code{list} containing:
+#' \code{"both"}, a \code{list} containing:
 #' itemize{
 #' \item\code{i2} a \code{list} containing:
 #' \itemize{
@@ -1047,10 +1051,9 @@ loadAllRDSResults <- function(analysisResultsDir,
     if (doingSites) {
         analysisResults <- readRDS(file = paste0(analysisResultsDir,
                                         "SITES/SITES_observed_results.RDS"))
-        analysisStruct <- createDataStructure(interGenerationResult =
+        analysisStruct <- createDataStructure(interGenerationGR =
                                                     analysisResults)
         result[["OBSERVATION"]][["SITES"]] <- analysisStruct
-
 
         filesInDir <- list.files(path = paste0(analysisResultsDir,
                                                                 "SITES/"),
@@ -1062,7 +1065,7 @@ loadAllRDSResults <- function(analysisResultsDir,
         sitesPerm <- lapply(filesInDir, FUN = function(x) {readRDS(file = x)})
 
         t <- lapply(sitesPerm, FUN = function(x) {
-                    createDataStructure(interGenerationResult = x)})
+                    createDataStructure(interGenerationGR = x)})
 
         result[["PERMUTATION"]][["SITES"]] <- t
     }
@@ -1071,7 +1074,7 @@ loadAllRDSResults <- function(analysisResultsDir,
     if (doingTiles) {
         analysisResults <- readRDS(file = paste0(permutationResultsDir,
                                         "TILES/TILES_observed_results.RDS"))
-        analysisStruct <- createDataStructure(interGenerationResult =
+        analysisStruct <- createDataStructure(interGenerationGR =
                                                     analysisResults)
         result[["OBSERVATION"]][["TILES"]] <- analysisStruct
 
@@ -1085,7 +1088,7 @@ loadAllRDSResults <- function(analysisResultsDir,
         tilesPerm <- lapply(filesInDir, FUN = function(x) {readRDS(file = x)})
 
         t <- lapply(tilesPerm, FUN = function(x) {
-                    createDataStructure(interGenerationResult = x)})
+                    createDataStructure(interGenerationGR = x)})
 
         result[["PERMUTATION"]][["TILES"]] <- t
     }

@@ -146,13 +146,14 @@ test.runObservationUsingRDSFile_good_001 <- function() {
         error=conditionMessage)
 
     exp <- list()
-    exp[["SITES"]] <- list()
-    exp[["SITES"]][["i2"]] <- list()
-    exp[["SITES"]][["i2"]][["HYPER"]] <- list(29, 16)
-    exp[["SITES"]][["i2"]][["HYPO"]] <- list(11, 15)
-    exp[["SITES"]][["iAll"]] <- list()
-    exp[["SITES"]][["iAll"]][["HYPER"]] <- list(8)
-    exp[["SITES"]][["iAll"]][["HYPO"]] <- list(2)
+    exp[["OBSERVATION"]] <- list()
+    exp[["OBSERVATION"]][["SITES"]] <- list()
+    exp[["OBSERVATION"]][["SITES"]][["i2"]] <- list()
+    exp[["OBSERVATION"]][["SITES"]][["i2"]][["HYPER"]] <- list(29, 16)
+    exp[["OBSERVATION"]][["SITES"]][["i2"]][["HYPO"]] <- list(11, 15)
+    exp[["OBSERVATION"]][["SITES"]][["iAll"]] <- list()
+    exp[["OBSERVATION"]][["SITES"]][["iAll"]][["HYPER"]] <- list(8)
+    exp[["OBSERVATION"]][["SITES"]][["iAll"]][["HYPO"]] <- list(2)
 
     message <- paste0(" test.runObservationUsingRDSFile_good_001() ",
                       "- All valid parameters did not generated expected result.")

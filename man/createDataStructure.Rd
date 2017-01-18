@@ -5,10 +5,10 @@
 \title{Extract the number of conserved differentially methylated
 elements in \code{GRanges}.}
 \usage{
-createDataStructure(interGenerationResult)
+createDataStructure(interGenerationGR)
 }
 \arguments{
-\item{interGenerationResult}{a \code{list} that contains the information for
+\item{interGenerationGR}{a \code{list} that contains the information for
 all differentially methylated analysis done on each generation present in
 the initial dataset. The \code{list} must contain the following elements:
 \itemize{
@@ -27,13 +27,6 @@ three generations; the second element, the intersection of the first fourth
 generations; etc..The number of entries depends of the number
 of generations.
 }}
-
-\item{type}{One of the "sites" or "tiles" strings. Specifies the type
-of elements that should be returned. For
-retrieving differentially methylated bases type="sites"; for
-differentially methylated regions type="tiles". Default: "sites".}
-
-\item{result}{TODO}
 }
 \value{
 a \code{list} containing the following elements:

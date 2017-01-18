@@ -96,7 +96,7 @@ is used. Default: \code{-1}.}
 @return a \code{list} containing the following elements:
 \itemize{
 \item \code{SITES} Only present when \code{type} = \code{"sites"} or
-\code{both}, a \code{list} containing:
+\code{"both"}, a \code{list} containing:
 \itemize{
 \item\code{i2} a \code{list} containing:
 \itemize{
@@ -128,7 +128,7 @@ generations.
 }
 }
 \item \code{TILES} Only present when \code{type} = \code{"tiles"} or
-\code{both}, a \code{list} containing:
+\code{"both"}, a \code{list} containing:
 itemize{
 \item\code{i2} a \code{list} containing:
 \itemize{
