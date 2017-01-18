@@ -1402,14 +1402,19 @@ loadAllRDSResults <- function(analysisResultsDir,
 #'
 #' @examples
 #'
-#' ## Loading dataset containing all results
-#' data(methylInheritanceResults)
+#' ## Get the name of the directory where files are stored
+#' filesDir <- dir(system.file("extdata", package = "methylInheritance"),
+#' pattern = "TEST", full.names = TRUE)
+#'
+#' ## Load information from files
+#' results <- loadAllRDSResults(analysisResultsDir = filesDir,
+#' permutationResultsDir = filesDir, doingSites = TRUE, doingTiles = TRUE)
 #'
 #' ## Extract information for the intersection between conserved differentially
 #' ## methylated sites (type = sites) between the intersection of 2
-#' ## generations (inter = i2): F2 and F3 (position = 2)
-#' extractInfo(allResults = methylInheritanceResults,
-#' type = "sites", inter="i2", 2)
+#' ## generations (inter = i2): F1 and F2 (position = 1)
+#' info <- extractInfo(allResults = results,
+#' type = "sites", inter="i2", 1)
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
@@ -1457,19 +1462,30 @@ extractInfo <- function(allResults, type = c("sites", "tiles"),
 #'
 #' @return a graph showing the permutation analysis results
 #'
+#' @examples
+#'
+#' ## Loading dataset containing all results
+#' data(methylInheritanceResults)
+#'
+#' ## Extract information for the intersection between conserved differentially
+#' ## methylated sites (type = sites) between the intersection of 2
+#' ## generations (inter = i2): F2 and F3 (position = 2)
+#' extractInfo(allResults = methylInheritanceResults,
+#' type = "sites", inter="i2", 2)
+#'
 #' @author Astrid Deschenes, Pascal Belleau
-#' @importFrom ggplot2 ggplot geom_text facet_grid theme geom_vline geom_histogram labs aes
+#' @importFrom ggplot2 ggplot geom_text facet_grid theme geom_vline geom_histogram labs aes scale_color_manual
+#' @importFrom gridExtra grid.arrange tableGrob
 #' @export
 plotGraph <- function(formatForGraphDataFrame) {
 
-    # Basic graph using dataframe
-    # Columns names : TYPE (HYPER or HYPO), result (nbr conseved sites),
+    # Basic graph using data.frame
+    # Columns names : TYPE (HYPER or HYPO), RESULT (nbr conseved sites),
     # SOURCE (OBSERVED or PERMUTATION)
-    p <- ggplot(data=formatForGraphDataFrame, aes(formatForGraphDataFrame$result)) +
-        geom_histogram(col="blue",
-                        fill="lightblue",
-                        binwidth=2,
-                        alpha = .2) +
+    p <- ggplot(data=formatForGraphDataFrame,
+                    aes(x=formatForGraphDataFrame$RESULT)) +
+                    geom_histogram(col="blue", fill="lightblue",
+                                    binwidth=2, alpha = .2) +
         labs(title = "") +
         labs(x = "Number of conserved differentially methylated sites",
                 y = "Frequency")
@@ -1480,46 +1496,39 @@ plotGraph <- function(formatForGraphDataFrame) {
     # Add vertical line corresponding to the number of conserved elements
     # in the observed results (real results)
     interceptFrame <- subset(formatForGraphDataFrame,
-                                formatForGraphDataFrame$SOURCE == "OBSERVED")
-    p <- p + geom_vline(aes(xintercept = interceptFrame$result, color="red"),
-                        data = interceptFrame, linetype="longdash",
-                        show.legend = NA)
+                            formatForGraphDataFrame$SOURCE == "OBSERVATION")
+    p <- p + geom_vline(data = interceptFrame,
+                        aes(xintercept = interceptFrame$RESULT,
+                        color="observed"), linetype="longdash",
+                        show.legend=TRUE)
+
+    p <- p + scale_color_manual(name = "", values = c(observed = "red")) +
+        theme(legend.position="bottom")
 
     # Calculate the significant level for HYPER AND HYPO
     hypoDataSet <- subset(formatForGraphDataFrame,
                             formatForGraphDataFrame$TYPE == "HYPO")
     hypoTotal <- nrow(hypoDataSet)
-    hypoNumber <- interceptFrame[interceptFrame$TYPE == "HYPO",]$result
+    hypoNumber <- interceptFrame[interceptFrame$TYPE == "HYPO",]$RESULT
     signifLevelHypo <- nrow(subset(hypoDataSet,
-                                hypoDataSet$result >= hypoNumber))/hypoTotal
+                                hypoDataSet$RESULT >= hypoNumber))/hypoTotal
 
     hyperDataSet <- subset(formatForGraphDataFrame,
                             formatForGraphDataFrame$TYPE == "HYPER")
     hyperTotal <- nrow(hyperDataSet)
-    hyperNumber <- interceptFrame[interceptFrame$TYPE == "HYPER",]$result
+    hyperNumber <- interceptFrame[interceptFrame$TYPE == "HYPER",]$RESULT
     signifLevelHyper <- nrow(subset(hyperDataSet,
-                                hyperDataSet$result >= hyperNumber))/hyperTotal
+                                hyperDataSet$RESULT >= hyperNumber))/hyperTotal
 
-    # Add significant level value as annotated text
-    ann_text <- data.frame(TYPE = c("HYPO", "HYPER"),
-                                lab = c(sprintf("%.6f", signifLevelHypo),
-                                        sprintf("%.6f", signifLevelHyper)))
-    p <- p + geom_text(data = ann_text,
-                        aes(x=100, y=100, label=ann_text$lab, size=15,
-                                color="red"),
-                        inherit.aes=FALSE, parse=FALSE)
+    # Number of observed conserved elements as annotated text
+    info <- data.frame(type = c("HYPER", "HYPO"),
+                            lab = c(hyperNumber, hypoNumber),
+                            signif = c(signifLevelHyper, signifLevelHypo))
+    colnames(info)<-c("Type", "Observed Value", "Significant Level")
 
-    # Add number of observed conserved elements as annotated text
-    ann_text_2 <- data.frame(TYPE = c("HYPO", "HYPER"),
-                           lab = c(sprintf("%d observed", hypoNumber),
-                                    sprintf("%d observed", hyperNumber)))
-    p <- p + geom_text(data = ann_text_2,  aes(x = 100, y = 300,
-                                                label=ann_text_2$lab, size=15,
-                                                color="red"),
-                        inherit.aes=FALSE, parse=FALSE)
+    ## Put graph and table in grid
+    g <- grid.arrange(p, tableGrob(info, rows = NULL), nrow = 2,
+                      heights = c(2, 1), clip = FALSE)
 
-    p <- p + theme(legend.position="none")
-
-    return(p)
-
+    return(g)
 }

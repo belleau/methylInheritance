@@ -44,14 +44,19 @@ group of generations.
 }
 \examples{
 
-## Loading dataset containing all results
-data(methylInheritanceResults)
+## Get the name of the directory where files are stored
+filesDir <- dir(system.file("extdata", package = "methylInheritance"),
+pattern = "TEST", full.names = TRUE)
+
+## Load information from files
+results <- loadAllRDSResults(analysisResultsDir = filesDir,
+permutationResultsDir = filesDir, doingSites = TRUE, doingTiles = TRUE)
 
 ## Extract information for the intersection between conserved differentially
 ## methylated sites (type = sites) between the intersection of 2
-## generations (inter = i2): F2 and F3 (position = 2)
-extractInfo(allResults = methylInheritanceResults,
-type = "sites", inter="i2", 2)
+## generations (inter = i2): F1 and F2 (position = 1)
+info <- extractInfo(allResults = results,
+type = "sites", inter="i2", 1)
 
 }
 \author{

@@ -24,7 +24,8 @@ Imports:
     IRanges,
     S4Vectors,
     methods,
-    ggplot2
+    ggplot2,
+    gridExtra
 Suggests:
     BiocStyle,
     BiocGenerics,
