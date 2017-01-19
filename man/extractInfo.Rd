@@ -11,7 +11,12 @@ extractInfo(allResults, type = c("sites", "tiles"), inter = c("i2", "iAll"),
 \arguments{
 \item{allResults}{a \code{list} as created by the
 \code{runPermutationUsingMethylKitInfo} or the
-\code{runPermutationUsingRDSFile} functions.}
+\code{runPermutationUsingRDSFile} functions. The \code{list} must contain
+two entries : \code{"PERMUTATION"} and \code{"OBSERVATION"}. The
+\code{"PERMUTATION"} \code{list} must contain all results from all
+permutations while
+the \code{"OBSERVATION"} \code{list} must contain the results obtained with
+the real dataset (not permutated).}
 
 \item{type}{One of the \code{"sites"} or \code{"tiles"} strings.
 Specifies the type

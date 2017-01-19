@@ -1366,6 +1366,51 @@ loadAllRDSResults <- function(analysisResultsDir,
 }
 
 
+#' @title Merge the permutation results with the observation results.
+#'
+#' @description  Merge the permutation results with the observation results.
+#' The merging is only needed when permutation and observation have been
+#' processed separatly.
+#'
+#' @param permutationResults a \code{list} with 1 entry called
+#' \code{PERMUTATION}m the entry is a \code{list} with a number of
+#' entries corresponding
+#' to the number of permutations that have been processed. Each entry contains
+#' the result of one permutation.
+#'
+#' @param observationResults a \code{list} with 1 entry called
+#' \code{OBSERVATION}, the entry is a \code{list} of 1 entry containing
+#' the results obtained
+#' with the real dataset (not permutated).
+#'
+#' @return a \code{list} with 2 entries. The 2 entries are:
+#' \itemize{
+#' \item \code{PERMUTATION} \code{list} with a number of entries corresponding
+#' to the number of permutations that have been processed. Each entry contains
+#' the result of one permutation.
+#' \item \code{OBSERVATION} a \code{list} with 1 entry, the results obtained
+#' with the real dataset (not permutated).
+#' }
+#'
+#' @examples
+#'
+#' ## TODO
+#'
+#' @author Astrid Deschenes, Pascal Belleau
+#' @export
+mergePermutationAndObservation <- function(permutationResults,
+                                                observationResults) {
+
+    ## TODO ADD VALIDATION
+
+    mergedData <- list()
+    mergedData[["PERMUTATION"]] <- permutationResults[["PERMUTATION"]]
+    mergedData[["OBSERVATION"]] <- observationResults[["OBSERVATION"]]
+
+    return(mergedData)
+}
+
+
 #' @title Extract the information specific to a subsection of the permutation
 #' analysis
 #'
@@ -1377,7 +1422,12 @@ loadAllRDSResults <- function(analysisResultsDir,
 #'
 #' @param allResults a \code{list} as created by the
 #' \code{runPermutationUsingMethylKitInfo} or the
-#' \code{runPermutationUsingRDSFile} functions.
+#' \code{runPermutationUsingRDSFile} functions. The \code{list} must contain
+#' two entries : \code{"PERMUTATION"} and \code{"OBSERVATION"}. The
+#' \code{"PERMUTATION"} \code{list} must contain all results from all
+#' permutations while
+#' the \code{"OBSERVATION"} \code{list} must contain the results obtained with
+#' the real dataset (not permutated).
 #'
 #' @param type One of the \code{"sites"} or \code{"tiles"} strings.
 #' Specifies the type
@@ -1442,7 +1492,6 @@ extractInfo <- function(allResults, type = c("sites", "tiles"),
     }
 
     return(dataConserved)
-
 }
 
 

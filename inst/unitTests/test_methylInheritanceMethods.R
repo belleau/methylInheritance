@@ -241,3 +241,59 @@ test.loadAllRDSResults_good_01 <- function() {
 }
 
 
+###########################################################
+## mergePermutationAndObservation() function
+###########################################################
+
+## Test result when all parameters are good
+test.mergePermutationAndObservation_good_01 <- function() {
+
+    observed <- list()
+    observed[["OBSERVATION"]] <- list()
+    observed[["OBSERVATION"]][["SITES"]] <- list()
+    observed[["OBSERVATION"]][["SITES"]][["i2"]] <- list(HYPER=list(21, 10), HYPO=list(15, 12))
+    observed[["OBSERVATION"]][["SITES"]][["iAll"]] <- list(HYPER=list(1), HYPO=list(3))
+    i2 <- list(HYPER=list(2000, 3000), HYPO=list(2000, 3000))
+    iAll <- list(HYPER=list(0), HYPO=list(0))
+    observed[["OBSERVATION"]][["TILES"]] <- list()
+    observed[["OBSERVATION"]][["TILES"]][["i2"]] <- list(HYPER=list(2000, 3000), HYPO=list(2000, 3000))
+    observed[["OBSERVATION"]][["TILES"]][["iAll"]] <- list(HYPER=list(0), HYPO=list(0))
+
+    permutated <- list()
+    permutated[["PERMUTATION"]] <- list()
+    cas_01 <- list()
+    cas_01[["i2"]] <- list(HYPER=list(5, 7), HYPO=list(10, 11))
+    cas_01[["iAll"]] <- list(HYPER=list(2), HYPO=list(3))
+    cas_02 <- list()
+    cas_02[["i2"]] <- list(HYPER=list(8, 9), HYPO=list(4, 7))
+    cas_02[["iAll"]] <- list(HYPER=list(3), HYPO=list(0))
+    cas_03 <- list()
+    cas_03[["i2"]] <- list(HYPER=list(10, 7), HYPO=list(11, 7))
+    cas_03[["iAll"]] <- list(HYPER=list(1), HYPO=list(2))
+    permutated[["PERMUTATION"]][["SITES"]] <- list(cas_01, cas_02, cas_03)
+    cas_01 <- list()
+    cas_01[["i2"]] <- list(HYPER=list(0, 0), HYPO=list(1000, 3000))
+    cas_01[["iAll"]] <- list(HYPER=list(0), HYPO=list(1000))
+    cas_02 <- list()
+    cas_02[["i2"]] <- list(HYPER=list(1000, 1000), HYPO=list(1000, 1000))
+    cas_02[["iAll"]] <- list(HYPER=list(0), HYPO=list(0))
+    cas_03 <- list()
+    cas_03[["i2"]] <- list(HYPER=list(0, 3000), HYPO=list(2000, 0))
+    cas_03[["iAll"]] <- list(HYPER=list(0), HYPO=list(0))
+    permutated[["PERMUTATION"]][["TILES"]] <- list(cas_01, cas_02, cas_03)
+
+
+    obs <- tryCatch(mergePermutationAndObservation(permutationResults = permutated,
+                            observationResults = observed),
+                    error=conditionMessage)
+
+    exp <- list()
+    exp[["PERMUTATION"]] <- permutated[["PERMUTATION"]]
+    exp[["OBSERVATION"]] <- observed[["OBSERVATION"]]
+
+    message <- paste0(" test.mergePermutationAndObservation_good_01() ",
+                      "- Valid parameters for mergePermutationAndObservation() ",
+                      "did not generated expected results.")
+
+    checkEquals(obs, exp, msg = message)
+}

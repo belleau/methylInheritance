@@ -2,6 +2,7 @@
 
 export(extractInfo)
 export(loadAllRDSResults)
+export(mergePermutationAndObservation)
 export(plotGraph)
 export(runObservationUsingMethylKitInfo)
 export(runObservationUsingRDSFile)
