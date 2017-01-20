@@ -35,7 +35,8 @@ Suggests:
 Encoding: UTF-8
 License: Artistic-2.0
 VignetteBuilder: knitr
-biocViews: BiologicalQuestion, Epigenetics,
-    Software, StatisticalMethod
+biocViews: BiologicalQuestion, Epigenetics, DNAMethylation,
+    DifferentialMethylation, MethylSeq,
+    Software, StatisticalMethod, WholeGenome, Sequencing
 Maintainer: Astrid Deschenes <Astrid-Louise.Deschenes@crchudequebec.ulaval.ca>
 RoxygenNote: 5.0.1
