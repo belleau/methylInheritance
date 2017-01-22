@@ -23,11 +23,13 @@ library(knitr)
 **Compiled date**: `r Sys.Date()`<br />
 **License**: `r packageDescription("methylInheritance")[["License"]]`<br />
 
+
 # Licensing 
 
 The **methylInheritance** package and the underlying **methylInheritance** code 
 are distributed under the Artistic license 2.0. You are free to use and 
 redistribute this software. 
+
 
 # Introduction
 
@@ -46,11 +48,13 @@ conserved DME must be compared to the randomly expected number.
 
 We present a permutation analysis, based on Monte Carlo sampling, aim to infer 
 a relation between the number of conserved DME from one generation to the next 
-to the inheritance effect of treatment and to dismiss stochastic effect.
+to the inheritance effect of treatment and to dismiss stochastic effect.  It 
+is used as a robust alternative to inference based on parametric assumptions.
 
 The `r Rpackage("methylInheritance")` package can perform a permutation 
 analysis on both differentially methylated sites (DMS) and differentially 
 methylated tiles (DMT) using the `r Biocpkg("methylKit")`.
+
 
 # Loading methylInheritance package
 
@@ -61,7 +65,95 @@ first be loaded with the following command:
 library(methylInheritance)
 ```
 
-```{r loadingFiles, warning=FALSE, message=FALSE}
+
+# Description of the permutation analysis
+
+The permutation analysis is a type of statistical significance test in which 
+the distribution of the test statistic under the null hypothesis is obtained 
+by calculating the values of the test statistic under rearrangements of 
+the labels on the observed data points. The rearrangements of the labels is 
+done through repeated random sampling. 
+
+**Null Hypothesis**: The number of conserved DME correspond to a number that 
+can be obtain through a randomness analysis. 
+
+**Alternative Hypothesis**: The number of conserved DME do not correspond to a 
+number that can be obtain through a randomness analysis.
+
+A typical **methylInheritance** analysis consists of the following steps:
+
+1. Process to a differentially methylation analysis on each generation 
+separatly using real dataset with `r Rpackage("methylKit")`.
+2. Calculate the real number of conserved differentially methylated elements 
+between consecutive generations (F1 and F2, F2 and F3, etc..).
+3. Fix a threshold (conventionally 0.05) that is used as a cutoff between the 
+null and alternative hypothesis. 
+3. Process to a differentially methylation analysis on each permutated dataset.
+Each generation is analysed separatly using `r Rpackage("methylKit")`.
+4. Calculate the significant level for each consecutive subset of generations. 
+The significant level is defined as the percentage of results equal or higher 
+than the observed values.
+
+
+# Case study 
+
+A dataset containing data (6 cases and 6 controls) over three generations is
+available.
+
+```{r caseStudy01, warning=FALSE, message=FALSE, collapse=TRUE}
+## Load dataset containing information over three generations
+data(samplesForTransgenerationalAnalysis)
+
+## The length of the dataset corresponds to the number of generation
+## The generations are stored in order (first entry = first generation, 
+## second entry = second generation, etc..)
+length(samplesForTransgenerationalAnalysis)
+
+
+## All samples related to one generations are contained in a S4 methylRawList.
+## The methylRawList contains two Slots :
+## 1- treatment: a numeric vector denoting control (value = ) and test 
+## (value = ) samples.
+## 2- .Data: a list of methylRaw objects. Each object stores the raw mehylation 
+## data of one sample.
+
+
+## A section of the methylRaw object containing the information of the first 
+## sample from the second generation 
+head(samplesForTransgenerationalAnalysis[[2]][[1]]) 
+
+## The same information could also be obtained using the .Data slot
+## head(samplesForTransgenerationalAnalysis[[2]]@.Data[[1]]) 
+
+## The treatment vector for each generation
+slot(samplesForTransgenerationalAnalysis[[1]], "treatment")
+slot(samplesForTransgenerationalAnalysis[[2]], "treatment")
+slot(samplesForTransgenerationalAnalysis[[3]], "treatment")
+
+```
+
+
+```{r caseStudy02, warning=FALSE, message=FALSE, collapse=TRUE}
+
+# 
+# results <- runPermutationUsingMethylKitInfo(methylKitInfo = samplesForTransgenerationalAnalysis, 
+#                                 type = "sites", 
+#                                 outputDir = NULL,
+#                                 nbrCores = 1,
+#                                 nbrCoresDiffMeth = 1,
+#                                 nbrPermutations = 3,
+#                                 minReads = 10, 
+#                                 minMethDiff = 10, 
+#                                 qvalue = 0.01,
+#                                 vSeed = 2101)
+# 
+# results
+
+```
+
+
+
+```{r p, warning=FALSE, message=FALSE, collapse=TRUE}
 F1_control_01 <- system.file("extdata",
     "F1_control_01_Cpg.txt", package = "methylInheritance")
 F1_control_02 <- system.file("extdata",

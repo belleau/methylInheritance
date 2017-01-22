@@ -2,40 +2,70 @@
 % Please edit documentation in R/methylInheritanceInternalMethods.R
 \name{saveInterGenerationResults}
 \alias{saveInterGenerationResults}
-\title{Run one permutation using \code{methylKit} package. One permutation
-includes analysis for all generations associated to the same permutation.}
+\title{Save the result of on CpG site or tile analysis on all generations.
+The anaysis can come from observed or permutated dataset. Each case is
+saved with a different extension.}
 \usage{
 saveInterGenerationResults(outputDir, permutationID, type = c("sites",
-  "tiles"), result)
+  "tiles"), interGenerationResult)
 }
 \arguments{
-\item{outputDir}{a string, the name of the directory that will contain
-the results of the permutation. The name should end with a slash.}
+\item{outputDir}{a string of \code{character}, the name of the directory
+that will contain
+the results of the permutation. The name should end with a slash. The
+directory should already exists.}
 
-\item{permutationID}{an integer, the identifiant of the permutation.}
+\item{permutationID}{an \code{integer}, the identifiant of the permutation.
+When the \code{permutationID} = \code{0}, the results are considered as the
+observed results and are saved in a file with the "_observed_results.RDS"
+extension. When the \code{permutationID} != \code{0}, the results are
+considered as permutation results and are saved in a file with the
+"_permutation_{permutationID}.RDS" extension.}
 
-\item{type}{One of the "sites","tiles" or "both" strings. Specifies the type
+\item{type}{One of the \code{"sites"} or \code{"tiles"} strings. Specifies
+the type
 of differentially methylated elements should be returned. For
-retrieving differentially methylated bases type="sites"; for
-differentially methylated regions type="tiles". Default: "both".}
+retrieving differentially methylated bases \code{type} =\code{"sites"}; for
+differentially methylated regions \code{type} = \code{"tiles"}. Default:
+\code{"both"}.}
 
-\item{result}{TODO}
+\item{interGenerationResult}{a \code{list} that corresponds to the output
+of the \code{interGeneration} function, the result of on CpG site or tile
+analysis on all generations.}
 
-\item{type}{One of the "sites" or "tiles" strings. Specifies the type
-of differentially methylated elements should be saved. Default: "sites".}
+\item{type}{One of the \code{"sites"} or \code{"tiles"} strings. Specifies
+the type of differentially methylated elements should be saved.
+Default: \code{"sites"}.}
 }
 \value{
 \code{0} indicating that all parameters validations have been
 successful.
 }
 \description{
-Run one CpG site or region analysis using the \code{methylKit}
-package. The output of the analysis is saved in a file in the specified
-directory.
+Save the result of on CpG site or tile analysis on all
+generations. The results are saved in a RDS file. The anaysis can have been
+done on the observed or permutated dataset.
+Each permutation is saved using its identifiant in the file name.
 }
 \examples{
 
-##TODO
+## Load permutation results on sites
+permutationResultsFile <- dir(system.file("extdata",
+package = "methylInheritance"), pattern = "permutationResultsForSites.RDS",
+full.names = TRUE)
+permutationResults <- readRDS(permutationResultsFile)
+
+## Transform result to GRanges
+resultsGR <- methylInheritance:::getGRangesFromMethylDiff(methDiff =
+permutationResults, pDiff = 10, qvalue = 0.01, type = "hyper")
+
+## Extract inter-generationally conserved sites
+interGenerationResult <- methylInheritance:::interGeneration(resultsGR)
+
+## Save results
+\dontrun{methylInheritance:::saveInterGenerationResults(
+outputDir = "TEST", permutationID=100, type = "sites",
+interGenerationResult = interGenerationResult)}
 
 }
 \author{

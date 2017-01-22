@@ -2,28 +2,56 @@
 % Please edit documentation in R/methylInheritanceInternalMethods.R
 \name{getGRangesFromMethylDiff}
 \alias{getGRangesFromMethylDiff}
-\title{TODO}
+\title{Transform results from a CpG site or region analysis done on mutliple
+generations into a \code{list} of \code{GRanges} objects}
 \usage{
-getGRangesFromMethylDiff(methDiff, pDiff, qCut, typeD = "all")
+getGRangesFromMethylDiff(methDiff, pDiff, qvalue, type = c("all", "hyper",
+  "hypo"))
 }
 \arguments{
-\item{methDiff, }{TODO}
+\item{methDiff}{a \code{list} of S4 \code{methylDiff} class objects, each
+entry of the \code{list} represents the differentially methylated results
+for one generation (first entry = first genertation, second entry =
+second generation, etc..). Each \code{methylDiff} object holds statistics
+and locations
+for differentially methylated regions/bases.}
 
-\item{pDiff, }{TODO}
+\item{pDiff}{a positive \code{double} between \code{0} and \code{100},
+the cutoff for absolute value of methylation percentage change
+between test and control.}
 
-\item{qCut, }{TODO}
+\item{qvalue}{a positive \code{double} inferior to \code{1}, the cutoff
+for qvalue of differential methylation statistic.}
 
-\item{typeD, }{TODO}
+\item{type}{One of the \code{"hyper"},\code{"hypo"} or \code{"all"} strings,
+the string specifies what type of differentially methylated bases/tiles
+should be treated  For
+retrieving hyper-methylated tiles/sites \code{type} = \code{"hyper"}; for
+hypo-methylated \code{type} = \code{"hypo"}. Default: \code{"all"}.}
 }
 \value{
-TODO
+a \code{list} of \code{GRanges} objects, each
+entry of the \code{list} represents the differentially methylated results
+for one generation (first entry = first genertation, second entry =
+second generation, etc..). Each \code{GRanges} object holds statistics
+for differentially methylated regions/bases.
 }
 \description{
-TODO
+Transform a \code{list} of \code{methylDiff} objects into
+a \code{list} of \code{GRanges} objects. Each \code{methylDiff} object
+represent a CpG site or region analysis done on one generation.
 }
 \examples{
 
-## TODO
+## Load permutation results on sites
+permutationResultsFile <- dir(system.file("extdata",
+package = "methylInheritance"), pattern = "permutationResultsForSites.RDS",
+full.names = TRUE)
+permutationResults <- readRDS(permutationResultsFile)
+
+## Transform result to GRanges
+resultsGR <- methylInheritance:::getGRangesFromMethylDiff(methDiff =
+permutationResults, pDiff = 10, qvalue = 0.01, type = "hyper")
 
 }
 \author{
