@@ -20,16 +20,16 @@ Pascal Belleau and
 Arnaud Droit
 
 Maintainer:
-Astrid Deschenes <astrid-louise.deschenes@crchudequebec.ulaval.ca>
+Astrid Deschenes <adeschen@hotmail.com>
 }
 \seealso{
 \itemize{
-    \item \code{\link{runPermutationUsingRDSFile}} { for running a
+    \item \code{\link{runPermutationUsingRDSFile}} {for running a
     permutation analysis on the specified multi-generational dataset in
     RDS format}
     \item \code{\link{runPermutationUsingMethylKitInfo}} {for running a
     permutation analysis using a methylKit info object as input}
-    \item \code{\link{runObservationUsingRDSFile}} { for running a
+    \item \code{\link{runObservationUsingRDSFile}} {for running a
     observation analysis on the specified multi-generational dataset in
     RDS format}
     \item \code{\link{runObservationUsingMethylKitInfo}} {for running a
