@@ -86,8 +86,11 @@ A typical **methylInheritance** analysis consists of the following steps:
 1. Process to a differentially methylation analysis on each generation 
 separatly using real dataset with `r Rpackage("methylKit")`.
 2. Calculate the number of conserved differentially methylated elements 
-between consecutive generations (F1 and F2, F2 and F3, etc..). Those results
-are considered the reference values.
+between two consecutive generations (F1 and F2, F2 and F3, etc..).  The number
+of conserved differentially methylated elements is also calculated for three
+or more consercutive generations, always starting with the first generation 
+(F1 and F2 and F3, F1 and F2 and F3 and F4, etc..).
+Those results are considered the reference values.
 3. Fix a threshold (conventionally 0.05) that is used as a cutoff between the 
 null and alternative hypothesis. 
 4. Process to a differentially methylation analysis on each permutated dataset.
@@ -103,6 +106,8 @@ All those steps have been encoded in functions present in the
 
 # Case study 
 
+## The dataset
+
 A dataset containing methylation data (6 cases and 6 controls) over three 
 generations has been generated using the 
 `r Rpackage("methylInheritanceSim")` package.
@@ -117,8 +122,7 @@ data(demoForTransgenerationalAnalysis)
 length(demoForTransgenerationalAnalysis)
 
 
-## All samples related to one generations are contained in a S4 methylRawList
-## object.
+## All samples related to one generations are contained in a S4 methylRawList object.
 ## The methylRawList object contains two Slots:
 ## 1- treatment: a numeric vector denoting control (value = ) and test 
 ## (value = ) samples.
@@ -135,17 +139,19 @@ head(demoForTransgenerationalAnalysis[[2]][[1]])
 
 ## The treatment vector for each generation
 ## The number of treatments and controls is the same in each generation
-## However, it could also be different
+## However, it could also be different.
 slot(demoForTransgenerationalAnalysis[[1]], "treatment")
 slot(demoForTransgenerationalAnalysis[[2]], "treatment")
 slot(demoForTransgenerationalAnalysis[[3]], "treatment")
 ```
 
 
+## Observation analysis 
+
 The observation analysis can be run on all generations using the
 *runObservationUsingMehtylKitInfo()* function.
 
-```{r caseStudy02, warning=FALSE, message=FALSE, collapse=TRUE}
+```{r caseStudy02, warning=FALSE, message=FALSE, collapse=TRUE, cache=TRUE}
 ## The observation analysis is only done on differentially methylated sites
 observationResult <- runObservationUsingMethylKitInfo(methylKitInfo = 
                                         demoForTransgenerationalAnalysis, 
@@ -161,10 +167,12 @@ observationResult
 ```
 
 
+## Permutation analysis 
+
 The permutation analysis can be run on all generations using the
 *runPermutationUsingMehtylKitInfo()* function.
 
-```{r caseStudy03, warning=FALSE, message=FALSE, collapse=TRUE}
+```{r caseStudy03, warning=FALSE, message=FALSE, collapse=TRUE, cache=TRUE}
 
 ## The permutation analysis is only done on differentially methylated sites
 permutationResult <- runPermutationUsingMethylKitInfo(methylKitInfo = 
@@ -179,13 +187,45 @@ permutationResult <- runPermutationUsingMethylKitInfo(methylKitInfo =
                                 qvalue = 0.01,
                                 vSeed = 2101)
 
-observationResult
+permutationResult
 ```
 
 
 The observation and the permutation analysis could have been run together by 
 setting the *runObservationAnalysis = TRUE* in the
 *runPermutationUsingMehtylKitInfo()* function.
+
+## Merging observation and permutation analysis
+
+The observation and permutation results can be merged using the
+*mergePermutationAndObservation()* function.
+
+```{r caseStudy04, warning=FALSE, message=FALSE, collapse=TRUE}
+## Merge observation and permutation results
+allResults <- mergePermutationAndObservation(permutationResults = permutationResult,
+                                    observationResults = observationResult)
+```
+
+When observation and permutation analysis have been run together using the
+*runPermutationUsingMehtylKitInfo()* function, this step can be skipped.
+
+## Extract a specific analysis
+
+The *runPermutationUsingMehtylKitInfo()* and *runObservationUsingMehtylKitInfo()* functions 
+calculate the number of conserved differentially methylated elements 
+between two consecutive generations (F1 and F2, F2 and F3, etc..).  They also calculate 
+the number of conserved differentially methylated elements is also calculated for three
+or more consercutive generations, always starting with the first generation 
+(F1 and F2 and F3, F1 and F2 and F3 and F4, etc..).
+
+A specific analysis can be extracted from the results using *extractInfo()* function.
+
+```{r caseStudy05, warning=FALSE, message=FALSE, collapse=TRUE}
+## TODO
+F1_and_F2_results <- extractInfo(allResults = allResults, type = "sites", inter = "i2", position = 1)
+
+F1_and_F2_results
+```
 
 
 
