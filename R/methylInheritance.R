@@ -90,6 +90,63 @@ NULL
 #'
 NULL
 
+#' Methylation information from samples over three generations. Information
+#' for each generation is stored in a
+#' \code{methylRawList} format (for demo purpose).
+#'
+#' The object is a \code{list} with 3 entries. Each entry correspond to the
+#' information for one generation (first entry = first generation, etc..)
+#' stored in a \code{methylRawList} ojbect.
+#' There is 12 samples (6 controls and 6 cases) for each generation. Each
+#' sample information is stored in a \code{methylRaw} object.
+#'
+#' This dataset can be
+#' used to test \code{runPermutationUsingMethylKitInfo} and
+#' {runObservationUsingMethylKitInfo} functions.
+#'
+#' @name demoForTransgenerationalAnalysis
+#'
+#' @docType data
+#'
+#' @aliases demoForTransgenerationalAnalysis
+#'
+#' @format A \code{list} containing three \code{methylRawList} objects. Each
+#' \code{methylRawList} contains the information for one generation
+#' (first entry = first generation, etc..). Each sample information is
+#' stored in a \code{methylRaw} object. There is \code{methylRaw} objects
+#'  (6 controls and 6 cases) in each generation.
+#'
+#' @return A \code{list} containing three \code{methylRawList} objects. Each
+#' \code{methylRawList} contains the information for one generation
+#' (first entry = first generation, etc..). Each sample information is
+#' stored in a \code{methylRaw} object. There is \code{methylRaw} objects
+#'  (6 controls and 6 cases) in each generation.
+#'
+#' @seealso
+#' \itemize{
+#'     \item \code{\link{runPermutationUsingMethylKitInfo}} {for running a
+#'     permutation analysis using methylKit info entry}
+#'     \item \code{\link{runObservationUsingMethylKitInfo}} {for running a
+#'     observation analysis using methylKit info entry}
+#' }
+#'
+#' @usage data(demoForTransgenerationalAnalysis)
+#'
+#' @keywords datasets
+#'
+#' @examples
+#'
+#' ## Loading dataset
+#' data(demoForTransgenerationalAnalysis)
+#'
+#' ## Run a permutation analysis
+#' \dontrun{(runObservationUsingMethylKitInfo(methylKitInfo =
+#' demoForTransgenerationalAnalysis, type = "tiles", nbrPermutations = 3,
+#' vSeed = 2001)}
+#'
+NULL
+
+
 #' All observed and permutation results formatted in a
 #' \code{methylInheritanceResults} class object (for demo purpose).
 #'

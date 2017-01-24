@@ -4,6 +4,7 @@ author: Astrid Deschenes, Pascal Belleau and Arnaud Droit
 output:
   BiocStyle::html_document:
     toc: true
+bibliography: biblio.bibtex
 vignette: >
   %\VignetteIndexEntry{Permutation Positioning}
   %\VignettePackage{methylInheritance}
@@ -68,11 +69,11 @@ library(methylInheritance)
 
 # Description of the permutation analysis
 
-The permutation analysis is a type of statistical significance test in which 
+The permutation analysis is a statistical significance test in which 
 the distribution of the test statistic under the null hypothesis is obtained 
 by calculating the values of the test statistic under rearrangements of 
 the labels on the observed data points. The rearrangements of the labels is 
-done through repeated random sampling. 
+done through repeated random sampling [@Legendre1998, pp. 142-157]. 
 
 **Null Hypothesis**: The number of conserved DME correspond to a number that 
 can be obtain through a randomness analysis. 
@@ -84,34 +85,41 @@ A typical **methylInheritance** analysis consists of the following steps:
 
 1. Process to a differentially methylation analysis on each generation 
 separatly using real dataset with `r Rpackage("methylKit")`.
-2. Calculate the real number of conserved differentially methylated elements 
-between consecutive generations (F1 and F2, F2 and F3, etc..).
+2. Calculate the number of conserved differentially methylated elements 
+between consecutive generations (F1 and F2, F2 and F3, etc..). Those results
+are considered the reference values.
 3. Fix a threshold (conventionally 0.05) that is used as a cutoff between the 
 null and alternative hypothesis. 
-3. Process to a differentially methylation analysis on each permutated dataset.
+4. Process to a differentially methylation analysis on each permutated dataset.
 Each generation is analysed separatly using `r Rpackage("methylKit")` package.
-4. Calculate the significant level for each consecutive subset of generations. 
+5. Calculate the significant level for each consecutive subset of generations. 
 The significant level is defined as the percentage of results equal or higher 
-than the observed values.
+than the reference values. The reference vaules are added to the analysis so 
+that it becomes impossible for the test to conclude that no value are 
+as extreme as, or more extreme than the reference values.
 
+All those steps have been encoded in functions present in the 
+**methylInheritance** package. 
 
 # Case study 
 
-A dataset containing data (6 cases and 6 controls) over three generations is
-available.
+A dataset containing methylation data (6 cases and 6 controls) over three 
+generations has been generated using the 
+`r Rpackage("methylInheritanceSim")` package.
 
 ```{r caseStudy01, warning=FALSE, message=FALSE, collapse=TRUE}
 ## Load dataset containing information over three generations
-data(samplesForTransgenerationalAnalysis)
+data(demoForTransgenerationalAnalysis)
 
 ## The length of the dataset corresponds to the number of generation
 ## The generations are stored in order (first entry = first generation, 
 ## second entry = second generation, etc..)
-length(samplesForTransgenerationalAnalysis)
+length(demoForTransgenerationalAnalysis)
 
 
-## All samples related to one generations are contained in a S4 methylRawList.
-## The methylRawList contains two Slots :
+## All samples related to one generations are contained in a S4 methylRawList
+## object.
+## The methylRawList object contains two Slots:
 ## 1- treatment: a numeric vector denoting control (value = ) and test 
 ## (value = ) samples.
 ## 2- .Data: a list of methylRaw objects. Each object stores the raw mehylation 
@@ -120,147 +128,68 @@ length(samplesForTransgenerationalAnalysis)
 
 ## A section of the methylRaw object containing the information of the first 
 ## sample from the second generation 
-head(samplesForTransgenerationalAnalysis[[2]][[1]]) 
+head(demoForTransgenerationalAnalysis[[2]][[1]]) 
 
 ## The same information could also be obtained using the .Data slot
-## head(samplesForTransgenerationalAnalysis[[2]]@.Data[[1]]) 
+## head(demoForTransgenerationalAnalysis[[2]]@.Data[[1]]) 
 
 ## The treatment vector for each generation
 ## The number of treatments and controls is the same in each generation
 ## However, it could also be different
-slot(samplesForTransgenerationalAnalysis[[1]], "treatment")
-slot(samplesForTransgenerationalAnalysis[[2]], "treatment")
-slot(samplesForTransgenerationalAnalysis[[3]], "treatment")
-
+slot(demoForTransgenerationalAnalysis[[1]], "treatment")
+slot(demoForTransgenerationalAnalysis[[2]], "treatment")
+slot(demoForTransgenerationalAnalysis[[3]], "treatment")
 ```
 
+
+The observation analysis can be run on all generations using the
+*runObservationUsingMehtylKitInfo()* function.
 
 ```{r caseStudy02, warning=FALSE, message=FALSE, collapse=TRUE}
+## The observation analysis is only done on differentially methylated sites
+observationResult <- runObservationUsingMethylKitInfo(methylKitInfo = 
+                                        demoForTransgenerationalAnalysis, 
+                                type = "sites",     # Only sites
+                                outputDir = NULL,   # RDS files created
+                                nbrCores = 1,
+                                nbrPermutations = 1,
+                                minReads = 10,
+                                minMethDiff = 10,
+                                qvalue = 0.01,
+                                vSeed = 2101)
 
-# 
-# results <- runPermutationUsingMethylKitInfo(methylKitInfo = samplesForTransgenerationalAnalysis, 
-#                                 type = "sites", 
-#                                 outputDir = NULL,
-#                                 nbrCores = 1,
-#                                 nbrCoresDiffMeth = 1,
-#                                 nbrPermutations = 3,
-#                                 minReads = 10, 
-#                                 minMethDiff = 10, 
-#                                 qvalue = 0.01,
-#                                 vSeed = 2101)
-# 
-# results
-
+observationResult
 ```
 
 
+The permutation analysis can be run on all generations using the
+*runPermutationUsingMehtylKitInfo()* function.
 
-```{r p, warning=FALSE, message=FALSE, collapse=TRUE}
-F1_control_01 <- system.file("extdata",
-    "F1_control_01_Cpg.txt", package = "methylInheritance")
-F1_control_02 <- system.file("extdata",
-    "F1_control_02_Cpg.txt", package = "methylInheritance")
-F1_control_03 <- system.file("extdata",
-    "F1_control_03_Cpg.txt", package = "methylInheritance")
-F1_case_01 <- system.file("extdata",
-    "F1_case_01_Cpg.txt", package = "methylInheritance")
-F1_case_02 <- system.file("extdata",
-    "F1_case_02_Cpg.txt", package = "methylInheritance")
-F1_case_03 <- system.file("extdata",
-    "F1_case_03_Cpg.txt", package = "methylInheritance")
-F2_control_01 <- system.file("extdata",
-    "F2_control_01_Cpg.txt", package = "methylInheritance")
-F2_control_02 <- system.file("extdata",
-    "F2_control_02_Cpg.txt", package = "methylInheritance")
-F2_control_03 <- system.file("extdata",
-    "F2_control_03_Cpg.txt", package = "methylInheritance")
-F2_case_01 <- system.file("extdata",
-    "F2_case_01_Cpg.txt", package = "methylInheritance")
-F2_case_02 <- system.file("extdata",
-    "F2_case_02_Cpg.txt", package = "methylInheritance")
-F2_case_03 <- system.file("extdata",
-    "F2_case_03_Cpg.txt", package = "methylInheritance")
-F3_control_01 <- system.file("extdata",
-    "F3_control_01_Cpg.txt", package = "methylInheritance")
-F3_control_02 <- system.file("extdata",
-    "F3_control_02_Cpg.txt", package = "methylInheritance")
-F3_control_03 <- system.file("extdata",
-    "F3_control_03_Cpg.txt", package = "methylInheritance")
-F3_case_01 <- system.file("extdata",
-    "F3_case_01_Cpg.txt", package = "methylInheritance")
-F3_case_02 <- system.file("extdata",
-    "F3_case_02_Cpg.txt", package = "methylInheritance")
-F3_case_03 <- system.file("extdata",
-    "F3_case_03_Cpg.txt", package = "methylInheritance")
+```{r caseStudy03, warning=FALSE, message=FALSE, collapse=TRUE}
 
-F3_case_02
+## The permutation analysis is only done on differentially methylated sites
+permutationResult <- runPermutationUsingMethylKitInfo(methylKitInfo = 
+                                        demoForTransgenerationalAnalysis, 
+                                type = "sites",     # Only sites
+                                outputDir = NULL,   # RDS files created
+                                runObservationAnalysis = FALSE,
+                                nbrCores = 1,
+                                nbrPermutations = 3,
+                                minReads = 10,
+                                minMethDiff = 10,
+                                qvalue = 0.01,
+                                vSeed = 2101)
+
+observationResult
 ```
 
-```{r}
 
-conditions <- c(0,0,0,1,1,1)
+The observation and the permutation analysis could have been run together by 
+setting the *runObservationAnalysis = TRUE* in the
+*runPermutationUsingMehtylKitInfo()* function.
 
-dataNames <- c("F1A","F1B","F1C","F1D","F1E","F1F",
-               "F2A","F2B","F2C","F2D","F2E","F2F",
-               "F3A","F3B","F3C","F3D","F3E","F3F")
 
-allFilesByGeneration <- list(F1=list(F1_control_01, F1_control_02, 
-                                        F1_control_03, F1_case_01, 
-                                        F1_case_02, F1_case_03), 
-                             F2=list(F2_control_01, F2_control_02, 
-                                        F2_control_03, F2_case_01, 
-                                        F2_case_02, F2_case_03), 
-                             F3=list(F3_control_01, F3_control_02, 
-                                        F3_control_03, F3_case_01, 
-                                        F3_case_02, F3_case_03))
-conditionsByGeneration <- list(F1=conditions, F2=conditions, F3=conditions)
-genomeVersion <- "rnor5"
-nbrCores <- 1
-nbrCoresDiffMeth <- 1
-type <- "sites"
 
-## Run analysis with real data (without permutation)
-# runRealAnalysis(allFilesByGeneration, conditionsByGeneration,
-#                                 output_dir = "real_results",
-#                                 genomeVersion = genomeVersion,
-#                                 nbrCores = nbrCores,
-#                                 nbrCoresDiffMeth = nbrCoresDiffMeth,
-#                                 doingSites = doingSites,
-#                                 doingTiles = doingTiles,
-#                                 minReads = 10,
-#                                 minMethDiff = 20,
-#                                 qvalue = 0.01,
-#                                 maxPercReads = 99.9,
-#                                 destrand = FALSE,
-#                                 tileSize = 1000,
-#                                 stepSize = 1000,
-#                                 vSeed = 233333)
+# References
 
-## Run analysis with real data (without permutation)
-## Only 6 permutations are done but a much high number should be done
-## for a real analysis
-# a <- runPermutation(allFilesByGeneration, conditionsByGeneration,
-#                                 output_dir = "test_results",
-#                                 genomeVersion = genomeVersion,
-#                                 nbrPermutations = 2,
-#                                 nbrCores = nbrCores,
-#                                 nbrCoresDiffMeth = nbrCoresDiffMeth,
-#                                 doingSites = doingSites,
-#                                 doingTiles = doingTiles,
-#                                 minReads = 10,
-#                                 minMethDiff = 20,
-#                                 qvalue = 0.01,
-#                                 maxPercReads = 99.9,
-#                                 destrand = FALSE,
-#                                 tileSize = 1000,
-#                                 stepSize = 1000,
-#                                 vSeed = 4444432)
-# 
-# 
-# data <- extractData(realAnalysis_output_dir = "real_results", 
-#                 permutations_output_dir = "test_results", 
-#                 doingSites = doingSites, doingTiles = doingTiles)
-
-#data
-```
 
