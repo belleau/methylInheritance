@@ -152,7 +152,6 @@ observationResult <- runObservationUsingMethylKitInfo(methylKitInfo =
                                 type = "sites",     # Only sites
                                 outputDir = NULL,   # RDS files created
                                 nbrCores = 1,
-                                nbrPermutations = 1,
                                 minReads = 10,
                                 minMethDiff = 10,
                                 qvalue = 0.01,

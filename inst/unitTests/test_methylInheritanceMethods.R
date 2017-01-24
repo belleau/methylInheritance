@@ -120,7 +120,7 @@ test.runPermutationUsingRDSFile_good_001 <- function() {
 test.runObservationUsingRDSFile_methylKitRDSFile_not_valid <- function() {
     obs <- tryCatch(runObservationUsingRDSFile(
         methylKitRDSFile = "ALLO",  outputDir = NULL,
-        nbrPermutations = 2, nbrCores = 1, nbrCoresDiffMeth = 1,
+        nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 10, qvalue = 0.05,
         maxPercReads = 99.9, destrand = FALSE, minCovBasesForTiles = 2,
         tileSize = 1000, stepSize = 100, vSeed = 222),
@@ -138,8 +138,7 @@ test.runObservationUsingRDSFile_methylKitRDSFile_not_valid <- function() {
 test.runObservationUsingRDSFile_good_001 <- function() {
     obs <- tryCatch(runObservationUsingRDSFile(
         methylKitRDSFile = METHYL_OBJ_FILE_01, type = "sites",
-        outputDir = NULL,
-        nbrPermutations = 1, nbrCores = 1, nbrCoresDiffMeth = 1,
+        outputDir = NULL, nbrCores = 1, nbrCoresDiffMeth = 1,
         minReads = 10, minMethDiff = 5, qvalue = 0.05,
         maxPercReads = 99.9, destrand = FALSE, minCovBasesForTiles = 2,
         tileSize = 1000, stepSize = 100, vSeed = 200),

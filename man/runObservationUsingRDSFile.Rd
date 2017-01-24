@@ -6,10 +6,10 @@
 present in a dataset}
 \usage{
 runObservationUsingRDSFile(methylKitRDSFile, type = c("both", "sites",
-  "tiles"), outputDir = NULL, nbrPermutations = 0, nbrCores = 1,
-  nbrCoresDiffMeth = 1, minReads = 10, minMethDiff = 10, qvalue = 0.01,
-  maxPercReads = 99.9, destrand = FALSE, minCovBasesForTiles = 0,
-  tileSize = 1000, stepSize = 1000, vSeed = -1)
+  "tiles"), outputDir = NULL, nbrCores = 1, nbrCoresDiffMeth = 1,
+  minReads = 10, minMethDiff = 10, qvalue = 0.01, maxPercReads = 99.9,
+  destrand = FALSE, minCovBasesForTiles = 0, tileSize = 1000,
+  stepSize = 1000, vSeed = -1)
 }
 \arguments{
 \item{methylKitRDSFile}{a string, the name of the RDS file containing the
@@ -31,9 +31,6 @@ differentially methylated regions type="tiles". Default: "both".}
 the results of the permutation or \code{NULL}. If the directory does not
 exist, it will be created. When \code{NULL}, the results of the permutation
 are not saved. Default: \code{NULL}.}
-
-\item{nbrPermutations, }{a positive \code{integer}, the total number of
-permutations that is going to be done. Default: \code{1000}.}
 
 \item{nbrCores}{a positive \code{integer}, the number of cores to use when
 processing the analysis. Default: \code{1} and always \code{1} for Windows.}
@@ -176,7 +173,7 @@ pattern = "methylObj_001.RDS", full.names = TRUE)
 
 ## Run a permutation analysis
 \dontrun{runObservationUsingRDSFile(methylKitRDSFile = methylFile,
-type = "sites", nbrPermutations = 0, minReads = 8, minMethDiff = 5,
+type = "sites", minReads = 8, minMethDiff = 5,
 vSeed = 2001)}
 
 }

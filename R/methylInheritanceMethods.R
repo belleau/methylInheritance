@@ -622,7 +622,6 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
                                                             methylKitInfo,
                                     type = type,
                                     outputDir = outputDir,
-                                    nbrPermutations = nbrPermutations,
                                     nbrCores = nbrCores,
                                     nbrCoresDiffMeth = nbrCoresDiffMeth,
                                     minReads = minReads,
@@ -690,9 +689,6 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
 #'
 #' @param nbrCores a positive \code{integer}, the number of cores to use when
 #' processing the analysis. Default: \code{1} and always \code{1} for Windows.
-#'
-#' @param nbrPermutations, a positive \code{integer}, the total number of
-#' permutations that is going to be done. Default: \code{1000}.
 #'
 #' @param nbrCoresDiffMeth a positive \code{integer}, the number of cores
 #' to use for parallel differential methylation calculations.Parameter
@@ -826,15 +822,13 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
 #'
 #' ## Run a permutation analysis
 #' \dontrun{runObservationUsingMethylKitInfo(methylKitInfo =
-#' samplesForTransgenerationalAnalysis, type = "sites",
-#' nbrPermutations = 0, vSeed = 221)}
+#' samplesForTransgenerationalAnalysis, type = "sites", vSeed = 221)}
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
 runObservationUsingMethylKitInfo <- function(methylKitInfo,
                                             type = c("both", "sites", "tiles"),
                                             outputDir = NULL,
-                                            nbrPermutations = 0,
                                             nbrCores = 1,
                                             nbrCoresDiffMeth = 1,
                                             minReads = 10,
@@ -932,9 +926,6 @@ runObservationUsingMethylKitInfo <- function(methylKitInfo,
 #'
 #' @param nbrCores a positive \code{integer}, the number of cores to use when
 #' processing the analysis. Default: \code{1} and always \code{1} for Windows.
-#'
-#' @param nbrPermutations, a positive \code{integer}, the total number of
-#' permutations that is going to be done. Default: \code{1000}.
 #'
 #' @param nbrCoresDiffMeth a positive \code{integer}, the number of cores
 #' to use for parallel differential methylation calculations.Parameter
@@ -1066,7 +1057,7 @@ runObservationUsingMethylKitInfo <- function(methylKitInfo,
 #'
 #' ## Run a permutation analysis
 #' \dontrun{runObservationUsingRDSFile(methylKitRDSFile = methylFile,
-#' type = "sites", nbrPermutations = 0, minReads = 8, minMethDiff = 5,
+#' type = "sites", minReads = 8, minMethDiff = 5,
 #' vSeed = 2001)}
 #'
 #' @author Astrid Deschenes, Pascal Belleau
@@ -1074,7 +1065,6 @@ runObservationUsingMethylKitInfo <- function(methylKitInfo,
 runObservationUsingRDSFile <- function(methylKitRDSFile,
                                             type = c("both", "sites", "tiles"),
                                             outputDir = NULL,
-                                            nbrPermutations = 0,
                                             nbrCores = 1,
                                             nbrCoresDiffMeth = 1,
                                             minReads = 10,
@@ -1099,7 +1089,6 @@ runObservationUsingRDSFile <- function(methylKitRDSFile,
     result <- runObservationUsingMethylKitInfo(methylKitInfo = methylInfo,
                                     type = type,
                                     outputDir = outputDir,
-                                    nbrPermutations = nbrPermutations,
                                     nbrCores = nbrCores,
                                     nbrCoresDiffMeth = nbrCoresDiffMeth ,
                                     minReads = minReads,
