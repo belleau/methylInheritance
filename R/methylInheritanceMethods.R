@@ -1325,9 +1325,11 @@ loadAllRDSResults <- function(analysisResultsDir,
         sitesPerm <- lapply(filesInDir, FUN = function(x) {readRDS(file = x)})
 
         t <- lapply(sitesPerm, FUN = function(x) {
-                    createDataStructure(interGenerationGR = x)})
+                    struct <- createDataStructure(interGenerationGR = x)
+                    res <- list("SITES" = struct)
+                    return(res)})
 
-        result[["PERMUTATION"]][["SITES"]] <- t
+        result[["PERMUTATION"]] <- t
     }
 
     ## TILES
@@ -1348,9 +1350,17 @@ loadAllRDSResults <- function(analysisResultsDir,
         tilesPerm <- lapply(filesInDir, FUN = function(x) {readRDS(file = x)})
 
         t <- lapply(tilesPerm, FUN = function(x) {
-                    createDataStructure(interGenerationGR = x)})
+                    struct <- createDataStructure(interGenerationGR = x)
+                    res <- list("TILES" = struct)
+                    return(res)})
+        if (!doingSites) {
+            result[["PERMUTATION"]] <- t
+        } else {
+            for (i in 1:length(result[["PERMUTATION"]])) {
+                result[["PERMUTATION"]][[i]]$TILES <- t[[i]]$TILES
+            }
+        }
 
-        result[["PERMUTATION"]][["TILES"]] <- t
     }
 
     class(result)<-"methylInheritanceAllResults"
@@ -1479,8 +1489,8 @@ extractInfo <- function(allResults, type = c("sites", "tiles"),
                                             real[["HYPER"]][[position]]),
                                 SOURCE=c("OBSERVATION", "OBSERVATION"))
 
-    for (i in 1:length(allResults[["PERMUTATION"]][[type]])) {
-        permutation <- allResults[["PERMUTATION"]][[type]][[i]][[inter]]
+    for (i in 1:length(allResults[["PERMUTATION"]])) {
+        permutation <- allResults[["PERMUTATION"]][[i]][[type]][[inter]]
         dataConserved <- rbind(dataConserved,
                                 data.frame(TYPE=c("HYPO", "HYPER"),
                         RESULT=c(permutation[["HYPO"]][[position]],

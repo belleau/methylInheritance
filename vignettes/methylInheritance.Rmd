@@ -222,9 +222,9 @@ A specific analysis can be extracted from the results using *extractInfo()* func
 
 ```{r caseStudy05, warning=FALSE, message=FALSE, collapse=TRUE}
 ## TODO
-##F1_and_F2_results <- extractInfo(allResults = allResults, type = "sites", inter = "i2", position = 1)
+F1_and_F2_results <- extractInfo(allResults = allResults, type = "sites", inter = "i2", position = 1)
 
-##F1_and_F2_results
+F1_and_F2_results
 ```
 
 ## Significant level and visual representation
@@ -240,15 +240,16 @@ demoResults <- readRDS(dir(system.file("extdata", package = "methylInheritance")
 
 ```{r caseStudy06, warning=FALSE, message=FALSE, collapse=TRUE, cache=TRUE}
 ## F1 and F2 results for sites
-F1_and_F2 <- extractInfo(allResults = demoResults, type = "sites", inter = "i2", position = 1)
+##F1_and_F2 <- extractInfo(allResults = demoResults, type = "sites", inter = "i2", position = 1)
 ## F2 and F3 results for sites
-F2_and_F3 <- extractInfo(allResults = demoResults, type = "sites", inter = "i2", position = 1)
+##F2_and_F3 <- extractInfo(allResults = demoResults, type = "sites", inter = "i2", position = 1)
 ## F1 and F2 and F3 results for sites
-F2_and_F3 <- extractInfo(allResults = demoResults, type = "sites", inter = "i2", position = 1)
+##F2_and_F3 <- extractInfo(allResults = demoResults, type = "sites", inter = "i2", position = 1)
 ```
 
 ```{r caseStudy07, warning=FALSE, message=FALSE, collapse=TRUE}
 ## F1 and F2 results for sites
+##
 plotGraph(F1_and_F2)
 ```
 

@@ -454,10 +454,11 @@ validateExtractInfo <- function(allResults, type, inter, position) {
 
     }
 
-    if (is.null(allResults$PERMUTATION[[toupper(type)]])) {
-        stop("allResults must have an element called \"", toupper(type),
-             "\" in its \"PERMUTATION\" list")
-    }
+    ## TODO : modifier pour la nouvelle structure
+#     if (is.null(allResults$PERMUTATION[[toupper(type)]])) {
+#         stop("allResults must have an element called \"", toupper(type),
+#              "\" in its \"PERMUTATION\" list")
+#     }
 #
 #     if (is.null(allResults$PERMUTATION[[toupper(type)]][[inter]])) {
 #         stop("allResults must have an element called \"", inter,
@@ -1178,6 +1179,7 @@ saveInterGenerationResults <- function(outputDir, permutationID,
 #' formatedResults <- methylInheritance:::createDataStructure(obsResults)
 #'
 #' @author Astrid Deschenes, Pascal Belleau
+#' @importFrom GenomicRanges width
 #' @keywords internal
 createDataStructure <- function(interGenerationGR) {
 
