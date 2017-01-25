@@ -1378,7 +1378,7 @@ loadAllRDSResults <- function(analysisResultsDir,
 #' the \code{extractInfo} function.
 #'
 #' @param permutationResults a \code{list} with 1 entry called
-#' \code{PERMUTATION}m the entry is a \code{list} with a number of
+#' \code{PERMUTATION} the entry is a \code{list} with a number of
 #' entries corresponding
 #' to the number of permutations that have been processed. Each entry contains
 #' the result of one permutation.
@@ -1386,15 +1386,16 @@ loadAllRDSResults <- function(analysisResultsDir,
 #' @param observationResults a \code{list} with 1 entry called
 #' \code{OBSERVATION}, the entry is a \code{list} of 1 entry containing
 #' the results obtained
-#' with the real dataset (not permutated).
+#' with the observed dataset (not permutated).
 #'
-#' @return a \code{list} of class \code{} with 2 entries. The 2 entries are:
+#' @return a \code{list} of class \code{methylInheritanceAllResults} with
+#' 2 entries. The 2 entries are:
 #' \itemize{
 #' \item \code{PERMUTATION} \code{list} with a number of entries corresponding
 #' to the number of permutations that have been processed. Each entry contains
 #' the result of one permutation.
 #' \item \code{OBSERVATION} a \code{list} with 1 entry, the results obtained
-#' with the real dataset (not permutated).
+#' with the observed dataset (not permutated).
 #' }
 #'
 #' @examples

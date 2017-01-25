@@ -250,7 +250,7 @@ demoResults <- readRDS(dir(system.file("extdata", package = "methylInheritance")
 ```{r caseStudy07, warning=FALSE, message=FALSE, collapse=TRUE}
 ## F1 and F2 results for sites
 ##
-plotGraph(F1_and_F2)
+##plotGraph(F1_and_F2)
 ```
 
 # References
