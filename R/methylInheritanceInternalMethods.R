@@ -473,23 +473,6 @@ validateExtractInfo <- function(allResults, type, inter, position) {
                 "element called \"", toupper(type)))
     }
 
-    ## TODO : modifier pour la nouvelle structure
-#     if (is.null(allResults$PERMUTATION[[toupper(type)]])) {
-#         stop("allResults must have an element called \"", toupper(type),
-#              "\" in its \"PERMUTATION\" list")
-#     }
-#
-#     if (is.null(allResults$PERMUTATION[[toupper(type)]][[inter]])) {
-#         stop("allResults must have an element called \"", inter,
-#              "\" in the \"", toupper(type),
-#              "\" list present in its \"PERMUTATION\" list")
-#     }
-#
-#     if (position > length(allResults$PERMUTATION[[toupper(type)]][[inter]])) {
-#         stop(paste0("position must correspond to a valid entry in the \"",
-#             "allResults$PERMUTATION[[", toupper(type), "]][[", inter, "]]"))
-#     }
-
     return(0)
 }
 

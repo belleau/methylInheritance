@@ -101,7 +101,7 @@ than the reference values. The reference vaules are added to the analysis so
 that it becomes impossible for the test to conclude that no value are 
 as extreme as, or more extreme than the reference values.
 
-All those steps have been encoded in functions present in the 
+All those steps have been encoded in the 
 **methylInheritance** package. 
 
 # Case study 
@@ -124,8 +124,7 @@ length(demoForTransgenerationalAnalysis)
 
 ## All samples related to one generations are contained in a S4 methylRawList object.
 ## The methylRawList object contains two Slots:
-## 1- treatment: a numeric vector denoting control (value = ) and test 
-## (value = ) samples.
+## 1- treatment: a numeric vector denoting controls and cases.
 ## 2- .Data: a list of methylRaw objects. Each object stores the raw mehylation 
 ## data of one sample.
 
@@ -151,12 +150,16 @@ slot(demoForTransgenerationalAnalysis[[3]], "treatment")
 The observation analysis can be run on all generations using the
 *runObservationUsingMehtylKitInfo()* function.
 
+The observation results can optionally be stored in a RDS file. To store the
+results into a RDS file, the *outputDir* parameter must be given a directory
+path.
+
 ```{r caseStudy02, warning=FALSE, message=FALSE, collapse=TRUE, cache=TRUE}
 ## The observation analysis is only done on differentially methylated sites
 observationResult <- runObservationUsingMethylKitInfo(methylKitInfo = 
                                         demoForTransgenerationalAnalysis, 
                                 type = "sites",     # Only sites
-                                outputDir = NULL,   # RDS files created
+                                outputDir = NULL,   # RDS files only created when a path is given
                                 nbrCores = 1,
                                 minReads = 10,
                                 minMethDiff = 10,
@@ -171,6 +174,18 @@ observationResult
 
 The permutation analysis can be run on all generations using the
 *runPermutationUsingMehtylKitInfo()* function.
+
+The observation and the permutation analysis can be run together by 
+setting the *runObservationAnalysis = TRUE* in the
+*runPermutationUsingMehtylKitInfo()* function.
+
+All permutations can also be, optionally, saved in RDS files. To store the
+results into RDS files, the *outputDir* parameter must be given a directory
+path.
+
+At last, the *runPermutationUsingRDSFile()* function also executes a
+permutation analysis but insteed of passing a methylKit object to it, the
+path to a RDS file that contains the methylKit object must be used.
 
 ```{r caseStudy03, warning=FALSE, message=FALSE, collapse=TRUE, cache=TRUE}
 
@@ -190,10 +205,6 @@ permutationResult <- runPermutationUsingMethylKitInfo(methylKitInfo =
 permutationResult
 ```
 
-
-The observation and the permutation analysis could have been run together by 
-setting the *runObservationAnalysis = TRUE* in the
-*runPermutationUsingMehtylKitInfo()* function.
 
 ## Merging observation and permutation analysis
 
