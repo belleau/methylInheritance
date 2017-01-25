@@ -249,7 +249,7 @@ F2_and_F3 <- extractInfo(allResults = demoResults, type = "sites", inter = "iAll
 
 ```{r caseStudy07, warning=FALSE, message=FALSE, collapse=TRUE}
 ## Show graph and significant level for differentially conserved sites between F1 and F2 
-plotGraph(F1_and_F2)
+output <- plotGraph(F1_and_F2)
 ```
 
 # References

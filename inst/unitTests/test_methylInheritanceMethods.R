@@ -178,6 +178,40 @@ test.extractInfo_good_01 <- function() {
 ## mergePermutationAndObservation() function
 ###########################################################
 
+## Test when observationResults is not a list
+test.mergePermutationAndObservation_observation_not_list <- function() {
+    perm <- list()
+    perm[["PERMUTATION"]] <- methylInheritanceResults$PERMUTATION
+
+    obs <- tryCatch(mergePermutationAndObservation(permutationResults = perm,
+                                observationResults = "33"),
+                    error=conditionMessage)
+
+    exp <- "observationResults must be a list"
+
+    message <- paste0(" test.mergePermutationAndObservation_observation_not_list() ",
+                      "- Not a list for observationResults did not generated expected results.")
+
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test when permutationResults is not a list
+test.mergePermutationAndObservation_permutation_not_list <- function() {
+    res <- list()
+    res[["OBSERVATION"]] <- methylInheritanceResults$OBSERVATION
+
+    obs <- tryCatch(mergePermutationAndObservation(permutationResults = "allo",
+                    observationResults = res),
+                    error=conditionMessage)
+
+    exp <- "permutationResults must be a list"
+
+    message <- paste0(" test.mergePermutationAndObservation_permutation_not_list() ",
+                      "- Not a list for permutationResults did not generated expected results.")
+
+    checkEquals(obs, exp, msg = message)
+}
+
 ## Test result when all parameters are good
 test.mergePermutationAndObservation_good_01 <- function() {
 

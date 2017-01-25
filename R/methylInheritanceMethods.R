@@ -1439,7 +1439,9 @@ loadAllRDSResults <- function(analysisResultsDir,
 mergePermutationAndObservation <- function(permutationResults,
                                                 observationResults) {
 
-    ## TODO ADD VALIDATION
+    ## Validate parameters
+    validatemergePermutationAndObservation(permutationResults,
+                                            observationResults)
 
     mergedData <- list()
     mergedData[["PERMUTATION"]] <- permutationResults[["PERMUTATION"]]

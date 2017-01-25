@@ -494,6 +494,81 @@ validateExtractInfo <- function(allResults, type, inter, position) {
 }
 
 
+#' @title Validation of some parameters of the
+#' \code{\link{mergePermutationAndObservation}} function
+#'
+#' @description Validation of some parameters needed by the public
+#' \code{\link{mergePermutationAndObservation}} function.
+#'
+#' @param @param permutationResults a \code{list} with 1 entry called
+#' \code{PERMUTATION}. The  \code{PERMUTATION} entry is a \code{list} with
+#' a number of entries corresponding
+#' to the number of permutations that have been processed. Each entry contains
+#' the result of one permutation.
+#'
+#' @param observationResults a \code{list} with 1 entry called
+#' \code{OBSERVATION}. The \code{OBSERVATION} entry is a \code{list} containing
+#' the result obtained
+#' with the observed dataset (not permutated).
+#'
+#' @return \code{0} indicating that all parameters validations have been
+#' successful.
+#'
+#' @examples
+#'
+#' ## Create a observation result
+#' observed <- list()
+#' observed[["OBSERVATION"]] <- list()
+#' observed[["OBSERVATION"]][["SITES"]] <- list()
+#' observed[["OBSERVATION"]][["SITES"]][["i2"]] <- list(HYPER = list(11, 10),
+#' HYPO = list(13, 12))
+#' observed[["OBSERVATION"]][["SITES"]][["iAll"]] <- list(HYPER = list(1),
+#' HYPO = list(3))
+#'
+#' ## Create a permutation result containing only 1 permutation result
+#' ## Real perumtations results would have more entries
+#' permutated <- list()
+#' permutated[["PERMUTATION"]] <- list()
+#' permutated[["PERMUTATION"]][[1]] <- list()
+#' permutated[["PERMUTATION"]][[1]][["SITES"]] <- list()
+#' permutated[["PERMUTATION"]][[1]][["SITES"]][["i2"]] <- list(HYPER =
+#' list(11, 12), HYPO = list(8, 11))
+#' permutated[["PERMUTATION"]][[1]][["SITES"]][["iAll"]] <- list(HYPER =
+#' list(0), HYPO = list(1))
+#'
+#' ## Merge permutation and observation results
+#' methylInheritance:::validatemergePermutationAndObservation(
+#' permutationResults = permutated, observationResults = observed)
+#'
+#' ## The function raises an error when at least one paramater is not valid
+#' \dontrun{methylInheritance:::validatemergePermutationAndObservation(
+#' permutationResults = permutated, observationResults = NULL)}
+#'
+#' @author Astrid Deschenes
+#' @keywords internal
+validatemergePermutationAndObservation <- function(permutationResults,
+                                                    observationResults) {
+
+    if (!is.list(permutationResults)) {
+        stop("permutationResults must be a list")
+    }
+
+    if (is.null(permutationResults$PERMUTATION)) {
+        stop("permutationResults must have an element called \"PERMUTATION\"")
+    }
+
+    if (!is.list(observationResults)) {
+        stop("observationResults must be a list")
+    }
+
+    if (is.null(observationResults$OBSERVATION)) {
+        stop("observationResults must have an element called \"OBSERVATION\"")
+    }
+
+    return(0)
+}
+
+
 #' @title Transform results from a CpG site or region analysis done on mutliple
 #' generations into a \code{list} of \code{GRanges} objects
 #'
