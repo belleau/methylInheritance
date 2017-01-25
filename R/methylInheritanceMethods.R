@@ -1440,7 +1440,7 @@ mergePermutationAndObservation <- function(permutationResults,
                                                 observationResults) {
 
     ## Validate parameters
-    validatemergePermutationAndObservation(permutationResults,
+    validateMergePermutationAndObservation(permutationResults,
                                             observationResults)
 
     mergedData <- list()

@@ -537,16 +537,16 @@ validateExtractInfo <- function(allResults, type, inter, position) {
 #' list(0), HYPO = list(1))
 #'
 #' ## Merge permutation and observation results
-#' methylInheritance:::validatemergePermutationAndObservation(
+#' methylInheritance:::validateMergePermutationAndObservation(
 #' permutationResults = permutated, observationResults = observed)
 #'
 #' ## The function raises an error when at least one paramater is not valid
-#' \dontrun{methylInheritance:::validatemergePermutationAndObservation(
+#' \dontrun{methylInheritance:::validateMergePermutationAndObservation(
 #' permutationResults = permutated, observationResults = NULL)}
 #'
 #' @author Astrid Deschenes
 #' @keywords internal
-validatemergePermutationAndObservation <- function(permutationResults,
+validateMergePermutationAndObservation <- function(permutationResults,
                                                     observationResults) {
 
     if (!is.list(permutationResults)) {
