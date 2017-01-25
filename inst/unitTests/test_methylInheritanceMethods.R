@@ -186,8 +186,6 @@ test.mergePermutationAndObservation_good_01 <- function() {
     observed[["OBSERVATION"]][["SITES"]] <- list()
     observed[["OBSERVATION"]][["SITES"]][["i2"]] <- list(HYPER=list(21, 10), HYPO=list(15, 12))
     observed[["OBSERVATION"]][["SITES"]][["iAll"]] <- list(HYPER=list(1), HYPO=list(3))
-    i2 <- list(HYPER=list(2000, 3000), HYPO=list(2000, 3000))
-    iAll <- list(HYPER=list(0), HYPO=list(0))
     observed[["OBSERVATION"]][["TILES"]] <- list()
     observed[["OBSERVATION"]][["TILES"]][["i2"]] <- list(HYPER=list(2000, 3000), HYPO=list(2000, 3000))
     observed[["OBSERVATION"]][["TILES"]][["iAll"]] <- list(HYPER=list(0), HYPO=list(0))
