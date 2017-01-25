@@ -220,11 +220,21 @@ or more consercutive generations, always starting with the first generation
 
 A specific analysis can be extracted from the results using *extractInfo()* function.
 
+The *type* parameter can be set to extract one of those elements:
+
+* *sites*: differentially methylated sites
+* *tiles*: differentially methylated tiles
+
+The *inter* parameter can be set to extract one of those analysis type:
+
+* *i2*: the analysis between two consecutive generations (F1 and F2, F2 and F3, etc..)
+* *iAll*: the analysis between three or more generations (F1 and F2 and F3, F1 and F2 and F3 and F4, etc..)
+
 ```{r caseStudy05, warning=FALSE, message=FALSE, collapse=TRUE}
-## TODO
+## Differentially conserved sites between F1 and F2 generations
 F1_and_F2_results <- extractInfo(allResults = allResults, type = "sites", inter = "i2", position = 1)
 
-F1_and_F2_results
+head(F1_and_F2_results)
 ```
 
 ## Significant level and visual representation
