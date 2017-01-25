@@ -105,6 +105,8 @@ test.runPermutationUsingRDSFile_good_001 <- function() {
     exp[["OBSERVATION"]] <- observed
     exp[["PERMUTATION"]] <- permutated
 
+    class(exp) <- "methylInheritanceAllResults"
+
     message <- paste0(" test.runPermutationUsingRDSFile_good_001() ",
                       "- All valid parameters did not generated expected result.")
 
