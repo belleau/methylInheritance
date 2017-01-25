@@ -99,23 +99,23 @@ test.runObservationUsingRDSFile_good_001 <- function() {
 # extractInfo() function
 ###########################################################
 
-## Test result when all parameters are good
-# test.extractInfo_good_01 <- function() {
-#     obs <- tryCatch(extractInfo(allResults = methylInheritanceResults,
-#                     type = "sites", inter="i2", 1),
-#                     error=conditionMessage)
-#
-#     exp <- data.frame(TYPE = rep(c("HYPO","HYPER"), 21),
-#                       RESULT = c(2,4,2,4,4,3,1,5,3,3,4,2,0,0,0,1,1,0,6,2,2,5,1,
-#                             3,2,4,222,67,6,4,183,53,1,6,34,102,2,2,4,3,2,2),
-#                       SOURCE = c("OBSERVATION", "OBSERVATION",
-#                                     rep("PERMUTATION", 40)))
-#
-#     message <- paste0(" test.extractInfo_good_01() ",
-#                       "- Valid parameters for formatForGraph did not generated expected results.")
-#
-#     checkEquals(obs, exp, msg = message)
-# }
+# Test result when all parameters are good
+test.extractInfo_good_01 <- function() {
+    obs <- tryCatch(extractInfo(allResults = methylInheritanceResults,
+                    type = "sites", inter="i2", 1),
+                    error=conditionMessage)
+
+    exp <- data.frame(TYPE = rep(c("HYPO","HYPER"), 21),
+                      RESULT = c(2,4,2,4,4,3,1,5,3,3,4,2,0,0,0,1,1,0,6,2,2,5,1,
+                            3,2,4,222,67,6,4,183,53,1,6,34,102,2,2,4,3,2,2),
+                      SOURCE = c("OBSERVATION", "OBSERVATION",
+                                    rep("PERMUTATION", 40)))
+
+    message <- paste0(" test.extractInfo_good_01() ",
+                      "- Valid parameters for formatForGraph did not generated expected results.")
+
+    checkEquals(obs, exp, msg = message)
+}
 
 
 ###########################################################
