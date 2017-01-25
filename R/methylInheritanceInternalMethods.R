@@ -454,6 +454,25 @@ validateExtractInfo <- function(allResults, type, inter, position) {
 
     }
 
+    if (!is.list(allResults$PERMUTATION)) {
+        stop(paste0("allResults must have an element called \"PERMUTATION\". ",
+                "The \"PERMUTATION\" must be a list"))
+    }
+
+    if (length(allResults$PERMUTATION) < 1) {
+        stop(paste0("allResults must have an element called \"PERMUTATION\". ",
+                "The \"PERMUTATION\" must be a list with at least one entry"))
+    }
+
+    ## Validate that all entries in allResults$PERMUTATION must contain
+    ## a entry corresponding to "type"
+    results <- sapply(allResults$PERMUTATION, function(x) {
+                is.null(x[[toupper(type)]])})
+    if (any(results)) {
+        stop(paste0("all entries in allResults$PERMUTATION must have an ",
+                "element called \"", toupper(type)))
+    }
+
     ## TODO : modifier pour la nouvelle structure
 #     if (is.null(allResults$PERMUTATION[[toupper(type)]])) {
 #         stop("allResults must have an element called \"", toupper(type),
@@ -531,7 +550,7 @@ getGRangesFromMethylDiff <- function(methDiff, pDiff, qvalue,
     ## Transform each methylDiff object present in the list to a
     ## GRanges object
     methDiffK <- lapply(1:length(methDiff), FUN = function(i, methDiff,
-                                                    pDiff, qCut, typeD){
+                                                    pDiff, qCut, typeD) {
         methK <- getMethylDiff(methDiff[[i]], difference = pDiff,
                                 qvalue = qCut, type = typeD)
         GRanges(seqnames = methK$chr, ranges = IRanges(start = methK$start,
@@ -611,7 +630,7 @@ interGeneration <- function(resultAllGenGR){
         values(upM) <- cbind(values(upM), typeDiff)
         typeDiff <- DataFrame(typeDiff=rep(-1,length(downM)))
         values(downM) <- cbind(values(downM), typeDiff)
-        c(upM,downM)
+        c(upM, downM)
     }, b = resultAllGenGR)
 
     # Calculate intersection of three or more consercutive generations
