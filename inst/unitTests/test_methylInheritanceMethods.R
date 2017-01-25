@@ -123,55 +123,54 @@ test.extractInfo_good_01 <- function() {
 ###########################################################
 
 ## Test result when all parameters are good
-# test.loadAllRDSResults_good_01 <- function() {
-#
-#     obs <- tryCatch(loadAllRDSResults(analysisResultsDir = TEST_DIR,
-#                         permutationResultsDir = TEST_DIR, doingSites = TRUE,
-#                         doingTiles = TRUE),
-#                     error=conditionMessage)
-#
-#     exp <- list()
-#
-#     exp[["OBSERVATION"]] <- list()
-#     exp[["OBSERVATION"]][["SITES"]] <- list()
-#     exp[["OBSERVATION"]][["SITES"]][["i2"]] <- list(HYPER=list(21, 10), HYPO=list(15, 12))
-#     exp[["OBSERVATION"]][["SITES"]][["iAll"]] <- list(HYPER=list(1), HYPO=list(3))
-#     i2 <- list(HYPER=list(2000, 3000), HYPO=list(2000, 3000))
-#     iAll <- list(HYPER=list(0), HYPO=list(0))
-#     exp[["OBSERVATION"]][["TILES"]] <- list()
-#     exp[["OBSERVATION"]][["TILES"]][["i2"]] <- list(HYPER=list(2000, 3000), HYPO=list(2000, 3000))
-#     exp[["OBSERVATION"]][["TILES"]][["iAll"]] <- list(HYPER=list(0), HYPO=list(0))
-#
-#     exp[["PERMUTATION"]] <- list()
-#     cas_01 <- list()
-#     cas_01[["i2"]] <- list(HYPER=list(5, 7), HYPO=list(10, 11))
-#     cas_01[["iAll"]] <- list(HYPER=list(2), HYPO=list(3))
-#     cas_02 <- list()
-#     cas_02[["i2"]] <- list(HYPER=list(8, 9), HYPO=list(4, 7))
-#     cas_02[["iAll"]] <- list(HYPER=list(3), HYPO=list(0))
-#     cas_03 <- list()
-#     cas_03[["i2"]] <- list(HYPER=list(10, 7), HYPO=list(11, 7))
-#     cas_03[["iAll"]] <- list(HYPER=list(1), HYPO=list(2))
-#     exp[["PERMUTATION"]][["SITES"]] <- list(cas_01, cas_02, cas_03)
-#     cas_01 <- list()
-#     cas_01[["i2"]] <- list(HYPER=list(0, 0), HYPO=list(1000, 3000))
-#     cas_01[["iAll"]] <- list(HYPER=list(0), HYPO=list(1000))
-#     cas_02 <- list()
-#     cas_02[["i2"]] <- list(HYPER=list(1000, 1000), HYPO=list(1000, 1000))
-#     cas_02[["iAll"]] <- list(HYPER=list(0), HYPO=list(0))
-#     cas_03 <- list()
-#     cas_03[["i2"]] <- list(HYPER=list(0, 3000), HYPO=list(2000, 0))
-#     cas_03[["iAll"]] <- list(HYPER=list(0), HYPO=list(0))
-#     exp[["PERMUTATION"]][["TILES"]] <- list(cas_01, cas_02, cas_03)
-#
-#     class(exp) <- "methylInheritanceAllResults"
-#
-#     message <- paste0(" test.loadAllRDSResults_good_01() ",
-#                         "- Valid parameters for loadAllRDSResults() ",
-#                         "did not generated expected results.")
-#
-#     checkEquals(obs, exp, msg = message)
-# }
+test.loadAllRDSResults_good_01 <- function() {
+    obs <- tryCatch(loadAllRDSResults(analysisResultsDir = TEST_DIR,
+                        permutationResultsDir = TEST_DIR, doingSites = TRUE,
+                        doingTiles = TRUE),
+                    error=conditionMessage)
+
+    exp <- list()
+
+    exp[["OBSERVATION"]] <- list("SITES" = list(), "TILES" = list())
+    exp[["OBSERVATION"]][["SITES"]][["i2"]] <- list(HYPER=list(21, 10), HYPO=list(15, 12))
+    exp[["OBSERVATION"]][["SITES"]][["iAll"]] <- list(HYPER=list(1), HYPO=list(3))
+    i2 <- list(HYPER=list(2000, 3000), HYPO=list(2000, 3000))
+    iAll <- list(HYPER=list(0), HYPO=list(0))
+    exp[["OBSERVATION"]][["TILES"]][["i2"]] <- list(HYPER=list(2000, 3000), HYPO=list(2000, 3000))
+    exp[["OBSERVATION"]][["TILES"]][["iAll"]] <- list(HYPER=list(0), HYPO=list(0))
+
+    exp[["PERMUTATION"]] <- list()
+    cas_01 <- list("SITES" = list(), "TILES" = list())
+    cas_01[["SITES"]][["i2"]] <- list(HYPER=list(5, 7), HYPO=list(10, 11))
+    cas_01[["SITES"]][["iAll"]] <- list(HYPER=list(2), HYPO=list(3))
+    cas_01[["TILES"]][["i2"]] <- list(HYPER=list(0, 0), HYPO=list(1000, 3000))
+    cas_01[["TILES"]][["iAll"]] <- list(HYPER=list(0), HYPO=list(1000))
+    exp[["PERMUTATION"]][[1]] <- cas_01
+    cas_02 <- list()
+    cas_02[["SITES"]] <- list()
+    cas_02[["SITES"]][["i2"]] <- list(HYPER=list(8, 9), HYPO=list(4, 7))
+    cas_02[["SITES"]][["iAll"]] <- list(HYPER=list(3), HYPO=list(0))
+    cas_02[["TILES"]] <- list()
+    cas_02[["TILES"]][["i2"]] <- list(HYPER=list(1000, 1000), HYPO=list(1000, 1000))
+    cas_02[["TILES"]][["iAll"]] <- list(HYPER=list(0), HYPO=list(0))
+    exp[["PERMUTATION"]][[2]] <- cas_02
+    cas_03 <- list()
+    cas_03[["SITES"]] <- list()
+    cas_03[["SITES"]][["i2"]] <- list(HYPER=list(10, 7), HYPO=list(11, 7))
+    cas_03[["SITES"]][["iAll"]] <- list(HYPER=list(1), HYPO=list(2))
+    cas_03[["TILES"]] <- list()
+    cas_03[["TILES"]][["i2"]] <- list(HYPER=list(0, 3000), HYPO=list(2000, 0))
+    cas_03[["TILES"]][["iAll"]] <- list(HYPER=list(0), HYPO=list(0))
+    exp[["PERMUTATION"]][[3]] <- cas_03
+
+    class(exp) <- "methylInheritanceAllResults"
+
+    message <- paste0(" test.loadAllRDSResults_good_01() ",
+                        "- Valid parameters for loadAllRDSResults() ",
+                        "did not generated expected results.")
+
+    checkEquals(obs, exp, msg = message)
+}
 
 
 ###########################################################
