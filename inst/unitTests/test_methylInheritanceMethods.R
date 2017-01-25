@@ -236,18 +236,18 @@ test.mergePermutationAndObservation_good_01 <- function() {
 ## plotGraph() function
 ###########################################################
 
-## Test result when all parameters are good
-# test.plotGraph_good_01 <- function() {
-#
-#     g <- extractInfo(allResults = methylInheritanceResults,
-#                                 type = "sites", inter="i2", 1)
-#
-#     obs <- plotGraph(g)
-#
-#     message <- paste0(" test.plotGraph_good_01() ",
-#                       "- Valid parameters for plotGraph did not generated expected results.")
-#
-#     checkTrue("gtable" %in% class(obs), msg = message)
-#     checkEquals(class(obs[[1]]), "list", msg = message)
-#     checkEquals(class(obs[[2]]), "data.frame", msg = message)
-# }
+# Test result when all parameters are good
+test.plotGraph_good_01 <- function() {
+
+    g <- extractInfo(allResults = methylInheritanceResults,
+                                type = "sites", inter="i2", 1)
+
+    obs <- plotGraph(g)
+
+    message <- paste0(" test.plotGraph_good_01() ",
+                      "- Valid parameters for plotGraph did not generated expected results.")
+
+    checkTrue("gtable" %in% class(obs), msg = message)
+    checkEquals(class(obs[[1]]), "list", msg = message)
+    checkEquals(class(obs[[2]]), "data.frame", msg = message)
+}
