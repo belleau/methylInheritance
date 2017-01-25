@@ -19,7 +19,7 @@ the results obtained
 with the real dataset (not permutated).}
 }
 \value{
-a \code{list} with 2 entries. The 2 entries are:
+a \code{list} of class \code{} with 2 entries. The 2 entries are:
 \itemize{
 \item \code{PERMUTATION} \code{list} with a number of entries corresponding
 to the number of permutations that have been processed. Each entry contains
@@ -31,7 +31,9 @@ with the real dataset (not permutated).
 \description{
 Merge the permutation results with the observation results.
 The merging is only needed when permutation and observation have been
-processed separatly.
+processed separatly. The returned value is a
+\code{methylInheritanceAllResults} object that can be used by
+the \code{extractInfo} function.
 }
 \examples{
 

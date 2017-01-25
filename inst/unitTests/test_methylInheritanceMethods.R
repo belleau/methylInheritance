@@ -289,6 +289,7 @@ test.mergePermutationAndObservation_good_01 <- function() {
     exp <- list()
     exp[["PERMUTATION"]] <- permutated[["PERMUTATION"]]
     exp[["OBSERVATION"]] <- observed[["OBSERVATION"]]
+    class(exp) <- "methylInheritanceAllResults"
 
     message <- paste0(" test.mergePermutationAndObservation_good_01() ",
                       "- Valid parameters for mergePermutationAndObservation() ",

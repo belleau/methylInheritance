@@ -656,6 +656,10 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
 
     result[["PERMUTATION"]] <- permutationResults
 
+    if (runObservationAnalysis) {
+        class(result)<-"methylInheritanceAllResults"
+    }
+
     return(result)
 }
 
@@ -1359,7 +1363,9 @@ loadAllRDSResults <- function(analysisResultsDir,
 #'
 #' @description  Merge the permutation results with the observation results.
 #' The merging is only needed when permutation and observation have been
-#' processed separatly.
+#' processed separatly. The returned value is a
+#' \code{methylInheritanceAllResults} object that can be used by
+#' the \code{extractInfo} function.
 #'
 #' @param permutationResults a \code{list} with 1 entry called
 #' \code{PERMUTATION}m the entry is a \code{list} with a number of
@@ -1372,7 +1378,7 @@ loadAllRDSResults <- function(analysisResultsDir,
 #' the results obtained
 #' with the real dataset (not permutated).
 #'
-#' @return a \code{list} with 2 entries. The 2 entries are:
+#' @return a \code{list} of class \code{} with 2 entries. The 2 entries are:
 #' \itemize{
 #' \item \code{PERMUTATION} \code{list} with a number of entries corresponding
 #' to the number of permutations that have been processed. Each entry contains
@@ -1395,6 +1401,8 @@ mergePermutationAndObservation <- function(permutationResults,
     mergedData <- list()
     mergedData[["PERMUTATION"]] <- permutationResults[["PERMUTATION"]]
     mergedData[["OBSERVATION"]] <- observationResults[["OBSERVATION"]]
+
+    class(mergedData)<-"methylInheritanceAllResults"
 
     return(mergedData)
 }
