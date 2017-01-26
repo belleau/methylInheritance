@@ -200,7 +200,8 @@ generations.
 }
 }
 \item \code{PERMUTATION} a \code{list}
-containing \code{nbrPermutations} entries. Each entry is
+containing a number of entries corresponding to the number of permutations
+that have been produced. Each entry is
 a \code{list} containing:
 \itemize{
 \item \code{SITES} a \code{list} containing:
@@ -270,7 +271,8 @@ The object is a \code{list} with 2 entries: "OBSERVATION" and
 }
 \details{
 This dataset can be
-used to test the \code{extractInfo} function.
+used to test the \code{extractInfo} function.The extracted info can be
+used to calculate the significant level or to create a graph.
 }
 \examples{
 
@@ -286,7 +288,7 @@ type = "sites", inter="i2", 1)
 }
 \seealso{
 \itemize{
-    \item \code{\link{methylInheritanceResults}} {for extracting the
+    \item \code{\link{extractInfo}} {for extracting the
     information specific to a subsection of the permutation analysis}
 }
 }

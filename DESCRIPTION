@@ -9,7 +9,7 @@ Description: Permutation analysis, based on Monte Carlo sampling, for testing
     inherited from a treatment and that stochastic effect can be dismissed.
 Author: Astrid Deschênes, Pascal Belleau and Arnaud Droit
 Author@R: c(person("Astrid", "Deschênes",
-    email="Astrid-Louise.Deschenes@crchudequebec.ulaval.ca",
+    email="adeschen@hotmail.com",
     role=c("cre","aut")),
     person("Pascal", "Belleau",
     email="pascal.belleau@crchuq.ulaval.ca", role=c("aut")),
@@ -38,5 +38,5 @@ VignetteBuilder: knitr
 biocViews: BiologicalQuestion, Epigenetics, DNAMethylation,
     DifferentialMethylation, MethylSeq,
     Software, StatisticalMethod, WholeGenome, Sequencing
-Maintainer: Astrid Deschenes <Astrid-Louise.Deschenes@crchudequebec.ulaval.ca>
+Maintainer: Astrid Deschenes <adeschen@hotmail.com>
 RoxygenNote: 5.0.1

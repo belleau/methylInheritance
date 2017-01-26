@@ -99,7 +99,9 @@ needed. When a value inferior or equal to zero is given, a random integer
 is used. Default: \code{-1}.}
 }
 \value{
-a \code{list} containing the following elements:
+a \code{list} of class \code{} when a \code{runObservationAnalysis}
+= \code{TRUE}; otherwise a \code{list}. The returned \code{list}
+containing the following elements:
 \itemize{
 \item \code{OBSERVATION} Only present when \code{runObservationAnalysis} =
 \code{TRUE}, a \code{list} containing:
@@ -246,6 +248,9 @@ for testing the hypothesis that the number of conserved differentially
 methylated elements (sites, tiles or both), between
 several generations, is associated to an effect inherited from a treatment
 and that stochastic effect can be dismissed.
+
+The observation analysis can also be run (optional). All permutation
+results can also be saved in RDS files (optional).
 }
 \examples{
 

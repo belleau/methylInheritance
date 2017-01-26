@@ -454,21 +454,99 @@ validateExtractInfo <- function(allResults, type, inter, position) {
 
     }
 
-    if (is.null(allResults$PERMUTATION[[toupper(type)]])) {
-        stop("allResults must have an element called \"", toupper(type),
-             "\" in its \"PERMUTATION\" list")
+    if (!is.list(allResults$PERMUTATION)) {
+        stop(paste0("allResults must have an element called \"PERMUTATION\". ",
+                "The \"PERMUTATION\" must be a list"))
     }
-#
-#     if (is.null(allResults$PERMUTATION[[toupper(type)]][[inter]])) {
-#         stop("allResults must have an element called \"", inter,
-#              "\" in the \"", toupper(type),
-#              "\" list present in its \"PERMUTATION\" list")
-#     }
-#
-#     if (position > length(allResults$PERMUTATION[[toupper(type)]][[inter]])) {
-#         stop(paste0("position must correspond to a valid entry in the \"",
-#             "allResults$PERMUTATION[[", toupper(type), "]][[", inter, "]]"))
-#     }
+
+    if (length(allResults$PERMUTATION) < 1) {
+        stop(paste0("allResults must have an element called \"PERMUTATION\". ",
+                "The \"PERMUTATION\" must be a list with at least one entry"))
+    }
+
+    ## Validate that all entries in allResults$PERMUTATION must contain
+    ## a entry corresponding to "type"
+    results <- sapply(allResults$PERMUTATION, function(x) {
+                is.null(x[[toupper(type)]])})
+    if (any(results)) {
+        stop(paste0("all entries in allResults$PERMUTATION must have an ",
+                "element called \"", toupper(type)))
+    }
+
+    return(0)
+}
+
+
+#' @title Validation of some parameters of the
+#' \code{\link{mergePermutationAndObservation}} function
+#'
+#' @description Validation of some parameters needed by the public
+#' \code{\link{mergePermutationAndObservation}} function.
+#'
+#' @param @param permutationResults a \code{list} with 1 entry called
+#' \code{PERMUTATION}. The  \code{PERMUTATION} entry is a \code{list} with
+#' a number of entries corresponding
+#' to the number of permutations that have been processed. Each entry contains
+#' the result of one permutation.
+#'
+#' @param observationResults a \code{list} with 1 entry called
+#' \code{OBSERVATION}. The \code{OBSERVATION} entry is a \code{list} containing
+#' the result obtained
+#' with the observed dataset (not permutated).
+#'
+#' @return \code{0} indicating that all parameters validations have been
+#' successful.
+#'
+#' @examples
+#'
+#' ## Create a observation result
+#' observed <- list()
+#' observed[["OBSERVATION"]] <- list()
+#' observed[["OBSERVATION"]][["SITES"]] <- list()
+#' observed[["OBSERVATION"]][["SITES"]][["i2"]] <- list(HYPER = list(11, 10),
+#' HYPO = list(13, 12))
+#' observed[["OBSERVATION"]][["SITES"]][["iAll"]] <- list(HYPER = list(1),
+#' HYPO = list(3))
+#'
+#' ## Create a permutation result containing only 1 permutation result
+#' ## Real perumtations results would have more entries
+#' permutated <- list()
+#' permutated[["PERMUTATION"]] <- list()
+#' permutated[["PERMUTATION"]][[1]] <- list()
+#' permutated[["PERMUTATION"]][[1]][["SITES"]] <- list()
+#' permutated[["PERMUTATION"]][[1]][["SITES"]][["i2"]] <- list(HYPER =
+#' list(11, 12), HYPO = list(8, 11))
+#' permutated[["PERMUTATION"]][[1]][["SITES"]][["iAll"]] <- list(HYPER =
+#' list(0), HYPO = list(1))
+#'
+#' ## Merge permutation and observation results
+#' methylInheritance:::validateMergePermutationAndObservation(
+#' permutationResults = permutated, observationResults = observed)
+#'
+#' ## The function raises an error when at least one paramater is not valid
+#' \dontrun{methylInheritance:::validateMergePermutationAndObservation(
+#' permutationResults = permutated, observationResults = NULL)}
+#'
+#' @author Astrid Deschenes
+#' @keywords internal
+validateMergePermutationAndObservation <- function(permutationResults,
+                                                    observationResults) {
+
+    if (!is.list(permutationResults)) {
+        stop("permutationResults must be a list")
+    }
+
+    if (is.null(permutationResults$PERMUTATION)) {
+        stop("permutationResults must have an element called \"PERMUTATION\"")
+    }
+
+    if (!is.list(observationResults)) {
+        stop("observationResults must be a list")
+    }
+
+    if (is.null(observationResults$OBSERVATION)) {
+        stop("observationResults must have an element called \"OBSERVATION\"")
+    }
 
     return(0)
 }
@@ -530,7 +608,7 @@ getGRangesFromMethylDiff <- function(methDiff, pDiff, qvalue,
     ## Transform each methylDiff object present in the list to a
     ## GRanges object
     methDiffK <- lapply(1:length(methDiff), FUN = function(i, methDiff,
-                                                    pDiff, qCut, typeD){
+                                                    pDiff, qCut, typeD) {
         methK <- getMethylDiff(methDiff[[i]], difference = pDiff,
                                 qvalue = qCut, type = typeD)
         GRanges(seqnames = methK$chr, ranges = IRanges(start = methK$start,
@@ -610,7 +688,7 @@ interGeneration <- function(resultAllGenGR){
         values(upM) <- cbind(values(upM), typeDiff)
         typeDiff <- DataFrame(typeDiff=rep(-1,length(downM)))
         values(downM) <- cbind(values(downM), typeDiff)
-        c(upM,downM)
+        c(upM, downM)
     }, b = resultAllGenGR)
 
     # Calculate intersection of three or more consercutive generations
@@ -1178,6 +1256,7 @@ saveInterGenerationResults <- function(outputDir, permutationID,
 #' formatedResults <- methylInheritance:::createDataStructure(obsResults)
 #'
 #' @author Astrid Deschenes, Pascal Belleau
+#' @importFrom GenomicRanges width
 #' @keywords internal
 createDataStructure <- function(interGenerationGR) {
 

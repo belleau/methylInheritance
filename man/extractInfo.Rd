@@ -9,14 +9,15 @@ extractInfo(allResults, type = c("sites", "tiles"), inter = c("i2", "iAll"),
   position)
 }
 \arguments{
-\item{allResults}{a \code{list} as created by the
+\item{allResults}{a \code{list} of class \code{methylInheritanceAllResults}
+as created by the
 \code{runPermutationUsingMethylKitInfo} or the
 \code{runPermutationUsingRDSFile} functions. The \code{list} must contain
 two entries : \code{"PERMUTATION"} and \code{"OBSERVATION"}. The
 \code{"PERMUTATION"} \code{list} must contain all results from all
 permutations while
-the \code{"OBSERVATION"} \code{list} must contain the results obtained with
-the real dataset (not permutated).}
+the \code{"OBSERVATION"} \code{list} must contain the result obtained with
+the observed dataset (not permutated).}
 
 \item{type}{One of the \code{"sites"} or \code{"tiles"} strings.
 Specifies the type
@@ -36,7 +37,8 @@ Default: \code{"i2"}.}
 where the information will be extracted.}
 }
 \value{
-a \code{data.frame} containing the observation results (using real
+a \code{data.frame}
+containing the observation results (using real
 data) and the permutation results (using permutated data). Both hyper and
 hypo differentially conserved methylation results are present.
 }

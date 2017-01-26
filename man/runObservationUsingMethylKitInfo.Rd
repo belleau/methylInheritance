@@ -6,10 +6,10 @@
 present in a dataset}
 \usage{
 runObservationUsingMethylKitInfo(methylKitInfo, type = c("both", "sites",
-  "tiles"), outputDir = NULL, nbrPermutations = 0, nbrCores = 1,
-  nbrCoresDiffMeth = 1, minReads = 10, minMethDiff = 10, qvalue = 0.01,
-  maxPercReads = 99.9, destrand = FALSE, minCovBasesForTiles = 0,
-  tileSize = 1000, stepSize = 1000, vSeed = -1)
+  "tiles"), outputDir = NULL, nbrCores = 1, nbrCoresDiffMeth = 1,
+  minReads = 10, minMethDiff = 10, qvalue = 0.01, maxPercReads = 99.9,
+  destrand = FALSE, minCovBasesForTiles = 0, tileSize = 1000,
+  stepSize = 1000, vSeed = -1)
 }
 \arguments{
 \item{methylKitInfo}{a \code{list} of \code{methylRawList} entries, each
@@ -29,9 +29,6 @@ differentially methylated regions type="tiles". Default: "both".}
 the results of the permutation or \code{NULL}. If the directory does not
 exist, it will be created. When \code{NULL}, the results of the permutation
 are not saved. Default: \code{NULL}.}
-
-\item{nbrPermutations, }{a positive \code{integer}, the total number of
-permutations that is going to be done. Default: \code{1000}.}
 
 \item{nbrCores}{a positive \code{integer}, the number of cores to use when
 processing the analysis. Default: \code{1} and always \code{1} for Windows.}
@@ -176,8 +173,7 @@ data(samplesForTransgenerationalAnalysis)
 
 ## Run a permutation analysis
 \dontrun{runObservationUsingMethylKitInfo(methylKitInfo =
-samplesForTransgenerationalAnalysis, type = "sites",
-nbrPermutations = 0, vSeed = 221)}
+samplesForTransgenerationalAnalysis, type = "sites", vSeed = 221)}
 
 }
 \author{

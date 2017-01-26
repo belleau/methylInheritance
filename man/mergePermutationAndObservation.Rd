@@ -8,34 +8,59 @@ mergePermutationAndObservation(permutationResults, observationResults)
 }
 \arguments{
 \item{permutationResults}{a \code{list} with 1 entry called
-\code{PERMUTATION}m the entry is a \code{list} with a number of
-entries corresponding
+\code{PERMUTATION}. The  \code{PERMUTATION} entry is a \code{list} with
+a number of entries corresponding
 to the number of permutations that have been processed. Each entry contains
 the result of one permutation.}
 
 \item{observationResults}{a \code{list} with 1 entry called
-\code{OBSERVATION}, the entry is a \code{list} of 1 entry containing
-the results obtained
-with the real dataset (not permutated).}
+\code{OBSERVATION}. The \code{OBSERVATION} entry is a \code{list} containing
+the result obtained
+with the observed dataset (not permutated).}
 }
 \value{
-a \code{list} with 2 entries. The 2 entries are:
+a \code{list} of class \code{methylInheritanceAllResults} with
+2 entries. The 2 entries are:
 \itemize{
 \item \code{PERMUTATION} \code{list} with a number of entries corresponding
 to the number of permutations that have been processed. Each entry contains
 the result of one permutation.
-\item \code{OBSERVATION} a \code{list} with 1 entry, the results obtained
-with the real dataset (not permutated).
+\item \code{OBSERVATION} a \code{list} containing the result obtained
+with the observed dataset (not permutated).
 }
 }
 \description{
 Merge the permutation results with the observation results.
 The merging is only needed when permutation and observation have been
-processed separatly.
+processed separatly. The returned value is a
+\code{methylInheritanceAllResults} object that can be used by
+the \code{extractInfo} function.
 }
 \examples{
 
-## TODO
+## Create a observation result
+observed <- list()
+observed[["OBSERVATION"]] <- list()
+observed[["OBSERVATION"]][["SITES"]] <- list()
+observed[["OBSERVATION"]][["SITES"]][["i2"]] <- list(HYPER = list(11, 10),
+HYPO = list(13, 12))
+observed[["OBSERVATION"]][["SITES"]][["iAll"]] <- list(HYPER = list(1),
+HYPO = list(3))
+
+## Create a permutation result containing only 1 permutation result
+## Real perumtations results would have more entries
+permutated <- list()
+permutated[["PERMUTATION"]] <- list()
+permutated[["PERMUTATION"]][[1]] <- list()
+permutated[["PERMUTATION"]][[1]][["SITES"]] <- list()
+permutated[["PERMUTATION"]][[1]][["SITES"]][["i2"]] <- list(HYPER =
+list(11, 12), HYPO = list(8, 11))
+permutated[["PERMUTATION"]][[1]][["SITES"]][["iAll"]] <- list(HYPER =
+list(0), HYPO = list(1))
+
+## Merge permutation and observation results
+mergePermutationAndObservation(permutationResults = permutated,
+observationResults = observed)
 
 }
 \author{

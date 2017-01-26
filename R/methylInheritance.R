@@ -19,16 +19,16 @@
 #' Arnaud Droit
 #'
 #' Maintainer:
-#' Astrid Deschenes <astrid-louise.deschenes@@crchudequebec.ulaval.ca>
+#' Astrid Deschenes <adeschen@hotmail.com>
 #'
 #' @seealso
 #' \itemize{
-#'     \item \code{\link{runPermutationUsingRDSFile}} { for running a
+#'     \item \code{\link{runPermutationUsingRDSFile}} {for running a
 #'     permutation analysis on the specified multi-generational dataset in
 #'     RDS format}
 #'     \item \code{\link{runPermutationUsingMethylKitInfo}} {for running a
 #'     permutation analysis using a methylKit info object as input}
-#'     \item \code{\link{runObservationUsingRDSFile}} { for running a
+#'     \item \code{\link{runObservationUsingRDSFile}} {for running a
 #'     observation analysis on the specified multi-generational dataset in
 #'     RDS format}
 #'     \item \code{\link{runObservationUsingMethylKitInfo}} {for running a
@@ -90,6 +90,63 @@ NULL
 #'
 NULL
 
+#' Methylation information from samples over three generations. Information
+#' for each generation is stored in a
+#' \code{methylRawList} format (for demo purpose).
+#'
+#' The object is a \code{list} with 3 entries. Each entry correspond to the
+#' information for one generation (first entry = first generation, etc..)
+#' stored in a \code{methylRawList} ojbect.
+#' There is 12 samples (6 controls and 6 cases) for each generation. Each
+#' sample information is stored in a \code{methylRaw} object.
+#'
+#' This dataset can be
+#' used to test \code{runPermutationUsingMethylKitInfo} and
+#' {runObservationUsingMethylKitInfo} functions.
+#'
+#' @name demoForTransgenerationalAnalysis
+#'
+#' @docType data
+#'
+#' @aliases demoForTransgenerationalAnalysis
+#'
+#' @format A \code{list} containing three \code{methylRawList} objects. Each
+#' \code{methylRawList} contains the information for one generation
+#' (first entry = first generation, etc..). Each sample information is
+#' stored in a \code{methylRaw} object. There is \code{methylRaw} objects
+#'  (6 controls and 6 cases) in each generation.
+#'
+#' @return A \code{list} containing three \code{methylRawList} objects. Each
+#' \code{methylRawList} contains the information for one generation
+#' (first entry = first generation, etc..). Each sample information is
+#' stored in a \code{methylRaw} object. There is \code{methylRaw} objects
+#'  (6 controls and 6 cases) in each generation.
+#'
+#' @seealso
+#' \itemize{
+#'     \item \code{\link{runPermutationUsingMethylKitInfo}} {for running a
+#'     permutation analysis using methylKit info entry}
+#'     \item \code{\link{runObservationUsingMethylKitInfo}} {for running a
+#'     observation analysis using methylKit info entry}
+#' }
+#'
+#' @usage data(demoForTransgenerationalAnalysis)
+#'
+#' @keywords datasets
+#'
+#' @examples
+#'
+#' ## Loading dataset
+#' data(demoForTransgenerationalAnalysis)
+#'
+#' ## Run a permutation analysis
+#' \dontrun{(runObservationUsingMethylKitInfo(methylKitInfo =
+#' demoForTransgenerationalAnalysis, type = "tiles", nbrPermutations = 3,
+#' vSeed = 2001)}
+#'
+NULL
+
+
 #' All observed and permutation results formatted in a
 #' \code{methylInheritanceResults} class object (for demo purpose).
 #'
@@ -97,7 +154,8 @@ NULL
 #' "PERMUTATION".
 #'
 #' This dataset can be
-#' used to test the \code{extractInfo} function.
+#' used to test the \code{extractInfo} function.The extracted info can be
+#' used to calculate the significant level or to create a graph.
 #'
 #' @name methylInheritanceResults
 #'
@@ -129,7 +187,7 @@ NULL
 #' }
 #' \item\code{iAll} a \code{list} containing:
 #' \itemize{
-#'\item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
+#' \item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
 #'the number of conserved
 #' hyper differentially methylated sites between the three consecutive
 #' generations.
@@ -157,7 +215,7 @@ NULL
 #' }
 #' \item\code{iAll} a \code{list} containing:
 #' \itemize{
-#'\item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
+#' \item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
 #' the number of conserved
 #' hyper differentially methylated positions between the three consecutive
 #' generations.
@@ -297,7 +355,8 @@ NULL
 #' }
 #' }
 #' \item \code{PERMUTATION} a \code{list}
-#' containing \code{nbrPermutations} entries. Each entry is
+#' containing a number of entries corresponding to the number of permutations
+#' that have been produced. Each entry is
 #' a \code{list} containing:
 #' \itemize{
 #' \item \code{SITES} a \code{list} containing:
@@ -363,7 +422,7 @@ NULL
 #'
 #' @seealso
 #' \itemize{
-#'     \item \code{\link{methylInheritanceResults}} {for extracting the
+#'     \item \code{\link{extractInfo}} {for extracting the
 #'     information specific to a subsection of the permutation analysis}
 #' }
 #'

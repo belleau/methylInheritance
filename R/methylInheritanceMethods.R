@@ -7,6 +7,9 @@
 #' several generations, is associated to an effect inherited from a treatment
 #' and that stochastic effect can be dismissed.
 #'
+#' The observation analysis can also be run (optional). All permutation
+#' results can also be saved in RDS files (optional).
+#'
 #' @param methylKitRDSFile a string, the name of the RDS file containing the
 #' methylKit objet used for the permutation analysis. The RDS file must
 #' hold a \code{list} of \code{methylRawList} entries, each
@@ -92,7 +95,9 @@
 #' needed. When a value inferior or equal to zero is given, a random integer
 #' is used. Default: \code{-1}.
 #'
-#' @return a \code{list} containing the following elements:
+#' @return a \code{list} of class \code{} when a \code{runObservationAnalysis}
+#' = \code{TRUE}; otherwise a \code{list}. The returned \code{list}
+#' containing the following elements:
 #' \itemize{
 #' \item \code{OBSERVATION} Only present when \code{runObservationAnalysis} =
 #' \code{TRUE}, a \code{list} containing:
@@ -289,6 +294,9 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 #' several generations, is associated to an effect inherited from a treatment
 #' and that stochastic effect can be dismissed.
 #'
+#' The observation analysis can also be run (optional). All permutation
+#' results can also be saved in RDS files (optional).
+#'
 #' @param methylKitInfo a \code{list} of \code{methylRawList} entries, each
 #' \code{methylRawList} contains all the \code{methylRaw} entries related to
 #' one generation (first entry = first generation, second entry = second
@@ -371,7 +379,9 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 #' needed. When a value inferior or equal to zero is given, a random integer
 #' is used. Default: \code{-1}.
 #'
-#' @return a \code{list} containing the following elements:
+#' @return a \code{list} of class \code{} when a \code{runObservationAnalysis}
+#' = \code{TRUE}; otherwise a \code{list}. The returned \code{list}
+#' containing the following elements:
 #' \itemize{
 #' \item \code{OBSERVATION} Only present when \code{runObservationAnalysis} =
 #' \code{TRUE}, a \code{list} containing:
@@ -622,7 +632,6 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
                                                             methylKitInfo,
                                     type = type,
                                     outputDir = outputDir,
-                                    nbrPermutations = nbrPermutations,
                                     nbrCores = nbrCores,
                                     nbrCoresDiffMeth = nbrCoresDiffMeth,
                                     minReads = minReads,
@@ -657,6 +666,10 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
 
     result[["PERMUTATION"]] <- permutationResults
 
+    if (runObservationAnalysis) {
+        class(result)<-"methylInheritanceAllResults"
+    }
+
     return(result)
 }
 
@@ -690,9 +703,6 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
 #'
 #' @param nbrCores a positive \code{integer}, the number of cores to use when
 #' processing the analysis. Default: \code{1} and always \code{1} for Windows.
-#'
-#' @param nbrPermutations, a positive \code{integer}, the total number of
-#' permutations that is going to be done. Default: \code{1000}.
 #'
 #' @param nbrCoresDiffMeth a positive \code{integer}, the number of cores
 #' to use for parallel differential methylation calculations.Parameter
@@ -826,15 +836,13 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
 #'
 #' ## Run a permutation analysis
 #' \dontrun{runObservationUsingMethylKitInfo(methylKitInfo =
-#' samplesForTransgenerationalAnalysis, type = "sites",
-#' nbrPermutations = 0, vSeed = 221)}
+#' samplesForTransgenerationalAnalysis, type = "sites", vSeed = 221)}
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
 runObservationUsingMethylKitInfo <- function(methylKitInfo,
                                             type = c("both", "sites", "tiles"),
                                             outputDir = NULL,
-                                            nbrPermutations = 0,
                                             nbrCores = 1,
                                             nbrCoresDiffMeth = 1,
                                             minReads = 10,
@@ -932,9 +940,6 @@ runObservationUsingMethylKitInfo <- function(methylKitInfo,
 #'
 #' @param nbrCores a positive \code{integer}, the number of cores to use when
 #' processing the analysis. Default: \code{1} and always \code{1} for Windows.
-#'
-#' @param nbrPermutations, a positive \code{integer}, the total number of
-#' permutations that is going to be done. Default: \code{1000}.
 #'
 #' @param nbrCoresDiffMeth a positive \code{integer}, the number of cores
 #' to use for parallel differential methylation calculations.Parameter
@@ -1066,7 +1071,7 @@ runObservationUsingMethylKitInfo <- function(methylKitInfo,
 #'
 #' ## Run a permutation analysis
 #' \dontrun{runObservationUsingRDSFile(methylKitRDSFile = methylFile,
-#' type = "sites", nbrPermutations = 0, minReads = 8, minMethDiff = 5,
+#' type = "sites", minReads = 8, minMethDiff = 5,
 #' vSeed = 2001)}
 #'
 #' @author Astrid Deschenes, Pascal Belleau
@@ -1074,7 +1079,6 @@ runObservationUsingMethylKitInfo <- function(methylKitInfo,
 runObservationUsingRDSFile <- function(methylKitRDSFile,
                                             type = c("both", "sites", "tiles"),
                                             outputDir = NULL,
-                                            nbrPermutations = 0,
                                             nbrCores = 1,
                                             nbrCoresDiffMeth = 1,
                                             minReads = 10,
@@ -1099,7 +1103,6 @@ runObservationUsingRDSFile <- function(methylKitRDSFile,
     result <- runObservationUsingMethylKitInfo(methylKitInfo = methylInfo,
                                     type = type,
                                     outputDir = outputDir,
-                                    nbrPermutations = nbrPermutations,
                                     nbrCores = nbrCores,
                                     nbrCoresDiffMeth = nbrCoresDiffMeth ,
                                     minReads = minReads,
@@ -1332,9 +1335,11 @@ loadAllRDSResults <- function(analysisResultsDir,
         sitesPerm <- lapply(filesInDir, FUN = function(x) {readRDS(file = x)})
 
         t <- lapply(sitesPerm, FUN = function(x) {
-                    createDataStructure(interGenerationGR = x)})
+                    struct <- createDataStructure(interGenerationGR = x)
+                    res <- list("SITES" = struct)
+                    return(res)})
 
-        result[["PERMUTATION"]][["SITES"]] <- t
+        result[["PERMUTATION"]] <- t
     }
 
     ## TILES
@@ -1355,9 +1360,17 @@ loadAllRDSResults <- function(analysisResultsDir,
         tilesPerm <- lapply(filesInDir, FUN = function(x) {readRDS(file = x)})
 
         t <- lapply(tilesPerm, FUN = function(x) {
-                    createDataStructure(interGenerationGR = x)})
+                    struct <- createDataStructure(interGenerationGR = x)
+                    res <- list("TILES" = struct)
+                    return(res)})
+        if (!doingSites) {
+            result[["PERMUTATION"]] <- t
+        } else {
+            for (i in 1:length(result[["PERMUTATION"]])) {
+                result[["PERMUTATION"]][[i]]$TILES <- t[[i]]$TILES
+            }
+        }
 
-        result[["PERMUTATION"]][["TILES"]] <- t
     }
 
     class(result)<-"methylInheritanceAllResults"
@@ -1370,42 +1383,71 @@ loadAllRDSResults <- function(analysisResultsDir,
 #'
 #' @description  Merge the permutation results with the observation results.
 #' The merging is only needed when permutation and observation have been
-#' processed separatly.
+#' processed separatly. The returned value is a
+#' \code{methylInheritanceAllResults} object that can be used by
+#' the \code{extractInfo} function.
 #'
 #' @param permutationResults a \code{list} with 1 entry called
-#' \code{PERMUTATION}m the entry is a \code{list} with a number of
-#' entries corresponding
+#' \code{PERMUTATION}. The  \code{PERMUTATION} entry is a \code{list} with
+#' a number of entries corresponding
 #' to the number of permutations that have been processed. Each entry contains
 #' the result of one permutation.
 #'
 #' @param observationResults a \code{list} with 1 entry called
-#' \code{OBSERVATION}, the entry is a \code{list} of 1 entry containing
-#' the results obtained
-#' with the real dataset (not permutated).
+#' \code{OBSERVATION}. The \code{OBSERVATION} entry is a \code{list} containing
+#' the result obtained
+#' with the observed dataset (not permutated).
 #'
-#' @return a \code{list} with 2 entries. The 2 entries are:
+#' @return a \code{list} of class \code{methylInheritanceAllResults} with
+#' 2 entries. The 2 entries are:
 #' \itemize{
 #' \item \code{PERMUTATION} \code{list} with a number of entries corresponding
 #' to the number of permutations that have been processed. Each entry contains
 #' the result of one permutation.
-#' \item \code{OBSERVATION} a \code{list} with 1 entry, the results obtained
-#' with the real dataset (not permutated).
+#' \item \code{OBSERVATION} a \code{list} containing the result obtained
+#' with the observed dataset (not permutated).
 #' }
 #'
 #' @examples
 #'
-#' ## TODO
+#' ## Create a observation result
+#' observed <- list()
+#' observed[["OBSERVATION"]] <- list()
+#' observed[["OBSERVATION"]][["SITES"]] <- list()
+#' observed[["OBSERVATION"]][["SITES"]][["i2"]] <- list(HYPER = list(11, 10),
+#' HYPO = list(13, 12))
+#' observed[["OBSERVATION"]][["SITES"]][["iAll"]] <- list(HYPER = list(1),
+#' HYPO = list(3))
+#'
+#' ## Create a permutation result containing only 1 permutation result
+#' ## Real perumtations results would have more entries
+#' permutated <- list()
+#' permutated[["PERMUTATION"]] <- list()
+#' permutated[["PERMUTATION"]][[1]] <- list()
+#' permutated[["PERMUTATION"]][[1]][["SITES"]] <- list()
+#' permutated[["PERMUTATION"]][[1]][["SITES"]][["i2"]] <- list(HYPER =
+#' list(11, 12), HYPO = list(8, 11))
+#' permutated[["PERMUTATION"]][[1]][["SITES"]][["iAll"]] <- list(HYPER =
+#' list(0), HYPO = list(1))
+#'
+#' ## Merge permutation and observation results
+#' mergePermutationAndObservation(permutationResults = permutated,
+#' observationResults = observed)
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
 mergePermutationAndObservation <- function(permutationResults,
                                                 observationResults) {
 
-    ## TODO ADD VALIDATION
+    ## Validate parameters
+    validateMergePermutationAndObservation(permutationResults,
+                                            observationResults)
 
     mergedData <- list()
     mergedData[["PERMUTATION"]] <- permutationResults[["PERMUTATION"]]
     mergedData[["OBSERVATION"]] <- observationResults[["OBSERVATION"]]
+
+    class(mergedData)<-"methylInheritanceAllResults"
 
     return(mergedData)
 }
@@ -1420,14 +1462,15 @@ mergePermutationAndObservation <- function(permutationResults,
 #' of intersection (two consecutive generation or more) and to one specific
 #' group of generations.
 #'
-#' @param allResults a \code{list} as created by the
+#' @param allResults a \code{list} of class \code{methylInheritanceAllResults}
+#' as created by the
 #' \code{runPermutationUsingMethylKitInfo} or the
 #' \code{runPermutationUsingRDSFile} functions. The \code{list} must contain
 #' two entries : \code{"PERMUTATION"} and \code{"OBSERVATION"}. The
 #' \code{"PERMUTATION"} \code{list} must contain all results from all
 #' permutations while
-#' the \code{"OBSERVATION"} \code{list} must contain the results obtained with
-#' the real dataset (not permutated).
+#' the \code{"OBSERVATION"} \code{list} must contain the result obtained with
+#' the observed dataset (not permutated).
 #'
 #' @param type One of the \code{"sites"} or \code{"tiles"} strings.
 #' Specifies the type
@@ -1446,7 +1489,8 @@ mergePermutationAndObservation <- function(permutationResults,
 #' @param position a positive \code{integer}, the position in the \code{list}
 #' where the information will be extracted.
 #'
-#' @return a \code{data.frame} containing the observation results (using real
+#' @return a \code{data.frame}
+#' containing the observation results (using real
 #' data) and the permutation results (using permutated data). Both hyper and
 #' hypo differentially conserved methylation results are present.
 #'
@@ -1482,8 +1526,8 @@ extractInfo <- function(allResults, type = c("sites", "tiles"),
                                             real[["HYPER"]][[position]]),
                                 SOURCE=c("OBSERVATION", "OBSERVATION"))
 
-    for (i in 1:length(allResults[["PERMUTATION"]][[type]])) {
-        permutation <- allResults[["PERMUTATION"]][[type]][[i]][[inter]]
+    for (i in 1:length(allResults[["PERMUTATION"]])) {
+        permutation <- allResults[["PERMUTATION"]][[i]][[type]][[inter]]
         dataConserved <- rbind(dataConserved,
                                 data.frame(TYPE=c("HYPO", "HYPER"),
                         RESULT=c(permutation[["HYPO"]][[position]],
@@ -1519,8 +1563,11 @@ extractInfo <- function(allResults, type = c("sites", "tiles"),
 #' ## Extract information for the intersection between conserved differentially
 #' ## methylated sites (type = sites) between the intersection of 2
 #' ## generations (inter = i2): F2 and F3 (position = 2)
-#' extractInfo(allResults = methylInheritanceResults,
+#' info <- extractInfo(allResults = methylInheritanceResults,
 #' type = "sites", inter="i2", 2)
+#'
+#' ## Create graph
+#' plotGraph(info)
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @importFrom ggplot2 ggplot geom_text facet_grid theme geom_vline geom_histogram labs aes scale_color_manual
@@ -1577,7 +1624,7 @@ plotGraph <- function(formatForGraphDataFrame) {
 
     ## Put graph and table in grid
     g <- grid.arrange(p, tableGrob(info, rows = NULL), nrow = 2,
-                      heights = c(2, 1), clip = FALSE)
+                        heights = c(2, 1), clip = FALSE)
 
     return(g)
 }
