@@ -37,7 +37,8 @@ Default: \code{"i2"}.}
 where the information will be extracted.}
 }
 \value{
-a \code{data.frame} containing the observation results (using real
+a \code{data.frame}
+containing the observation results (using real
 data) and the permutation results (using permutated data). Both hyper and
 hypo differentially conserved methylation results are present.
 }

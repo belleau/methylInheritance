@@ -187,7 +187,7 @@ NULL
 #' }
 #' \item\code{iAll} a \code{list} containing:
 #' \itemize{
-#'\item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
+#' \item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
 #'the number of conserved
 #' hyper differentially methylated sites between the three consecutive
 #' generations.
@@ -215,7 +215,7 @@ NULL
 #' }
 #' \item\code{iAll} a \code{list} containing:
 #' \itemize{
-#'\item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
+#' \item \code{HYPER} a \code{list} of \code{integer} with 1 entry,
 #' the number of conserved
 #' hyper differentially methylated positions between the three consecutive
 #' generations.

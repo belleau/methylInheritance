@@ -1489,7 +1489,8 @@ mergePermutationAndObservation <- function(permutationResults,
 #' @param position a positive \code{integer}, the position in the \code{list}
 #' where the information will be extracted.
 #'
-#' @return a \code{data.frame} containing the observation results (using real
+#' @return a \code{data.frame}
+#' containing the observation results (using real
 #' data) and the permutation results (using permutated data). Both hyper and
 #' hypo differentially conserved methylation results are present.
 #'
@@ -1562,8 +1563,11 @@ extractInfo <- function(allResults, type = c("sites", "tiles"),
 #' ## Extract information for the intersection between conserved differentially
 #' ## methylated sites (type = sites) between the intersection of 2
 #' ## generations (inter = i2): F2 and F3 (position = 2)
-#' extractInfo(allResults = methylInheritanceResults,
+#' info <- extractInfo(allResults = methylInheritanceResults,
 #' type = "sites", inter="i2", 2)
+#'
+#' ## Create graph
+#' plotGraph(info)
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @importFrom ggplot2 ggplot geom_text facet_grid theme geom_vline geom_histogram labs aes scale_color_manual
@@ -1620,7 +1624,7 @@ plotGraph <- function(formatForGraphDataFrame) {
 
     ## Put graph and table in grid
     g <- grid.arrange(p, tableGrob(info, rows = NULL), nrow = 2,
-                      heights = c(2, 1), clip = FALSE)
+                        heights = c(2, 1), clip = FALSE)
 
     return(g)
 }

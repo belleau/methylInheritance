@@ -31,8 +31,11 @@ data(methylInheritanceResults)
 ## Extract information for the intersection between conserved differentially
 ## methylated sites (type = sites) between the intersection of 2
 ## generations (inter = i2): F2 and F3 (position = 2)
-extractInfo(allResults = methylInheritanceResults,
+info <- extractInfo(allResults = methylInheritanceResults,
 type = "sites", inter="i2", 2)
+
+## Create graph
+plotGraph(info)
 
 }
 \author{

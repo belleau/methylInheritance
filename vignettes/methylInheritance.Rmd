@@ -166,7 +166,8 @@ observationResult <- runObservationUsingMethylKitInfo(methylKitInfo =
                                 qvalue = 0.01,
                                 vSeed = 2101)
 
-observationResult
+## Only one entry, containing all results, is created for the sites
+observationResult$OBSERVATION$SITES
 ```
 
 
@@ -202,7 +203,12 @@ permutationResult <- runPermutationUsingMethylKitInfo(methylKitInfo =
                                 qvalue = 0.01,
                                 vSeed = 2101)
 
-permutationResult
+## The length of the PERMUTATION entry should correspond to the number of permutations
+length(permutationResult$PERMUTATION)
+
+## Each entry in PERMUTATION correspond to the result of one permutation
+## THe results of the second permutation
+permutationResult$PERMUTATION[[2]]$SITES
 ```
 
 
@@ -215,6 +221,7 @@ The observation and permutation results can be merged using the
 ## Merge observation and permutation results
 allResults <- mergePermutationAndObservation(permutationResults = permutationResult,
                                     observationResults = observationResult)
+allResults
 ```
 
 When observation and permutation analysis have been run together using the
@@ -233,13 +240,13 @@ A specific analysis can be extracted from the results using *extractInfo()* func
 
 The *type* parameter can be set to extract one of those elements:
 
-* *sites*: differentially methylated sites
-* *tiles*: differentially methylated tiles
+* *"sites"*: differentially methylated sites
+* *"tiles"*: differentially methylated tiles
 
 The *inter* parameter can be set to extract one of those analysis type:
 
-* *i2*: the analysis between two consecutive generations (F1 and F2, F2 and F3, etc..)
-* *iAll*: the analysis between three or more generations (F1 and F2 and F3, F1 and F2 and F3 and F4, etc..)
+* *"i2"*: the analysis between two consecutive generations (F1 and F2, F2 and F3, etc..)
+* *"iAll"*: the analysis between three or more generations (F1 and F2 and F3, F1 and F2 and F3 and F4, etc..)
 
 ```{r caseStudy05, warning=FALSE, message=FALSE, collapse=TRUE}
 ## Differentially conserved sites between F1 and F2 generations
