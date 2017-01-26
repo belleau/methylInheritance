@@ -1,10 +1,10 @@
 #' @rdname methylInheritanceAllResults
 #'
-#' @title  Print a methylInheritanceAllResults object
+#' @title  Print a \code{methylInheritanceAllResults} object
 #'
 #' @method print methylInheritanceAllResults
 #'
-#' @description Print a methylInheritanceAllResults object
+#' @description Print a \code{methylInheritanceAllResults} object
 #'
 #' @param x the output object from \code{mergePermutationAndObservation}
 #' function, \code{runPermutationUsingRDSFile} function (when
@@ -13,6 +13,17 @@
 #' \code{runObservationAnalysis} = \code{TRUE} to be printed
 #'
 #' @param \ldots arguments passed to or from other methods
+#'
+#' @return an object of class
+#' \code{methylInheritanceAllResults}
+#'
+#' @examples
+#'
+#' ## Load dataset
+#' data("methylInheritanceResults")
+#'
+#' ## Print dataset
+#' print(methylInheritanceResults)
 #'
 #' @export
 print.methylInheritanceAllResults <- function(x, ...) {
@@ -31,6 +42,7 @@ print.methylInheritanceAllResults <- function(x, ...) {
 
     isSites <- FALSE
 
+    ## Extract info about sites when present
     if (!is.null(x$OBSERVATION$SITES)) {
         tt <- unlist(x$OBSERVATION$SITES)
         tt.names <- sapply(names(tt), function(x) {strsplit(x, "[.]")})
@@ -44,6 +56,7 @@ print.methylInheritanceAllResults <- function(x, ...) {
         isSites <- TRUE
     }
 
+    ## Extract info about tiles when present
     if (!is.null(x$OBSERVATION$TILES)) {
         tt <- unlist(x$OBSERVATION$TILES)
         tt.names <- sapply(names(tt), function(x) {strsplit(x, "[.]")})

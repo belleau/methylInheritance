@@ -2,7 +2,7 @@
 % Please edit documentation in R/print.methylInheritanceAllResults.R
 \name{print.methylInheritanceAllResults}
 \alias{print.methylInheritanceAllResults}
-\title{Print a methylInheritanceAllResults object}
+\title{Print a \code{methylInheritanceAllResults} object}
 \usage{
 \method{print}{methylInheritanceAllResults}(x, ...)
 }
@@ -15,7 +15,20 @@ function, \code{runPermutationUsingRDSFile} function (when
 
 \item{\ldots}{arguments passed to or from other methods}
 }
+\value{
+an object of class
+\code{methylInheritanceAllResults}
+}
 \description{
-Print a methylInheritanceAllResults object
+Print a \code{methylInheritanceAllResults} object
+}
+\examples{
+
+## Load dataset
+data("methylInheritanceResults")
+
+## Print dataset
+print(methylInheritanceResults)
+
 }
 
