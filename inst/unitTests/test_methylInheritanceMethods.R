@@ -43,6 +43,46 @@ test.runPermutationUsingRDSFile_methylKitRDSFile_not_valid <- function() {
 
 ## Test when all parameters valid
 test.runPermutationUsingRDSFile_good_001 <- function() {
+    obs <- runPermutationUsingRDSFile(methylKitRDSFile = METHYL_OBJ_FILE_01, runObservationAnalysis = FALSE,
+                    type = "both", nbrPermutations = 2, minReads = 5, minMethDiff = 5,
+                    vSeed = 2021)
+    exp <- list()
+    exp[["PERMUTATION"]] <- list()
+    exp[["PERMUTATION"]][[1]] <- list()
+    exp[["PERMUTATION"]][[1]][["SITES"]] <- list()
+    exp[["PERMUTATION"]][[1]][["SITES"]][["i2"]] <- list()
+    exp[["PERMUTATION"]][[1]][["SITES"]][["i2"]][["HYPER"]] <- list(0,2)
+    exp[["PERMUTATION"]][[1]][["SITES"]][["i2"]][["HYPO"]] <- list(0,1)
+    exp[["PERMUTATION"]][[1]][["SITES"]][["iAll"]] <- list()
+    exp[["PERMUTATION"]][[1]][["SITES"]][["iAll"]][["HYPER"]] <- list(0)
+    exp[["PERMUTATION"]][[1]][["SITES"]][["iAll"]][["HYPO"]] <- list(0)
+    exp[["PERMUTATION"]][[1]][["TILES"]] <- list()
+    exp[["PERMUTATION"]][[1]][["TILES"]][["i2"]] <- list()
+    exp[["PERMUTATION"]][[1]][["TILES"]][["i2"]][["HYPER"]] <- list(0,0)
+    exp[["PERMUTATION"]][[1]][["TILES"]][["i2"]][["HYPO"]] <- list(0,0)
+    exp[["PERMUTATION"]][[1]][["TILES"]][["iAll"]] <- list()
+    exp[["PERMUTATION"]][[1]][["TILES"]][["iAll"]][["HYPER"]] <- list(0)
+    exp[["PERMUTATION"]][[1]][["TILES"]][["iAll"]][["HYPO"]] <- list(0)
+    exp[["PERMUTATION"]][[2]] <- list()
+    exp[["PERMUTATION"]][[2]][["SITES"]] <- list()
+    exp[["PERMUTATION"]][[2]][["SITES"]][["i2"]] <- list()
+    exp[["PERMUTATION"]][[2]][["SITES"]][["i2"]][["HYPER"]] <- list(0,0)
+    exp[["PERMUTATION"]][[2]][["SITES"]][["i2"]][["HYPO"]] <- list(2,0)
+    exp[["PERMUTATION"]][[2]][["SITES"]][["iAll"]] <- list()
+    exp[["PERMUTATION"]][[2]][["SITES"]][["iAll"]][["HYPER"]] <- list(0)
+    exp[["PERMUTATION"]][[2]][["SITES"]][["iAll"]][["HYPO"]] <- list(0)
+    exp[["PERMUTATION"]][[2]][["TILES"]] <- list()
+    exp[["PERMUTATION"]][[2]][["TILES"]][["i2"]] <- list()
+    exp[["PERMUTATION"]][[2]][["TILES"]][["i2"]][["HYPER"]] <- list(0,0)
+    exp[["PERMUTATION"]][[2]][["TILES"]][["i2"]][["HYPO"]] <- list(1000,0)
+    exp[["PERMUTATION"]][[2]][["TILES"]][["iAll"]] <- list()
+    exp[["PERMUTATION"]][[2]][["TILES"]][["iAll"]][["HYPER"]] <- list(0)
+    exp[["PERMUTATION"]][[2]][["TILES"]][["iAll"]][["HYPO"]] <- list(0)
+
+    message <- paste0(" test.runPermutationUsingRDSFile_good_001() ",
+                      "- Valid parameters did not generated expected message.")
+
+    checkEquals(obs, exp, msg = message)
 }
 
 
