@@ -159,13 +159,13 @@ path.
 ## The observation analysis is only done on differentially methylated sites
 observationResult <- runObservationUsingMethylKitInfo(methylKitInfo = 
                                         demoForTransgenerationalAnalysis, 
-                                type = "sites",     # Only sites
-                                outputDir = NULL,   # RDS files only created when a path is given
-                                nbrCores = 1,
-                                minReads = 10,
-                                minMethDiff = 10,
-                                qvalue = 0.01,
-                                vSeed = 2101)
+                        type = "sites",     # Only sites
+                        outputDir = NULL,   # RDS files only created when a path is given
+                        nbrCores = 1,       # Number of cores used 
+                        minReads = 10,      # Minimum read coverage
+                        minMethDiff = 10,   # Minimum difference in methylation to be considered DMS
+                        qvalue = 0.01,
+                        vSeed = 2101)       # Ensure reproducible results
 
 ## Only one entry, containing all results, is created for the sites
 observationResult$OBSERVATION$SITES
@@ -194,15 +194,15 @@ path to a RDS file that contains the methylKit object must be used.
 ## The permutation analysis is only done on differentially methylated sites
 permutationResult <- runPermutationUsingMethylKitInfo(methylKitInfo = 
                                         demoForTransgenerationalAnalysis, 
-                                type = "sites",     # Only sites
-                                outputDir = NULL,   # RDS files created
-                                runObservationAnalysis = FALSE,
-                                nbrCores = 1,
-                                nbrPermutations = 3,
-                                minReads = 10,
-                                minMethDiff = 10,
-                                qvalue = 0.01,
-                                vSeed = 2101)
+                        type = "sites",     # Only sites
+                        outputDir = NULL,   # RDS files only created when a path is given
+                        runObservationAnalysis = FALSE,
+                        nbrCores = 1,         # Number of cores used
+                        nbrPermutations = 3,  # Should be much higher for a real analysis
+                        minReads = 10,        # Minimum read coverage
+                        minMethDiff = 10,     # Minimum difference in methylation to be considered DMS
+                        qvalue = 0.01,
+                        vSeed = 2101)         # Ensure reproducible results
 
 ## The length of the PERMUTATION entry should correspond to the number of permutations
 length(permutationResult$PERMUTATION)
@@ -232,10 +232,10 @@ When observation and permutation analysis have been run together using the
 
 The *runPermutationUsingMehtylKitInfo()* and *runObservationUsingMehtylKitInfo()* functions 
 calculate the number of conserved differentially methylated elements 
-between two consecutive generations (F1 and F2, F2 and F3, etc..).  They also calculate 
-the number of conserved differentially methylated elements is also calculated for three
-or more consecutive generations, always starting with the first generation 
-(F1 and F2 and F3, F1 and F2 and F3 and F4, etc..).
+between two consecutive generations (F1 and F2, F2 and F3, etc..).  They also 
+calculate the number of conserved differentially methylated elements is also 
+calculated for three or more consecutive generations, always starting with the 
+first generation (F1 and F2 and F3, F1 and F2 and F3 and F4, etc..).
 
 A specific analysis can be extracted from the results using *extractInfo()* function.
 
@@ -259,8 +259,8 @@ head(F1_and_F2_results)
 ## Significant level and visual representation
 
 The permutation analysis has been run on the *demoForTransgenerationalAnalysis* with 
-1000 permutations (*nbrPermutation = 1000*). The results of those permutations will be used
-to generate the significant levels and the visual representations.
+1000 permutations (*nbrPermutation = 1000*). The results of those permutations 
+will be used to generate the significant levels and the visual representations.
 
 ```{r caseStudyLoad, warning=FALSE, message=FALSE, cache=TRUE,  echo = FALSE, cache=TRUE}
 demoResults <- readRDS(dir(system.file("extdata", package = "methylInheritance"),
