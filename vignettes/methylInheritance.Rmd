@@ -1,18 +1,18 @@
 ---
 title: "Conserved Differentially Methylated Elements from One Generation to the Next: Inheritance versus Randomness"
-author: Astrid Deschenes, Pascal Belleau and Arnaud Droit 
+author: Astrid Deschênes, Pascal Belleau and Arnaud Droit 
 output:
   BiocStyle::html_document:
     toc: true
 bibliography: biblio.bibtex
 vignette: >
-  %\VignetteIndexEntry{Permutation Positioning}
+  %\VignetteIndexEntry{Permutation-Based Analysis associating Conserved Differentially Methylated Elements from One Generation to the Next to a Treatment Effect}
   %\VignettePackage{methylInheritance}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r style, echo = FALSE, results = 'asis'}
+```{r style, echo = FALSE, results = 'asis', warning=FALSE, message=FALSE}
 BiocStyle::markdown()
 library(knitr)
 ```
@@ -27,7 +27,8 @@ library(knitr)
 
 # Licensing 
 
-The **methylInheritance** package and the underlying **methylInheritance** code 
+The `r Rpackage("methylInheritance")` package and the underlying 
+`r Rpackage("methylInheritance")` code 
 are distributed under the Artistic license 2.0. You are free to use and 
 redistribute this software. 
 
@@ -106,7 +107,7 @@ All those steps have been encoded in the
 
 # Case study 
 
-## The dataset
+## The multigenerational dataset
 
 A dataset containing methylation data (6 cases and 6 controls) over three 
 generations has been generated using the 

@@ -37,15 +37,16 @@
 #'
 #' @param minReads a positive \code{integer} Bases and regions having lower
 #' coverage than this count are discarded. The parameter
-#' correspond to the \code{lo.count} parameter in the  \code{methylKit} package.
+#' corresponds to the \code{lo.count} parameter in the  \code{methylKit}
+#' package.
 #'
 #' @param minMethDiff a positive \code{double} betwwen [0,100], the absolute
 #' value of methylation percentage change between cases and controls. The
-#' parameter correspond to the \code{difference} parameter in
-#' the  \code{methylKit} package.
+#' parameter corresponds to the \code{difference} parameter in
+#' the \code{methylKit} package.
 #'
 #' @param qvalue a positive \code{double} betwwen [0,1], the cutoff
-#' for qvalue of differential methylation statistic.
+#' for qvalue of differential methylation statistic. TODO
 #'
 #' @param maxPercReads a \code{double} between [0,100], the percentile of read
 #' counts that is going to be used as upper cutoff. Bases ore regions
@@ -170,7 +171,7 @@ validateRunPermutationUsingMethylKitInfo <- function(methylKitInfo,
 #' @param methylKitInfo a \code{list} of \code{methylRawList} entries. Each
 #' \code{methylRawList} contains all the \code{methylRaw} entries related to
 #' one generation. The number of generations must correspond to the number
-#' of entries in the \code{methylKitInfo}.At least 2 generations
+#' of entries in the \code{methylKitInfo}. At least 2 generations
 #' must be present to do a permutation analysis. More information can be found
 #' in the Bioconductor methylKit package.
 #'
