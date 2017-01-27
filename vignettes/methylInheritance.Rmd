@@ -77,10 +77,10 @@ the labels on the observed data points. The rearrangements of the labels is
 done through repeated random sampling [@Legendre1998, pp. 142-157]. 
 
 **Null Hypothesis**: The number of conserved DME correspond to a number that 
-can be obtain through a randomness analysis. 
+can be obtained through a randomness analysis. 
 
 **Alternative Hypothesis**: The number of conserved DME do not correspond to a 
-number that can be obtain through a randomness analysis.
+number that can be obtained through a randomness analysis.
 
 A typical **methylInheritance** analysis consists of the following steps:
 
@@ -98,7 +98,7 @@ null and alternative hypothesis.
 Each generation is analysed separatly using `r Rpackage("methylKit")` package.
 5. Calculate the significant level for each consecutive subset of generations. 
 The significant level is defined as the percentage of results equal or higher 
-than the reference values. The reference vaules are added to the analysis so 
+than the reference values. The reference values are added to the analysis so 
 that it becomes impossible for the test to conclude that no value are 
 as extreme as, or more extreme than the reference values.
 
@@ -186,7 +186,7 @@ results into RDS files, the *outputDir* parameter must be given a directory
 path.
 
 At last, the *runPermutationUsingRDSFile()* function also executes a
-permutation analysis but insteed of passing a methylKit object to it, the
+permutation analysis but instead of passing a methylKit object to it, the
 path to a RDS file that contains the methylKit object must be used.
 
 ```{r caseStudy03, warning=FALSE, message=FALSE, collapse=TRUE, cache=TRUE}
@@ -234,7 +234,7 @@ The *runPermutationUsingMehtylKitInfo()* and *runObservationUsingMehtylKitInfo()
 calculate the number of conserved differentially methylated elements 
 between two consecutive generations (F1 and F2, F2 and F3, etc..).  They also calculate 
 the number of conserved differentially methylated elements is also calculated for three
-or more consercutive generations, always starting with the first generation 
+or more consecutive generations, always starting with the first generation 
 (F1 and F2 and F3, F1 and F2 and F3 and F4, etc..).
 
 A specific analysis can be extracted from the results using *extractInfo()* function.
@@ -260,7 +260,7 @@ head(F1_and_F2_results)
 
 The permutation analysis has been run on the *demoForTransgenerationalAnalysis* with 
 1000 permutations (*nbrPermutation = 1000*). The results of those permutations will be used
-to generate the singificant levels and the visual representations.
+to generate the significant levels and the visual representations.
 
 ```{r caseStudyLoad, warning=FALSE, message=FALSE, cache=TRUE,  echo = FALSE, cache=TRUE}
 demoResults <- readRDS(dir(system.file("extdata", package = "methylInheritance"),
