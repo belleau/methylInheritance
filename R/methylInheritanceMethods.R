@@ -1570,7 +1570,8 @@ extractInfo <- function(allResults, type = c("sites", "tiles"),
 #' plotGraph(info)
 #'
 #' @author Astrid Deschenes, Pascal Belleau
-#' @importFrom ggplot2 ggplot geom_text facet_grid theme geom_vline geom_histogram labs aes scale_color_manual
+#' @importFrom ggplot2 ggplot geom_text facet_grid theme geom_vline
+#' geom_histogram labs aes scale_color_manual
 #' @importFrom gridExtra grid.arrange tableGrob
 #' @export
 plotGraph <- function(formatForGraphDataFrame) {
