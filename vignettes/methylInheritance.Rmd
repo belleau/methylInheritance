@@ -201,12 +201,12 @@ permutationResult <- runPermutationUsingMethylKitInfo(methylKitInfo =
                         outputDir = NULL,   # RDS files only created when a 
                                             # path is given
                         runObservationAnalysis = FALSE,
-                        nbrCores = 1,         # Number of cores used
-                        nbrPermutations = 3,  # Should be much higher for a
-                                              # real analysis
-                        minReads = 10,        # Minimum read coverage
-                        minMethDiff = 10, # Minimum difference in methylation
-                                          # to be considered DMS
+                        nbrCores = 1,           # Number of cores used
+                        nbrPermutations = 3,    # Should be much higher for a
+                                                # real analysis
+                        minReads = 10,          # Minimum read coverage
+                        minMethDiff = 10,   # Minimum difference in methylation
+                                            # to be considered DMS
                         qvalue = 0.01,
                         vSeed = 2101)         # Ensure reproducible results
 
