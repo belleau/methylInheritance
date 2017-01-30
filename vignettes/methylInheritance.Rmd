@@ -123,15 +123,16 @@ data(demoForTransgenerationalAnalysis)
 length(demoForTransgenerationalAnalysis)
 
 
-## All samples related to one generations are contained in a S4 methylRawList object.
+## All samples related to one generation are contained in a methylRawList 
+## object.
 ## The methylRawList object contains two Slots:
 ## 1- treatment: a numeric vector denoting controls and cases.
-## 2- .Data: a list of methylRaw objects. Each object stores the raw mehylation 
-## data of one sample.
+## 2- .Data: a list of methylRaw objects. Each object stores the raw 
+## mehylation data of one sample.
 
 
-## A section of the methylRaw object containing the information of the first 
-## sample from the second generation 
+## A section of the methylRaw object containing the information of the 
+## first sample from the second generation 
 head(demoForTransgenerationalAnalysis[[2]][[1]]) 
 
 ## The same information could also be obtained using the .Data slot
@@ -160,10 +161,12 @@ path.
 observationResult <- runObservationUsingMethylKitInfo(methylKitInfo = 
                                         demoForTransgenerationalAnalysis, 
                         type = "sites",     # Only sites
-                        outputDir = NULL,   # RDS files only created when a path is given
+                        outputDir = NULL,   # RDS files only created when a 
+                                            # path is given
                         nbrCores = 1,       # Number of cores used 
                         minReads = 10,      # Minimum read coverage
-                        minMethDiff = 10,   # Minimum difference in methylation to be considered DMS
+                        minMethDiff = 10,   # Minimum difference in methylation 
+                                            # to be considered DMS
                         qvalue = 0.01,
                         vSeed = 2101)       # Ensure reproducible results
 
@@ -195,16 +198,20 @@ path to a RDS file that contains the methylKit object must be used.
 permutationResult <- runPermutationUsingMethylKitInfo(methylKitInfo = 
                                         demoForTransgenerationalAnalysis, 
                         type = "sites",     # Only sites
-                        outputDir = NULL,   # RDS files only created when a path is given
+                        outputDir = NULL,   # RDS files only created when a 
+                                            # path is given
                         runObservationAnalysis = FALSE,
                         nbrCores = 1,         # Number of cores used
-                        nbrPermutations = 3,  # Should be much higher for a real analysis
+                        nbrPermutations = 3,  # Should be much higher for a
+                                              # real analysis
                         minReads = 10,        # Minimum read coverage
-                        minMethDiff = 10,     # Minimum difference in methylation to be considered DMS
+                        minMethDiff = 10, # Minimum difference in methylation
+                                          # to be considered DMS
                         qvalue = 0.01,
                         vSeed = 2101)         # Ensure reproducible results
 
-## The length of the PERMUTATION entry should correspond to the number of permutations
+## The length of the PERMUTATION entry should correspond to the number 
+## of permutations
 length(permutationResult$PERMUTATION)
 
 ## Each entry in PERMUTATION correspond to the result of one permutation
@@ -220,7 +227,8 @@ The observation and permutation results can be merged using the
 
 ```{r caseStudy04, warning=FALSE, message=FALSE, collapse=TRUE, cache=TRUE}
 ## Merge observation and permutation results
-allResults <- mergePermutationAndObservation(permutationResults = permutationResult,
+allResults <- mergePermutationAndObservation(permutationResults = 
+                                                    permutationResult,
                                     observationResults = observationResult)
 allResults
 ```
@@ -230,14 +238,16 @@ When observation and permutation analysis have been run together using the
 
 ## Extract a specific analysis
 
-The *runPermutationUsingMehtylKitInfo()* and *runObservationUsingMehtylKitInfo()* functions 
+The *runPermutationUsingMehtylKitInfo()* and 
+*runObservationUsingMehtylKitInfo()* functions 
 calculate the number of conserved differentially methylated elements 
 between two consecutive generations (F1 and F2, F2 and F3, etc..).  They also 
 calculate the number of conserved differentially methylated elements is also 
 calculated for three or more consecutive generations, always starting with the 
 first generation (F1 and F2 and F3, F1 and F2 and F3 and F4, etc..).
 
-A specific analysis can be extracted from the results using *extractInfo()* function.
+A specific analysis can be extracted from the results using 
+*extractInfo()* function.
 
 The *type* parameter can be set to extract one of those elements:
 
@@ -246,38 +256,48 @@ The *type* parameter can be set to extract one of those elements:
 
 The *inter* parameter can be set to extract one of those analysis type:
 
-* *"i2"*: the analysis between two consecutive generations (F1 and F2, F2 and F3, etc..)
-* *"iAll"*: the analysis between three or more generations (F1 and F2 and F3, F1 and F2 and F3 and F4, etc..)
+* *"i2"*: the analysis between two consecutive generations (F1 and F2, F2 and 
+F3, etc..)
+* *"iAll"*: the analysis between three or more generations (F1 and F2 and F3, 
+F1 and F2 and F3 and F4, etc..)
 
 ```{r caseStudy05, warning=FALSE, message=FALSE, collapse=TRUE}
 ## Differentially conserved sites between F1 and F2 generations
-F1_and_F2_results <- extractInfo(allResults = allResults, type = "sites", inter = "i2", position = 1)
+F1_and_F2_results <- extractInfo(allResults = allResults, type = "sites", 
+                                    inter = "i2", position = 1)
 
 head(F1_and_F2_results)
 ```
 
 ## Significant level and visual representation
 
-The permutation analysis has been run on the *demoForTransgenerationalAnalysis* with 
-1000 permutations (*nbrPermutation = 1000*). The results of those permutations 
-will be used to generate the significant levels and the visual representations.
+The permutation analysis has been run on the *demoForTransgenerationalAnalysis* 
+dataset with 1000 permutations (*nbrPermutation = 1000*). The results of 
+those permutations will be used to generate the significant levels and 
+the visual representations.
 
 ```{r caseStudyLoad, warning=FALSE, message=FALSE, cache=TRUE,  echo = FALSE, cache=TRUE}
-demoResults <- readRDS(dir(system.file("extdata", package = "methylInheritance"),
-                       pattern = "resultsForTransgenerationalAnalysis.RDS", full.names = TRUE))
+demoResults <- readRDS(dir(system.file("extdata", 
+                        package = "methylInheritance"),
+                        pattern = "resultsForTransgenerationalAnalysis.RDS", 
+                        full.names = TRUE))
 ```
 
 ```{r caseStudy06, warning=FALSE, message=FALSE, collapse=TRUE, cache=TRUE}
 ## Differentially conserved sites between F1 and F2 generations
-F1_and_F2 <- extractInfo(allResults = demoResults, type = "sites", inter = "i2", position = 1)
+F1_and_F2 <- extractInfo(allResults = demoResults, type = "sites", 
+                            inter = "i2", position = 1)
 ## Differentially conserved sites between F2 and F3 generations
-F2_and_F3 <- extractInfo(allResults = demoResults, type = "sites", inter = "i2", position = 2)
+F2_and_F3 <- extractInfo(allResults = demoResults, type = "sites", 
+                            inter = "i2", position = 2)
 ## Differentially conserved sites between F1 and F2 and F3 generations
-F2_and_F3 <- extractInfo(allResults = demoResults, type = "sites", inter = "iAll", position = 1)
+F2_and_F3 <- extractInfo(allResults = demoResults, type = "sites", 
+                            inter = "iAll", position = 1)
 ```
 
 ```{r caseStudy07, warning=FALSE, message=FALSE, collapse=TRUE}
-## Show graph and significant level for differentially conserved sites between F1 and F2 
+## Show graph and significant level for differentially conserved sites 
+## between F1 and F2 
 output <- plotGraph(F1_and_F2)
 ```
 

@@ -1512,7 +1512,7 @@ mergePermutationAndObservation <- function(permutationResults,
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
-extractInfo <- function(allResults, type = c("sites", "tiles"),
+extractInfo <- function(allResults, type=c("sites", "tiles"),
                             inter=c("i2", "iAll"), position) {
 
     validateExtractInfo(allResults = allResults, type, inter, position)
