@@ -8,7 +8,16 @@ r: bioc-devel
 #cache: packages
 
 # Packages from Bioconductor needed
-bioc_required: true
+bioc_packages:
+   - methylKit
+   - BiocParallel
+   - GenomicRanges
+   - IRanges
+   - S4Vectors
+   - methods
+   - gridExtra
+   - BiocStyle
+   - BiocGenerics
 
 # Be strict when checking package
 warnings_are_errors: true
@@ -19,6 +28,10 @@ r_check_args: "--no-build-vignettes --no-manual --timings"
 # Package dependencies from CRAN not in DESCRIPTION file
 r_binary_packages:
    - covr
+   - RUnit
+   - knitr
+   - rmarkdown
+   - ggplot2
 
 # To send info to codecov
 after_success:
