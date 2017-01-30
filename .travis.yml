@@ -9,7 +9,6 @@ r: bioc-devel
 
 # Packages from Bioconductor needed
 bioc_packages:
-   - methylKit
    - BiocParallel
    - GenomicRanges
    - IRanges
@@ -32,6 +31,10 @@ r_binary_packages:
    - knitr
    - rmarkdown
    - ggplot2
+
+r_github_packages:
+   - al2na/methylKit
+   - Bioconductor-mirror/rtracklayer
 
 # To send info to codecov
 after_success:
