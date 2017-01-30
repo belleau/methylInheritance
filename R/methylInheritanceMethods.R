@@ -251,21 +251,21 @@
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
 runPermutationUsingRDSFile <- function(methylKitRDSFile,
-                                    type = c("both", "sites", "tiles"),
-                                    outputDir = NULL,
-                                    runObservationAnalysis = TRUE,
-                                    nbrPermutations = 1000,
-                                    nbrCores = 1,
-                                    nbrCoresDiffMeth = 1,
-                                    minReads = 10,
-                                    minMethDiff = 10,
-                                    qvalue = 0.01,
-                                    maxPercReads = 99.9,
-                                    destrand = FALSE,
-                                    minCovBasesForTiles = 0,
-                                    tileSize = 1000,
-                                    stepSize = 1000,
-                                    vSeed = -1) {
+                                    type=c("both", "sites", "tiles"),
+                                    outputDir=NULL,
+                                    runObservationAnalysis=TRUE,
+                                    nbrPermutations=1000,
+                                    nbrCores=1,
+                                    nbrCoresDiffMeth=1,
+                                    minReads=10,
+                                    minMethDiff=10,
+                                    qvalue=0.01,
+                                    maxPercReads=99.9,
+                                    destrand=FALSE,
+                                    minCovBasesForTiles=0,
+                                    tileSize=1000,
+                                    stepSize=1000,
+                                    vSeed=-1) {
 
     ## Validate that methylKitRDSFile is an existing file
     if (!file.exists(methylKitRDSFile)) {
