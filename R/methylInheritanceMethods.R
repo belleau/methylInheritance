@@ -537,21 +537,21 @@ runPermutationUsingRDSFile <- function(methylKitRDSFile,
 #' @importFrom methods new
 #' @export
 runPermutationUsingMethylKitInfo <- function(methylKitInfo,
-                            type = c("both", "sites", "tiles"),
-                            outputDir = NULL,
-                            runObservationAnalysis = TRUE,
-                            nbrPermutations = 1000,
-                            nbrCores = 1,
-                            nbrCoresDiffMeth = 1,
-                            minReads = 10,
-                            minMethDiff = 10,
-                            qvalue = 0.01,
-                            maxPercReads = 99.9,
-                            destrand = FALSE,
-                            minCovBasesForTiles = 0,
-                            tileSize = 1000,
-                            stepSize = 1000,
-                            vSeed = -1) {
+                            type=c("both", "sites", "tiles"),
+                            outputDir=NULL,
+                            runObservationAnalysis=TRUE,
+                            nbrPermutations=1000,
+                            nbrCores=1,
+                            nbrCoresDiffMeth=1,
+                            minReads=10,
+                            minMethDiff=10,
+                            qvalue=0.01,
+                            maxPercReads=99.9,
+                            destrand=FALSE,
+                            minCovBasesForTiles=0,
+                            tileSize=1000,
+                            stepSize=1000,
+                            vSeed=-1) {
 
     ## Parameters validation
     validateRunPermutationUsingMethylKitInfo(methylKitInfo = methylKitInfo,
@@ -841,19 +841,19 @@ runPermutationUsingMethylKitInfo <- function(methylKitInfo,
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
 runObservationUsingMethylKitInfo <- function(methylKitInfo,
-                                            type = c("both", "sites", "tiles"),
-                                            outputDir = NULL,
-                                            nbrCores = 1,
-                                            nbrCoresDiffMeth = 1,
-                                            minReads = 10,
-                                            minMethDiff = 10,
-                                            qvalue = 0.01,
-                                            maxPercReads = 99.9,
-                                            destrand = FALSE,
-                                            minCovBasesForTiles = 0,
-                                            tileSize = 1000,
-                                            stepSize = 1000,
-                                            vSeed = -1) {
+                                            type=c("both", "sites", "tiles"),
+                                            outputDir=NULL,
+                                            nbrCores=1,
+                                            nbrCoresDiffMeth=1,
+                                            minReads=10,
+                                            minMethDiff=10,
+                                            qvalue=0.01,
+                                            maxPercReads=99.9,
+                                            destrand=FALSE,
+                                            minCovBasesForTiles=0,
+                                            tileSize=1000,
+                                            stepSize=1000,
+                                            vSeed=-1) {
 
     ## Parameters validation
     validateRunObservationUsingMethylKitInfo(methylKitInfo = methylKitInfo,
@@ -1077,19 +1077,19 @@ runObservationUsingMethylKitInfo <- function(methylKitInfo,
 #' @author Astrid Deschenes, Pascal Belleau
 #' @export
 runObservationUsingRDSFile <- function(methylKitRDSFile,
-                                            type = c("both", "sites", "tiles"),
-                                            outputDir = NULL,
-                                            nbrCores = 1,
-                                            nbrCoresDiffMeth = 1,
-                                            minReads = 10,
-                                            minMethDiff = 10,
-                                            qvalue = 0.01,
-                                            maxPercReads = 99.9,
-                                            destrand = FALSE,
-                                            minCovBasesForTiles = 0,
-                                            tileSize = 1000,
-                                            stepSize = 1000,
-                                            vSeed = -1) {
+                                            type=c("both", "sites", "tiles"),
+                                            outputDir=NULL,
+                                            nbrCores=1,
+                                            nbrCoresDiffMeth=1,
+                                            minReads=10,
+                                            minMethDiff=10,
+                                            qvalue=0.01,
+                                            maxPercReads=99.9,
+                                            destrand=FALSE,
+                                            minCovBasesForTiles=0,
+                                            tileSize=1000,
+                                            stepSize=1000,
+                                            vSeed=-1) {
 
     ## Validate that methylKitRDSFile is an existing file
     if (!file.exists(methylKitRDSFile)) {
@@ -1299,7 +1299,7 @@ runObservationUsingRDSFile <- function(methylKitRDSFile,
 #' @export
 loadAllRDSResults <- function(analysisResultsDir,
                                     permutationResultsDir,
-                                    doingSites = TRUE, doingTiles = FALSE) {
+                                    doingSites=TRUE, doingTiles=FALSE) {
 
     ## Add last slash to analysisResultsDIR when absent
     if (!is.null(analysisResultsDir) &&
