@@ -202,7 +202,7 @@ permutationResult <- runPermutationUsingMethylKitInfo(methylKitInfo =
                                             # path is given
                         runObservationAnalysis = FALSE,
                         nbrCores = 1,           # Number of cores used
-                        nbrPermutations = 3,    # Should be much higher for a
+                        nbrPermutations = 2,    # Should be much higher for a
                                                 # real analysis
                         minReads = 10,          # Minimum read coverage
                         minMethDiff = 10,   # Minimum difference in methylation
@@ -233,8 +233,14 @@ allResults <- mergePermutationAndObservation(permutationResults =
 allResults
 ```
 
+```{r remove01, warning=FALSE, message=FALSE, echo=FALSE, cache=FALSE}
+rm(permutationResult)
+rm(observationResult)
+```
+
 When observation and permutation analysis have been run together using the
 *runPermutationUsingMehtylKitInfo()* function, this step can be skipped.
+
 
 ## Extract a specific analysis
 
@@ -261,7 +267,7 @@ F3, etc..)
 * *"iAll"*: the analysis between three or more generations (F1 and F2 and F3, 
 F1 and F2 and F3 and F4, etc..)
 
-```{r caseStudy05, warning=FALSE, message=FALSE, collapse=TRUE}
+```{r caseStudy05, warning=FALSE, message=FALSE, collapse=TRUE, cache=FALSE}
 ## Differentially conserved sites between F1 and F2 generations
 F1_and_F2_results <- extractInfo(allResults = allResults, type = "sites", 
                                     inter = "i2", position = 1)
