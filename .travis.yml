@@ -33,9 +33,9 @@ r_binary_packages:
    - ggplot2
 
 r_github_packages:
+   - Bioconductor-mirror/rtracklayer/tree/release-3.4
    - al2na/methylKit
-   - Bioconductor-mirror/rtracklayer
-
+ 
 # To send info to codecov
 after_success:
   - Rscript -e 'library(covr);codecov()'
