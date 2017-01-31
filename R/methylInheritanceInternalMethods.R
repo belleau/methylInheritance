@@ -442,12 +442,12 @@ validateExtractInfo <- function(allResults, type, inter, position) {
     if (is.null(allResults$OBSERVATION[[toupper(type)]][[inter]])) {
         stop("allResults must have an element called \"", inter,
                 "\" in the \"", toupper(type),
-             "\" list present in its \"OBSERVATION\" list")
+                "\" list present in its \"OBSERVATION\" list")
     }
 
     if (position > length(allResults$OBSERVATION[[toupper(type)]][[inter]])) {
         stop(paste0("position must correspond to a valid entry in the \"",
-             "allResults$OBSERVATION[[", toupper(type), "]][[", inter, "]]"))
+            "allResults$OBSERVATION[[", toupper(type), "]][[", inter, "]]"))
     }
 
     if (is.null(allResults$PERMUTATION)) {
@@ -934,7 +934,8 @@ createOutputDir <- function(outputDir, doingSites = TRUE,
 #' tileSize = 1000, stepSize = 1000)}
 #'
 #' @author Astrid Deschenes, Pascal Belleau
-#' @importFrom methylKit filterByCoverage normalizeCoverage unite calculateDiffMeth getMethylDiff getData tileMethylCounts methRead
+#' @importFrom methylKit filterByCoverage normalizeCoverage unite
+#' calculateDiffMeth getMethylDiff getData tileMethylCounts methRead
 #' @importFrom GenomicRanges width
 #' @keywords internal
 runOnePermutationOnAllGenerations <- function(methylInfoForAllGenerations,

@@ -60,13 +60,13 @@ NULL
 #' \code{methylRawList} contains the information for one generation
 #' (first entry = first generation, etc..). Each sample information is
 #' stored in a \code{methylRaw} object. There is \code{methylRaw} objects
-#'  (6 controls and 6 cases) in each generation.
+#' (6 controls and 6 cases) in each generation.
 #'
 #' @return A \code{list} containing three \code{methylRawList} objects. Each
 #' \code{methylRawList} contains the information for one generation
 #' (first entry = first generation, etc..). Each sample information is
 #' stored in a \code{methylRaw} object. There is \code{methylRaw} objects
-#'  (6 controls and 6 cases) in each generation.
+#' (6 controls and 6 cases) in each generation.
 #'
 #' @seealso
 #' \itemize{
@@ -114,13 +114,13 @@ NULL
 #' \code{methylRawList} contains the information for one generation
 #' (first entry = first generation, etc..). Each sample information is
 #' stored in a \code{methylRaw} object. There is \code{methylRaw} objects
-#'  (6 controls and 6 cases) in each generation.
+#' (6 controls and 6 cases) in each generation.
 #'
 #' @return A \code{list} containing three \code{methylRawList} objects. Each
 #' \code{methylRawList} contains the information for one generation
 #' (first entry = first generation, etc..). Each sample information is
 #' stored in a \code{methylRaw} object. There is \code{methylRaw} objects
-#'  (6 controls and 6 cases) in each generation.
+#' (6 controls and 6 cases) in each generation.
 #'
 #' @seealso
 #' \itemize{
