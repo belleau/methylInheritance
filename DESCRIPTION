@@ -16,7 +16,7 @@ Author@R: c(person("Astrid", "Deschênes",
     person("Arnaud", "Droit",
     email="arnaud.droit@crchuq.ulaval.ca", role=c("aut")))
 Depends:
-    R (>= 3.4)
+    R (>= 3.3)
 Imports:
     methylKit,
     BiocParallel,

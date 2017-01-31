@@ -2,7 +2,7 @@ language: r
 sudo: required
 
 # R version
-r: devel
+r: release
 
 # Package caching only makes sense for the release versions.
 #cache: packages
